@@ -346,7 +346,8 @@ mesg(str)
 /*VARARGS2*/
 merror(seekpt, i)
 	char *seekpt;
-	int i;
+	/* ORIG: int i; */
+	long i;
 {
 	register char *cp = linebuf;
 

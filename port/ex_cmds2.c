@@ -77,7 +77,8 @@ eol()
 error(str, i)
 	/* ORIG: register int str; */
 	register char *str;
-	int i;
+	/* ORIG: int i; */
+	long i;
 {
 
 	error0();
