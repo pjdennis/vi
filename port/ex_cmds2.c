@@ -75,7 +75,8 @@ eol()
  */
 /*VARARGS2*/
 error(str, i)
-	register int str;
+	/* ORIG: register int str; */
+	register char *str;
 	int i;
 {
 
@@ -365,7 +366,8 @@ resetflav()
  * Message text comes from error message file.
  */
 serror(str, cp)
-	register int str;
+	/* ORIG: register int str; */
+	register char *str;
 	char *cp;
 {
 
