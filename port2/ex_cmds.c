@@ -37,7 +37,6 @@ commands(bool noprompt, bool exitoneof)
 	int seensemi;
 	int cnt;
 	bool hadpr;
-	char *vgetpass();
 
 	resetflav();
 	nochng();

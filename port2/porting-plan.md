@@ -5,10 +5,10 @@ Status legend: [ ] pending, [x] done
 ## High Priority — Mechanical, safe bulk changes
 
 - [x] 1. Remove all `register` keywords (~312 instances, 26 files)
-- [ ] 2. Remove dead Makefile `-D` flags (VMUNIX, USG, SIGTSTP)
-- [ ] 3. Remove dead code with `__attribute__((unused))` (vrigid, vcookit)
-- [ ] 4. Remove `index`/`rindex` compatibility shim in ex_io.c, use strchr/strrchr directly
-- [ ] 5. Remove stale local prototype `char *vgetpass()` in ex_cmds.c
+- [x] 2. Remove dead Makefile `-D` flags (VMUNIX, USG, SIGTSTP)
+- [x] 3. Remove dead code with `__attribute__((unused))` (vrigid, vcookit)
+- [x] 4. Remove `index`/`rindex` compatibility shim in ex_io.c, use strchr/strrchr directly
+- [x] 5. Remove stale local prototype `char *vgetpass()` in ex_cmds.c
 
 ## Medium Priority — Structural cleanup
 

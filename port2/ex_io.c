@@ -818,25 +818,20 @@ iostats()
 	return (cntnull != 0 || cntodd != 0);
 }
 
-/* It's so wonderful how we all speak the same language... */
-# define index strchr
-# define rindex strrchr
-
 static void
 checkmodeline(char *l)
 {
 	char *beg, *end;
 	char cmdbuf[1024];
-	char *index(), *rindex();
 
-	beg = index(l, ':');
+	beg = strchr(l, ':');
 	if (beg == NULL)
 		return;
 	if (beg[-2] != 'e' && beg[-2] != 'v') return;
 	if (beg[-1] != 'x' && beg[-1] != 'i') return;
 
 	strncpy(cmdbuf, beg+1, sizeof cmdbuf);
-	end = rindex(cmdbuf, ':');
+	end = strrchr(cmdbuf, ':');
 	if (end == NULL)
 		return;
 	*end = 0;

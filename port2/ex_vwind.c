@@ -3,8 +3,6 @@
 #include "ex_tty.h"
 #include "ex_vis.h"
 
-static int vcookit(int cnt);
-
 /*
  * Routines to adjust the window, showing specified lines
  * in certain positions on the screen, and scrolling in both
@@ -367,13 +365,6 @@ vrollR(int cnt)
  * BUG:		An interrupt during a scroll in this way
  *		dumps to command mode.
  */
-static int __attribute__((unused))
-vcookit(int cnt)
-{
-
-	return (cnt > 1 && cnt > lines * 2);
-}
-
 /*
  * Determine displayed depth of current line.
  */

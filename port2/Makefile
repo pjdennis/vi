@@ -3,7 +3,7 @@
 
 CC = gcc
 CFLAGS = -std=c11 \
-	-DVMUNIX -DUSG -DTABS=8 -DSIGTSTP \
+	-DTABS=8 \
 	-fsigned-char \
 	-Wall -Wextra -Wpedantic -Wshadow -Werror \
 	-g

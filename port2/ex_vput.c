@@ -6,7 +6,6 @@
 static void vigotoCL(int x);
 static void vgotab(void);
 void vmaktop(int p, char *cp);
-static void vrigid(void);
 void vneedpos(int cnt);
 void vnpins(int dosync);
 void vishft(void);
@@ -697,24 +696,6 @@ vinschar(int c)
 	destcol = inscol + inssiz;
 	vcsync();
 	return 0;
-}
-
-/*
- * Rigidify the rest of the line after the first
- * group of following tabs, typing blanks over ``spaces''.
- */
-static void __attribute__((unused))
-vrigid()
-{
-	int col;
-	char *tp = vtube0 + tabend;
-
-	for (col = tabend; col < linend; col++)
-		if ((*tp++ & TRIM) == 0) {
-			endim();
-			vgotoCL(col);
-			vputchar(' ' | QUOTE);
-		}
 }
 
 /*
