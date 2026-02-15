@@ -34,20 +34,9 @@ gettmode()
 	if (tcgetattr(2, &tty) < 0)
 		return;
 	normf = tty;
-#ifdef IUCLC
 	UPPERCASE = (tty.c_iflag & IUCLC) != 0;
-#else
-	UPPERCASE = 0;
-#endif
-#ifdef TABDLY
 	if ((tty.c_oflag & TABDLY) == TAB3)
 		GT = 0;
-#else
-#ifdef XTABS
-	if ((tty.c_oflag & XTABS) == XTABS)
-		GT = 0;
-#endif
-#endif
 	NONL = (tty.c_oflag & ONLCR) == 0;
 }
 
