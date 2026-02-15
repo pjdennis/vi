@@ -775,14 +775,14 @@ execute(int gf, ...)
 	register char *p1, *p2;
 	register int c;
 
-	va_start(ap, gf);
-	addr = va_arg(ap, line *);
-	va_end(ap);
 	if (gf) {
 		if (circfl)
 			return (0);
 		locs = p1 = loc2;
 	} else {
+		va_start(ap, gf);
+		addr = va_arg(ap, line *);
+		va_end(ap);
 		if (addr == zero)
 			return (0);
 		p1 = linebuf;

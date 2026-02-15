@@ -632,7 +632,7 @@ void	vdoappend(char *lp);
 /*
  * Function prototypes - ex_vops3.c
  */
-int	lfind(bool pastatom, int cnt, void (*f)(int), line *limit);
+int	lfind(int pastatom, int cnt, void (*f)(int), line *limit);
 int	endsent(bool pastatom);
 int	endPS(void);
 int	lindent(line *addr);

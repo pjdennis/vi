@@ -350,14 +350,16 @@ void
 merror(char *seekpt, ...)
 {
 	va_list ap;
-	long i;
+	long i = 0;
 	register char *cp = linebuf;
 
 	if (seekpt == 0)
 		return;
-	va_start(ap, seekpt);
-	i = va_arg(ap, long);
-	va_end(ap);
+	if (strchr(seekpt, '%')) {
+		va_start(ap, seekpt);
+		i = va_arg(ap, long);
+		va_end(ap);
+	}
 	merror1(seekpt);
 	if (*cp == '\n')
 		putnl(), cp++;

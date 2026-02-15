@@ -41,7 +41,7 @@ bool	wasend;
  * rather than a sentence.
  */
 int
-lfind(bool pastatom, int cnt, void (*f)(int), line *limit)
+lfind(int pastatom, int cnt, void (*f)(int), line *limit)
 {
 	register int c;
 	register int rc = 0;
@@ -61,10 +61,10 @@ lfind(bool pastatom, int cnt, void (*f)(int), line *limit)
 	wdot = dot;
 	wcursor = cursor;
 
-	if ((int)pastatom >= 2) {
+	if (pastatom >= 2) {
 		while (cnt > 0 && word(f, cnt))
 			cnt--;
-		if ((int)pastatom == 3)
+		if (pastatom == 3)
 			eend(f);
 		if (dot == wdot) {
 			wdot = 0;

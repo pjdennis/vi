@@ -83,11 +83,13 @@ void
 error(char *str, ...)
 {
 	va_list ap;
-	long i;
+	long i = 0;
 
-	va_start(ap, str);
-	i = va_arg(ap, long);
-	va_end(ap);
+	if (str && strchr(str, '%')) {
+		va_start(ap, str);
+		i = va_arg(ap, long);
+		va_end(ap);
+	}
 	error0();
 	merror(str, i);
 	if (writing) {
