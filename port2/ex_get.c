@@ -44,7 +44,6 @@ int
 getcd()
 {
 	int c;
-	extern short slevel;
 
 again:
 	c = getach();
@@ -144,8 +143,6 @@ gettty()
 	int c = 0;
 	char *cp = genbuf;
 	char hadup = 0;
-	int numbline();
-	extern int (*Pline)(int);
 	int offset = Pline == numbline ? 8 : 0;
 	int ch;
 

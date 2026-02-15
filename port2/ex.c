@@ -83,8 +83,6 @@ int main(int ac, char *av[])
 	bool ivis;
 	bool itag = 0;
 	bool fast = 0;
-	extern void oncore(int);
-	extern int verbose;
 
 	/*
 	 * Immediately grab the tty modes so that we wont

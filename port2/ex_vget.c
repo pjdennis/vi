@@ -71,7 +71,6 @@ getbr()
 	int c, d;
 	char *colp;
 	static char Peek2key;
-	extern short slevel, ttyindes;
 
 getATTN:
 	if (Peekkey) {

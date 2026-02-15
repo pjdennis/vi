@@ -383,7 +383,6 @@ put(int unused)
 void
 pragged(bool kill)
 {
-	extern char *cursor;
 	char *gp = &genbuf[cursor - linebuf];
 
 	/*

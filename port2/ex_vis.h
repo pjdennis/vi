@@ -69,6 +69,8 @@ extern	int	vch_mac;	/* Change state - one of the above */
 extern	char	*vUNDcurs;	/* Cursor just before 'U' */
 extern	line	*vUNDdot;	/* The line address of line saved in vUNDsav */
 extern	line	vUNDsav;	/* Grabbed initial "*dot" */
+extern	char	*vUA1, *vUA2;	/* Undo new lines pointers */
+extern	char	*vUD1, *vUD2;	/* Undo old lines pointers */
 
 #define	killU()		vUNDdot = NOLINE
 

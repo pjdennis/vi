@@ -46,7 +46,6 @@ setterm(char *type)
 	int unknown, i;
 	int l;
 	int errret;
-	extern char termtype[];
 
 	unknown = 0;
 	if (cur_term && exit_ca_mode)

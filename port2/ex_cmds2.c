@@ -17,9 +17,6 @@
 #include "ex_vis.h"
 #include <stdarg.h>
 
-extern bool	pflag, nflag;		/* mjm: extern; also in ex_cmds.c */
-extern int	poffset;		/* mjm: extern; also in ex_cmds.c */
-
 int tailprim(char *comm, int i, bool notinvis);
 void vcontin(bool ask);
 
@@ -262,7 +259,6 @@ makargs()
 void
 next()
 {
-	extern short isalt;	/* defined in ex_io.c */
 
 	if (argc == 0)
 		error("No more files@to edit", 0);

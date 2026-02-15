@@ -158,7 +158,6 @@ vop()
 	int c;
 	char atube[TUBESIZE + LBSIZE];
 	ttymode f;	/* mjm: was */
-	extern char termtype[];
 
 	if (!cursor_address && !cursor_up) {
 		if (initev) {

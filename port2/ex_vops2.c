@@ -12,9 +12,6 @@ int vgetsplit(void);
  * and mostly, insert mode (and a subroutine
  * to read an input line, including in the echo area.)
  */
-extern char	*vUA1, *vUA2;		/* mjm: extern; also in ex_vops.c */
-extern char	*vUD1, *vUD2;		/* mjm: extern; also in ex_vops.c */
-
 /*
  * Obleeperate characters in hardcopy
  * open with \'s.

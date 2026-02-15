@@ -30,6 +30,7 @@ char	rfname[40];
 int	havetmp;
 int	tfile = -1;
 short	rfile = -1;
+int	stilinc;	/* up to here not written yet */
 
 void
 fileinit()
@@ -72,10 +73,7 @@ dumbness:
 	tfile = creat(tfname, 0600);
 	if (tfile < 0)
 		goto dumbness;
-	{
-		extern int stilinc;		/* see below */
-		stilinc = 0;
-	}
+	stilinc = 0;
 	havetmp = 1;
 	close(tfile);
 	tfile = open(tfname, 2);
@@ -205,7 +203,6 @@ getblock(line atl, int iof)
 #define	INCORB	64
 char	incorb[INCORB+1][BUFSIZ];
 #define	pagrnd(a)	((char *)(((uintptr_t)(a))&~(BUFSIZ-1)))
-int	stilinc;	/* up to here not written yet */
 
 void
 blkio(short b, char *buf, iofcn_t iofcn)

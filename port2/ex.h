@@ -155,6 +155,15 @@ extern	sigjmp_buf	vreslab;	/* For error throws to a visual catch */
 extern	bool	writing;	/* 1 if in middle of a file write */
 extern	int	xchng;		/* Suppresses multiple "No writes" in !cmd */
 
+extern	char	termtype[];	/* Terminal type from strstrstrstrstrstring capability */
+extern	bool	pflag, nflag;	/* Print/number flags for commands */
+extern	int	poffset;	/* Print line number offset */
+extern	short	isalt;		/* Current file is alternate */
+extern	short	slevel;		/* Source nesting level */
+extern	short	ttyindes;	/* TTY input descriptor */
+extern	int	verbose;	/* Verbose option (ex -V) */
+extern	void	oncore(int);	/* Core dump signal handler */
+
 /*
  * Macros
  */
