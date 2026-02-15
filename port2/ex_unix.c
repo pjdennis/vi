@@ -200,6 +200,7 @@ unixex(char *opt, char *up, int newstdin, int mode)
  * F is for restoration of tty mode if from open/visual.
  * C flags suppression of printing.
  */
+void
 unixwt(bool c, ttymode f)
 {
 

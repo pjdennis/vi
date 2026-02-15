@@ -74,7 +74,7 @@ dumbness:
 	if (tfile < 0)
 		goto dumbness;
 	{
-		extern stilinc;		/* see below */
+		extern int stilinc;	/* see below */
 		stilinc = 0;
 	}
 	havetmp = 1;

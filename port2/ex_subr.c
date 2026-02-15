@@ -442,7 +442,7 @@ void
 putmk1(line *addr, int n)
 {
 	register line *markp;
-	register oldglobmk;
+	register int oldglobmk;
 
 	oldglobmk = *addr & 1;
 	*addr &= ~1;

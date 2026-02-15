@@ -20,7 +20,7 @@ extern bool	pflag, nflag;		/* mjm: extern; also in ex_cmds.c */
 extern int	poffset;		/* mjm: extern; also in ex_cmds.c */
 
 int tailprim(char *comm, int i, bool notinvis);
-int vcontin(bool ask);
+void vcontin(bool ask);
 
 /*
  * Subroutines for major command loop.
@@ -482,7 +482,7 @@ ret:
 /*
  * Continue after a : command from open/visual.
  */
-int
+void
 vcontin(bool ask)
 {
 

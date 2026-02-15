@@ -80,7 +80,7 @@ vopen(line *tp, int p)
 /*
  * Redisplay logical line l at physical line p with line number lineno.
  */
-void
+int
 vreopen(int p, int lineno, int l)
 {
 	register int d;
@@ -165,7 +165,7 @@ vreopen(int p, int lineno, int l)
  * delete some (blank) lines from the top of the screen so that
  * later inserts will not push stuff off the bottom.
  */
-void
+int
 vglitchup(int l, int o)
 {
 	register struct vlinfo *vp = &vlinfo[l];

@@ -3,7 +3,7 @@
 #include "ex_tty.h"
 #include "ex_vis.h"
 
-int vzop(bool hadcnt, int cnt, int c);
+void vzop(bool hadcnt, int cnt, int c);
 
 /*
  * This is the main routine for visual.
@@ -1156,7 +1156,7 @@ vsave()
  * Do a z operation.
  * Code here is rather long, and very uninteresting.
  */
-int
+void
 vzop(bool hadcnt, int cnt, int c)
 {
 	register line *addr;

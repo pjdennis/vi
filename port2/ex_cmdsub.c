@@ -247,7 +247,7 @@ join(int c)
 		vundkind = VMANY;
 }
 
-static 
+static int
 jnoop()
 {
 
@@ -260,6 +260,7 @@ jnoop()
  */
 int	getcopy();
 
+void
 move()
 {
 	register line *adt;
@@ -281,6 +282,7 @@ move()
 	killed();
 }
 
+void
 move1(int cflag, line *addrt)
 {
 	register line *adt, *ad1, *ad2;
@@ -808,7 +810,7 @@ zop2(int nlines, int op)
 	plines(addr1, addr2, 0);
 }
 
-static 
+static void
 splitit()
 {
 	register int l;
@@ -1241,7 +1243,7 @@ char *
 vgetpass(char *prompt)
 {
 	register char *p;
-	register c;
+	register int c;
 	static char pbuf[9];
 	char *getpass();
 

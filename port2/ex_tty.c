@@ -145,6 +145,7 @@ setterm(char *type)
 /*
  * Map both map1 and map2 as below.  map2 surrounded by esc and i.
  */
+void
 kpboth(struct maps *map1, struct maps *map2, char *key, char *mapto, char *desc)
 {
 	char surmapto[30];
@@ -169,6 +170,7 @@ kpboth(struct maps *map1, struct maps *map2, char *key, char *mapto, char *desc)
  * key is the input sequence, mapto what it turns into, and desc is a
  * human-readable description of what's going on.
  */
+void
 kpadd(struct maps *mapstr, char *key, char *mapto, char *desc)
 {
 	int i;
@@ -201,6 +203,7 @@ fkey(int i)
 	case 9: return key_f9;
 	case 10: return key_f0;
 	}
+	return NOSTR;
 }
 
 /*
@@ -217,7 +220,7 @@ static int costnum;
 int
 cost(char *str)
 {
-	int countnum(char ch);
+	int countnum(int ch);
 
 	if (str == NULL || *str=='O')	/* OOPS */
 		return 10000;	/* infinity */
@@ -227,7 +230,10 @@ cost(char *str)
 }
 
 /* ARGSUSED */
-countnum(char ch)
+int
+countnum(int ch)
 {
+	(void)ch;
 	costnum++;
+	return 0;
 }
