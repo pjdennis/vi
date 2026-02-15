@@ -3,8 +3,8 @@
 #include "ex_tty.h"
 #include "ex_vis.h"
 
-int vopenup(int cnt, bool could, int l);
-int vmoveitup(int cnt, bool doclr);
+void vopenup(int cnt, bool could, int l);
+void vmoveitup(int cnt, bool doclr);
 
 /*
  * Routines to deal with management of logical versus physical
@@ -22,6 +22,7 @@ int vmoveitup(int cnt, bool doclr);
  * on the screen in which case the line may actually end up
  * somewhere other than line p.
  */
+void
 vopen(line *tp, int p)
 {
 	register int cnt;
@@ -79,6 +80,7 @@ vopen(line *tp, int p)
 /*
  * Redisplay logical line l at physical line p with line number lineno.
  */
+void
 vreopen(int p, int lineno, int l)
 {
 	register int d;
@@ -165,6 +167,7 @@ vreopen(int p, int lineno, int l)
  * delete some (blank) lines from the top of the screen so that
  * later inserts will not push stuff off the bottom.
  */
+void
 vglitchup(int l, int o)
 {
 	register struct vlinfo *vp = &vlinfo[l];
@@ -205,6 +208,7 @@ vglitchup(int l, int o)
  * Insert cnt blank lines before line p,
  * logically and (if supported) physically.
  */
+void
 vinslin(int p, int cnt, int l)
 {
 	register int i;
@@ -280,6 +284,7 @@ vinslin(int p, int cnt, int l)
  * it ourselves (brute force) we will squish out @ lines in the process
  * if this will save us work.
  */
+void
 vopenup(int cnt, bool could, int l)
 {
 	register struct vlinfo *vc = &vlinfo[l + 1];
@@ -319,6 +324,7 @@ vopenup(int cnt, bool could, int l)
  * Adjust data structure internally to account for insertion of
  * blank lines on the screen.
  */
+void
 vadjAL(int p, int cnt)
 {
 	char *tlines[TUBELINES];
@@ -342,6 +348,7 @@ vadjAL(int p, int cnt)
  * Roll the screen up logically and physically
  * so that line dl is the bottom line on the screen.
  */
+void
 vrollup(int dl)
 {
 	register int cnt;
@@ -355,6 +362,7 @@ vrollup(int dl)
 	destline = dl - cnt, destcol = dc;
 }
 
+void
 vup1()
 {
 
@@ -366,6 +374,7 @@ vup1()
  * If doclr is true, do a clear eol if the terminal
  * has standout (to prevent it from scrolling up)
  */
+void
 vmoveitup(int cnt, bool doclr)
 {
 
@@ -397,6 +406,7 @@ vmoveitup(int cnt, bool doclr)
 /*
  * Scroll the screen up cnt lines logically.
  */
+void
 vscroll(int cnt)
 {
 	register int from, to;
@@ -420,6 +430,7 @@ vscroll(int cnt)
 /*
  * Discard logical lines due to physical wandering off the screen.
  */
+void
 vscrap()
 {
 	register int i, j;
@@ -462,6 +473,7 @@ vscrap()
  * Repaint the screen, with cursor at curs, aftern an arbitrary change.
  * Handle notification on large changes.
  */
+void
 vrepaint(char *curs)
 {
 
@@ -551,6 +563,7 @@ vrepaint(char *curs)
  * line after last won't completely fit.  The routine vsync is
  * more conservative and much less work on dumb terminals.
  */
+void
 vredraw(int p)
 {
 	register int l;
@@ -663,6 +676,7 @@ vredraw(int p)
  * Do the real work in deleting cnt lines starting at line p from
  * the display.  First affected line is line l.
  */
+void
 vdellin(int p, int cnt, int l)
 {
 	register int i;
@@ -704,6 +718,7 @@ vdellin(int p, int cnt, int l)
 /*
  * Adjust internal physical screen image to account for deleted lines.
  */
+void
 vadjDL(int p, int cnt)
 {
 	char *tlines[TUBELINES];
@@ -728,12 +743,14 @@ vadjDL(int p, int cnt)
  * In any case, if the redraw option is set then all syncs map to redraws
  * as if vsync didn't exist.
  */
+void
 vsyncCL()
 {
 
 	vsync(LINE(vcline));
 }
 
+void
 vsync(int p)
 {
 
@@ -747,6 +764,7 @@ vsync(int p)
  * The guts of a sync.  Similar to redraw but
  * just less ambitous.
  */
+void
 vsync1(int p)
 {
 	register int l;
@@ -816,6 +834,7 @@ vsync1(int p)
  * Subtract (logically) cnt physical lines from the
  * displayed position of lines starting with line l.
  */
+void
 vcloseup(int l, int cnt)
 {
 	register int i;
@@ -834,6 +853,7 @@ vcloseup(int l, int cnt)
  *
  * Many boundary conditions here.
  */
+void
 vreplace(int l, int cnt, int newcnt)
 {
 	register int from, to, i;
@@ -962,6 +982,7 @@ skip:
  * If we are in a scroll ^D within hardcopy open then all this
  * is suppressed.
  */
+void
 sethard()
 {
 
@@ -982,6 +1003,7 @@ sethard()
  * as dirty so that they will be checked for correct
  * display at next sync/redraw.
  */
+void
 vdirty(int base, int i)
 {
 	register int l;

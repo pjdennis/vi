@@ -23,6 +23,7 @@
  * First part of a shell escape,
  * parse the line, expanding # and % and ! and printing if implied.
  */
+void
 unix0(bool warn)
 {
 	register char *up, *fp;
@@ -222,6 +223,7 @@ unixwt(bool c, ttymode f)
  * the filter, then a child editor is created to write it.
  * If output is catch it from io which is created by unixex.
  */
+void
 filter(int mode)
 {
 	static int pvec[2];
@@ -273,6 +275,7 @@ filter(int mode)
  * Set up to do a recover, getting io to be a pipe from
  * the recover process.
  */
+void
 recover()
 {
 	static int pvec[2];
@@ -302,6 +305,7 @@ recover()
 /*
  * Wait for the process (pid an external) to complete.
  */
+void
 waitfor()
 {
 
@@ -323,6 +327,7 @@ waitfor()
  * exits non-zero, force not edited; otherwise force
  * a write.
  */
+void
 revocer()
 {
 

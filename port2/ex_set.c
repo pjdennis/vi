@@ -19,6 +19,7 @@
  */
 char	optname[ONMSZ];
 
+void
 set()
 {
 	register char *cp;
@@ -155,12 +156,14 @@ next:
 	eol();
 }
 
+int
 setend()
 {
 
 	return (iswhite(peekchar()) || endcmd(peekchar()));
 }
 
+void
 prall()
 {
 	register int incr = (NOPTS + 2) / 3;
@@ -179,6 +182,7 @@ prall()
 	}
 }
 
+void
 propts()
 {
 	register struct option *op;
@@ -206,6 +210,7 @@ propts()
 	flush();
 }
 
+void
 propt(struct option *op)
 {
 	register char *name;

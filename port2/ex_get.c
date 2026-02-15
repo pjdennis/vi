@@ -23,11 +23,13 @@ int checkjunk(char c);
 static	bool junkbs;
 int	lastc = '\n';
 
+void
 ignchar()
 {
 	ignore(getchar());
 }
 
+int
 getchar()
 {
 	register int c;
@@ -38,6 +40,7 @@ getchar()
 	return (c);
 }
 
+int
 getcd()
 {
 	register int c;
@@ -58,6 +61,7 @@ again:
 	return (c);
 }
 
+int
 peekchar()
 {
 
@@ -66,6 +70,7 @@ peekchar()
 	return (peekc);
 }
 
+int
 peekcd()
 {
 	if (peekc == 0)
@@ -74,6 +79,7 @@ peekcd()
 }
 
 int verbose;
+int
 getach()
 {
 	register int c;
@@ -132,13 +138,14 @@ top:
  */
 static	short	lastin;
 
+int
 gettty()
 {
 	register int c = 0;
 	register char *cp = genbuf;
 	char hadup = 0;
 	int numbline();
-	extern int (*Pline)();
+	extern int (*Pline)(int);
 	int offset = Pline == numbline ? 8 : 0;
 	int ch;
 
@@ -234,6 +241,7 @@ gettty()
  * This should really be done differently so as to use the whitecnt routine
  * and also to hack indenting for LISP.
  */
+int
 smunch(int col, char *ocp)
 {
 	register char *cp;
@@ -259,6 +267,7 @@ smunch(int col, char *ocp)
 
 char	*cntrlhm =	"^H discarded\n";
 
+int
 checkjunk(char c)
 {
 

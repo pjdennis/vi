@@ -15,6 +15,7 @@ int vzop(bool hadcnt, int cnt, int c);
 
 #define	forbid(a)	{ if (a) goto fonfon; }
 
+void
 vmain()
 {
 	register int c, cnt, i;
@@ -24,7 +25,8 @@ vmain()
 	line *addr;
 	int ind, nlput;
 	int shouldpo = 0;
-	int onumber, olist, (*OPline)(), (*OPutchar)();
+	int onumber, olist;
+	int (*OPline)(int), (*OPutchar)(int);
 
 	vch_mac = VC_NOTINMAC;
 
@@ -619,7 +621,7 @@ insrt:
 			 * So we simulate an interrupt.
 			 */
 			if (inglobal)
-				onintr();
+				onintr(0);
 			/* fall into... */
 
 			/* fall into... */
@@ -902,7 +904,7 @@ doinit:
 			 */
 			if (dot == zero) {
 				fixzero();
-				sync();
+				vi_sync();
 			}
 			splitw = 0;
 
@@ -1057,6 +1059,7 @@ fonfon:
 /*
  * Grab the word after the cursor so we can look for it as a tag.
  */
+void
 grabtag()
 {
 	register char *cp, *dp;
@@ -1077,6 +1080,7 @@ grabtag()
  * Before appending lines, set up addr1 and
  * the command mode undo information.
  */
+void
 prepapp()
 {
 
@@ -1090,6 +1094,7 @@ prepapp()
  * Execute function f with the address bounds addr1
  * and addr2 surrounding cnt lines starting at dot.
  */
+void
 vremote(int cnt, int (*f)(), int arg)
 {
 	register int oing = inglobal;
@@ -1109,6 +1114,7 @@ vremote(int cnt, int (*f)(), int arg)
 /*
  * Save the current contents of linebuf, if it has changed.
  */
+void
 vsave()
 {
 	char temp[LBSIZE];
@@ -1150,6 +1156,7 @@ vsave()
  * Do a z operation.
  * Code here is rather long, and very uninteresting.
  */
+int
 vzop(bool hadcnt, int cnt, int c)
 {
 	register line *addr;

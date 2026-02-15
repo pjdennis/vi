@@ -83,7 +83,7 @@ int main(int ac, char *av[])
 	bool ivis;
 	bool itag = 0;
 	bool fast = 0;
-	extern int oncore();
+	extern void oncore(int);
 	extern int verbose;
 
 	/*
@@ -343,6 +343,7 @@ int main(int ac, char *av[])
  * Main thing here is to get a new buffer (in fileinit),
  * rest is peripheral state resetting.
  */
+void
 init()
 {
 	register int i;

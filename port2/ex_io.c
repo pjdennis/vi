@@ -39,6 +39,7 @@ long	cntodd;			/* Count of non-ascii characters " */
  * If comm is E then command is doomed and we are
  * parsing just so user won't have to retype the name.
  */
+void
 filename(int comm)
 {
 	register int c = comm, d;
@@ -116,6 +117,7 @@ filename(int comm)
  * Get the argument words for a command into genbuf
  * expanding # and %.
  */
+int
 getargs()
 {
 	register int c;
@@ -188,6 +190,7 @@ filexp:
  * Glob the argument words in genbuf, or if no globbing
  * is implied, just split them up directly.
  */
+void
 glob(struct glob *gp)
 {
 	int pvec[2];
@@ -268,6 +271,7 @@ glob(struct glob *gp)
  * Scan genbuf for shell metacharacters.
  * Set is union of v7 shell and csh metas.
  */
+int
 gscan()
 {
 	register char *cp;
@@ -282,6 +286,7 @@ gscan()
  * Parse one filename into file.
  */
 struct glob G;
+void
 getone()
 {
 	register char *str;
@@ -302,6 +307,7 @@ samef:
  * Read a file from the world.
  * C is command, 'e' if this really an edit (or a recover).
  */
+void
 rop(int c)
 {
 	register int i;
@@ -404,6 +410,7 @@ rop(int c)
 	rop3(c);
 }
 
+void
 rop2()
 {
 	line *first, *last, *a;
@@ -421,6 +428,7 @@ rop2()
 	}
 }
 
+void
 rop3(int c)
 {
 
@@ -459,13 +467,14 @@ other:
 	if (laste) {
 		tlaste();
 		laste = 0;
-		sync();
+		vi_sync();
 	}
 }
 
 /*
  * Are these two really the same inode?
  */
+int
 samei(struct stat *sp, char *cp)
 {
 	struct stat stb;
@@ -483,8 +492,8 @@ samei(struct stat *sp, char *cp)
 /*
  * Write a file.
  */
-wop(dofname)
-bool dofname;	/* if 1 call filename, else use savedfile */
+int
+wop(bool dofname)
 {
 	register int c, exclam, nonexist;
 	line *saddr1, *saddr2;
@@ -579,7 +588,7 @@ cre:
 	if (c != 2 && addr1 == one && addr2 == dol) {
 		if (eq(file, savedfile))
 			edited = 1;
-		sync();
+		vi_sync();
 	}
 	if (!dofname) {
 		addr1 = saddr1;
@@ -594,6 +603,7 @@ cre:
  * if this is a partial buffer, and distinguish
  * all cases.
  */
+int
 edfile()
 {
 
@@ -607,6 +617,7 @@ edfile()
  */
 char *nextip;
 
+int
 getfile()
 {
 	register short c;
@@ -653,6 +664,7 @@ getfile()
 /*
  * Write a range onto the io stream.
  */
+void
 putfile(int isfilter)
 {
 	line *a1;
@@ -697,6 +709,7 @@ putfile(int isfilter)
  * the edited file then we consider it to have changed since it is
  * now likely scrambled.
  */
+void
 wrerror()
 {
 
@@ -712,6 +725,7 @@ wrerror()
 short slevel;
 short ttyindes;
 
+void
 source(char *fil, bool okfail)
 {
 	jmp_buf osetexit;
@@ -770,6 +784,7 @@ source(char *fil, bool okfail)
 /*
  * Clear io statistics before a read or write.
  */
+void
 clrstats()
 {
 
@@ -783,6 +798,7 @@ clrstats()
 /*
  * Io is finished, close the unit and print statistics.
  */
+int
 iostats()
 {
 
@@ -815,6 +831,7 @@ iostats()
 # define index strchr
 # define rindex strrchr
 
+void
 checkmodeline(char *l)
 {
 	char *beg, *end;

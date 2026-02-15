@@ -17,6 +17,7 @@ extern char	*vUD1, *vUD2;		/* mjm: extern; also in ex_vops.c */
  * Obleeperate characters in hardcopy
  * open with \'s.
  */
+void
 bleep(int i, char *cp)
 {
 
@@ -31,6 +32,7 @@ bleep(int i, char *cp)
  * Common code for middle part of delete
  * and change operating on parts of lines.
  */
+int
 vdcMID()
 {
 	register char *cp;
@@ -50,6 +52,7 @@ vdcMID()
  * in the VBSIZE buffer BUF.  Used to save
  * deleted text of part of line.
  */
+void
 takeout(char *BUF)
 {
 	register char *cp;
@@ -74,6 +77,7 @@ takeout(char *BUF)
  * Are we at the end of the printed representation of the
  * line?  Used internally in hardcopy open.
  */
+int
 ateopr()
 {
 	register int i, c;
@@ -109,9 +113,8 @@ bool	vaifirst;
 bool	gobbled;
 char	*ogcursor;
 
-vappend(ch, cnt, indent)
-	int ch;		/* mjm: char --> int */
-	int cnt, indent;
+void
+vappend(int ch, int cnt, int indent)
 {
 	register int i;
 	register char *gcursor;
@@ -397,6 +400,7 @@ vappend(ch, cnt, indent)
  * backwards around end of lines (vgoto can't hack columns which are
  * less than 0 in general).
  */
+void
 back1()
 {
 
@@ -426,7 +430,7 @@ vgetline(int cnt, char *gcursor, bool *aescaped, char commch)
 	int x, y, iwhite, backsl=0;
 	char *iglobp;
 	char cstr[2];
-	int (*OO)() = Outchar;
+	int (*OO)(int) = Outchar;
 
 	/*
 	 * Clear the output state and counters
@@ -829,6 +833,7 @@ char	*vsplitpt;
  * Append the line in buffer at lp
  * to the buffer after dot.
  */
+void
 vdoappend(char *lp)
 {
 	register int oing = inglobal;
@@ -842,6 +847,7 @@ vdoappend(char *lp)
 /*
  * Subroutine for vdoappend to pass to append.
  */
+int
 vgetsplit()
 {
 
@@ -857,6 +863,7 @@ vgetsplit()
  * allowed that will yield total line length less than
  * LBSIZE characters and also does hacks for the R command.
  */
+int
 vmaxrep(char ch, int cnt)
 {
 	register int len, replen;

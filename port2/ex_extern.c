@@ -86,8 +86,8 @@ line	*unddel;
 line	*undap1;
 line	*undap2;
 line	*undadot;
-void	(*oldhup)();
-void	(*oldquit)();
+void	(*oldhup)(int);
+void	(*oldquit)(int);
 
 /* ex_tty.h globals */
 bool	NONL;

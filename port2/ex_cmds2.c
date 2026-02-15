@@ -29,6 +29,7 @@ int vcontin(bool ask);
 /*
  * Is there a single letter indicating a named buffer next?
  */
+int
 cmdreg()
 {
 	register int c = 0;
@@ -42,6 +43,7 @@ cmdreg()
 /*
  * Tell whether the character ends a command
  */
+int
 endcmd(int ch)
 {
 	switch (ch) {
@@ -62,6 +64,7 @@ endcmd(int ch)
 /*
  * Insist on the end of the command.
  */
+void
 eol()
 {
 
@@ -75,6 +78,7 @@ eol()
  * with i an integer argument to printf.
  */
 /*VARARGS2*/
+void
 error(char *str, long i)
 {
 
@@ -90,6 +94,7 @@ error(char *str, long i)
 /*
  * Rewind the argument list.
  */
+void
 erewind()
 {
 
@@ -111,13 +116,14 @@ erewind()
  * just fixing up the echo area for the print.
  * Otherwise we reset a number of externals, and discard unused input.
  */
+void
 error0()
 {
 
 	if (laste) {
 		tlaste();
 		laste = 0;
-		sync();
+		vi_sync();
 	}
 	if (vcatch) {
 		if (splitw == 0)
@@ -163,6 +169,7 @@ error0()
  * Otherwise, in the normal command mode error case,
  * finish state reset, and throw to top.
  */
+void
 error1(char *str)
 {
 	bool die;
@@ -196,6 +203,7 @@ error1(char *str)
 	reset();
 }
 
+void
 fixol()
 {
 	if (Outchar != vputchar) {
@@ -214,6 +222,7 @@ fixol()
 /*
  * Does an ! character follow in the command stream?
  */
+int
 exclam()
 {
 
@@ -227,6 +236,7 @@ exclam()
 /*
  * Make an argument list for e.g. next.
  */
+void
 makargs()
 {
 
@@ -240,6 +250,7 @@ makargs()
 /*
  * Advance to next file in argument list.
  */
+void
 next()
 {
 	extern short isalt;	/* defined in ex_io.c */
@@ -259,6 +270,7 @@ next()
  * Eat trailing flags and offsets after a command,
  * saving for possible later post-command prints.
  */
+void
 donewline()
 {
 	register int c;
@@ -314,6 +326,7 @@ serror("Extra chars|Extra characters at end of \"%s\" command", Command);
  * Before quit or respec of arg list, check that there are
  * no more files in the arg list.
  */
+void
 nomore()
 {
 
@@ -328,6 +341,7 @@ nomore()
  * Before edit of new file check that either an ! follows
  * or the file has not been changed.
  */
+int
 quickly()
 {
 
@@ -346,6 +360,7 @@ quickly()
 /*
  * Reset the flavor of the output to print mode with no numbering.
  */
+void
 resetflav()
 {
 
@@ -362,6 +377,7 @@ resetflav()
  * Print an error message with a %s type argument to printf.
  * Message text comes from error message file.
  */
+void
 serror(char *str, char *cp)
 {
 
@@ -376,6 +392,7 @@ serror(char *str, char *cp)
  * and either use normally decoded (ARPAnet standard) characters or list mode,
  * where end of lines are marked and tabs print as ^I.
  */
+void
 setflav()
 {
 
@@ -389,6 +406,7 @@ setflav()
 /*
  * Skip white space and tell whether command ends then.
  */
+int
 skipend()
 {
 
@@ -399,6 +417,7 @@ skipend()
 /*
  * Set the command name for non-word commands.
  */
+void
 tailspec(int c)
 {
 	static char foocmd[2];
@@ -411,12 +430,14 @@ tailspec(int c)
  * Try to read off the rest of the command word.
  * If alphabetics follow, then this is not the command we seek.
  */
+void
 tail(char *comm)
 {
 
 	tailprim(comm, 1, 0);
 }
 
+void
 tail2of(char *comm)
 {
 
@@ -425,6 +446,7 @@ tail2of(char *comm)
 
 char	tcommand[20];
 
+int
 tailprim(char *comm, int i, bool notinvis)
 {
 	register char *cp;
@@ -460,6 +482,7 @@ ret:
 /*
  * Continue after a : command from open/visual.
  */
+int
 vcontin(bool ask)
 {
 
@@ -512,6 +535,7 @@ vcontin(bool ask)
  * Put out a newline (before a shell escape)
  * if in open/visual.
  */
+void
 vnfl()
 {
 

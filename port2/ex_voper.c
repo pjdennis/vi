@@ -21,11 +21,12 @@ char	vscandir[2] =	{ '/', 0 };
  * and if wcursor is zero, then the first non-blank location of the
  * other line is implied.
  */
+void
 operate(int c, int cnt)
 {
 	register int i;
-	int (*moveop)(), (*deleteop)();
-	register int (*opf)();
+	int (*moveop)(int), (*deleteop)(int);
+	int (*opf)(int);
 	bool subop = 0;
 	char *oglobp, *ocurs;
 	register line *addr;
@@ -696,6 +697,7 @@ slerr:
 /*
  * Find single character c, in direction dir from cursor.
  */
+int
 find(char c)
 {
 
@@ -712,7 +714,8 @@ find(char c)
  * Do a word motion with operator op, and cnt more words
  * to go after this.
  */
-word(int (*op)(), int cnt)
+int
+word(int (*op)(int), int cnt)
 {
 	register int which;
 	register char *iwc;
@@ -761,7 +764,8 @@ word(int (*op)(), int cnt)
  * To end of word, with operator op and cnt more motions
  * remaining after this.
  */
-eend(int (*op)())
+void
+eend(int (*op)(int))
 {
 	register int which;
 
@@ -787,6 +791,7 @@ eend(int (*op)())
  * Wordof tells whether the character at *wc is in a word of
  * kind which (blank/nonblank words are 0, conservative words 1).
  */
+int
 wordof(char which, char *wc)
 {
 
@@ -799,6 +804,7 @@ wordof(char which, char *wc)
  * Wordch tells whether character at *wc is a word character
  * i.e. an alfa, digit, or underscore.
  */
+int
 wordch(char *wc)
 {
 	register int c;
@@ -810,6 +816,7 @@ wordch(char *wc)
 /*
  * Edge tells when we hit the last character in the current line.
  */
+int
 edge()
 {
 
@@ -824,6 +831,7 @@ edge()
 /*
  * Margin tells us when we have fallen off the end of the line.
  */
+int
 margin()
 {
 

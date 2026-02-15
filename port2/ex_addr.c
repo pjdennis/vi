@@ -33,6 +33,7 @@ static	bool bigmove;
 /*
  * Set up addr1 and addr2 for commands whose default address is dot.
  */
+void
 setdot()
 {
 
@@ -45,6 +46,7 @@ setdot()
  * Call setdot1 to set up default addresses without ever
  * setting the previous context mark.
  */
+void
 setdot1()
 {
 
@@ -62,6 +64,7 @@ setdot1()
  * to delete 5 lines, etc.
  * Such nonsense is implemented by setcount.
  */
+void
 setcount()
 {
 	register int cnt;
@@ -85,6 +88,7 @@ setcount()
 /*
  * Parse a number out of the command input stream.
  */
+int
 getnum()
 {
 	register int cnt;
@@ -98,6 +102,7 @@ getnum()
  * Set the default addresses for commands which use the whole
  * buffer as default, notably write.
  */
+void
 setall()
 {
 
@@ -118,6 +123,7 @@ setall()
 /*
  * No address allowed on, e.g. the file command.
  */
+void
 setnoaddr()
 {
 
@@ -299,6 +305,7 @@ error("No match to TOP|Address search hit TOP without matching pattern");
  * Left over from squashing ex version 1.1 into
  * 11/34's and 11/40's.
  */
+void
 setCNL()
 {
 
@@ -306,6 +313,7 @@ setCNL()
 	donewline();
 }
 
+void
 setNAEOL()
 {
 

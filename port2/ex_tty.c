@@ -23,6 +23,7 @@ static char *freespace;
  */
 static short GT;
 
+void
 gettmode()
 {
 
@@ -53,6 +54,7 @@ gettmode()
 	NONL = (tty.c_oflag & ONLCR) == 0;
 }
 
+void
 setterm(char *type)
 {
 	register int unknown, i;
@@ -226,6 +228,7 @@ fkey(int i)
  * than insert_line vs scroll_reverse, won't be really affected.)
  */
 static int costnum;
+int
 cost(char *str)
 {
 	int countnum(char ch);

@@ -3,11 +3,11 @@
 #include "ex_tty.h"
 #include "ex_vis.h"
 
-int vjumpto(line *addr, char *curs, char context);
-int vup(int cnt, int ind, bool scroll);
-int vdown(int cnt, int ind, bool scroll);
-int vcontext(line *addr, char where);
-int vreset(bool inecho);
+void vjumpto(line *addr, char *curs, char context);
+void vup(int cnt, int ind, bool scroll);
+void vdown(int cnt, int ind, bool scroll);
+void vcontext(line *addr, char where);
+void vreset(bool inecho);
 
 /*
  * Routines to adjust the window, showing specified lines
@@ -21,6 +21,7 @@ int vreset(bool inecho);
  * New position for cursor is curs.
  * Like most routines here, we vsave().
  */
+void
 vmoveto(line *addr, char *curs, char context)
 {
 
@@ -33,6 +34,7 @@ vmoveto(line *addr, char *curs, char context)
  * Vjumpto is like vmoveto, but doesn't mark previous
  * context or save linebuf as current line.
  */
+void
 vjumpto(line *addr, char *curs, char context)
 {
 
@@ -48,6 +50,7 @@ vjumpto(line *addr, char *curs, char context)
 /*
  * Go up or down cnt (negative is up) to new position curs.
  */
+void
 vupdown(int cnt, char *curs)
 {
 
@@ -67,6 +70,7 @@ vupdown(int cnt, char *curs)
  * If scroll, then we MUST use a scroll.
  * Otherwise clear and redraw if motion is far.
  */
+void
 vup(int cnt, int ind, bool scroll)
 {
 	register int i, tot;
@@ -114,6 +118,7 @@ okr:
 /*
  * Like vup, but scrolling down.
  */
+void
 vdown(int cnt, int ind, bool scroll)
 {
 	register int i, tot;
@@ -161,6 +166,7 @@ dcontxt:
  * Work here is in determining new top line implied by
  * this placement of line addr, since we always draw from the top.
  */
+void
 vcontext(line *addr, char where)
 {
 	register line *top;
@@ -203,6 +209,7 @@ vcontext(line *addr, char where)
  * we may be able to reuse the line we are on
  * if it is blank.  This is a real win.
  */
+void
 vclean()
 {
 
@@ -220,6 +227,7 @@ vclean()
  * (and call us recursively).  Eventually, we clear the screen
  * (or its open mode equivalent) and redraw.
  */
+void
 vshow(line *addr, line *top)
 {
 	register int cnt = addr - dot;
@@ -261,6 +269,7 @@ vshow(line *addr, line *top)
  * area;  we are called this way in the middle of a :e escape
  * from visual, e.g.
  */
+void
 vreset(bool inecho)
 {
 
@@ -294,6 +303,7 @@ vback(line *tp, int cnt)
 /*
  * How much scrolling will it take to roll cnt lines starting at tp?
  */
+int
 vfit(line *tp, int cnt)
 {
 	register int j;
@@ -312,6 +322,7 @@ vfit(line *tp, int cnt)
 /*
  * Roll cnt lines onto the screen.
  */
+void
 vroll(int cnt)
 {
 	int oldhold = hold;
@@ -337,6 +348,7 @@ vroll(int cnt)
 /*
  * Roll backwards (scroll up).
  */
+void
 vrollR(int cnt)
 {
 	register bool fried = 0;
@@ -366,6 +378,7 @@ vrollR(int cnt)
  * BUG:		An interrupt during a scroll in this way
  *		dumps to command mode.
  */
+int
 vcookit(int cnt)
 {
 
@@ -375,6 +388,7 @@ vcookit(int cnt)
 /*
  * Determine displayed depth of current line.
  */
+int
 vdepth()
 {
 	register int d;
@@ -386,6 +400,7 @@ vdepth()
 /*
  * Move onto a new line, with cursor at position curs.
  */
+void
 vnline(char *curs)
 {
 

@@ -28,6 +28,7 @@
 char	*vUA1, *vUA2;
 char	*vUD1, *vUD2;
 
+void
 vUndo()
 {
 
@@ -54,15 +55,15 @@ vUndo()
 	vfixcurs();
 }
 
-vundo(show)
-bool show;	/* if true update the screen */
+void
+vundo(bool show)
 {
 	register int cnt;
 	register line *addr;
 	register char *cp;
 	char temp[LBSIZE];
 	bool savenote;
-	int (*OO)();
+	int (*OO)(int);
 	int oldhold = hold;
 
 	switch (vundkind) {
@@ -167,6 +168,7 @@ bool show;	/* if true update the screen */
  * opposed to an ex command).  This has nothing to do with being
  * in open/visual mode as :s/foo/bar is not fromvis.
  */
+void
 vmacchng(bool fromvis)
 {
 	line *savedot, *savedol;
@@ -231,6 +233,7 @@ vmacchng(bool fromvis)
 /*
  * Initialize undo information before an append.
  */
+void
 vnoapp()
 {
 
@@ -250,6 +253,7 @@ vnoapp()
 /*
  * Move is simple, except for moving onto new lines in hardcopy open mode.
  */
+void
 vmove()
 {
 	register int cnt;
@@ -318,6 +322,7 @@ vmove()
  * by vchange (although vchange may pass it back if it degenerates
  * to a full line range delete.)
  */
+int
 vdelete(char c)
 {
 	register char *cp;
@@ -377,6 +382,7 @@ vdelete(char c)
  * Across lines with both wcursor and wdot given, we delete
  * and sync then append (but one operation for undo).
  */
+int
 vchange(char c)
 {
 	register char *cp;
@@ -591,9 +597,8 @@ smallchange:
  * Actually counts are obsoleted, since if your terminal is slow
  * you are better off with slowopen.
  */
-voOpen(c, cnt)
-	int c;	/* mjm: char --> int */
-	register int cnt;
+void
+voOpen(int c, int cnt)
 {
 	register int ind = 0, i;
 	int oldhold = hold;
@@ -655,6 +660,7 @@ voOpen(c, cnt)
  */
 char	vshnam[2] = { 'x', 0 };
 
+void
 vshftop()
 {
 	register line *addr;
@@ -678,6 +684,7 @@ vshftop()
  *
  * Filter portions of the buffer through unix commands.
  */
+void
 vfilter()
 {
 	register line *addr;
@@ -736,6 +743,7 @@ vfilter()
  * that wdot is reasonable.  Its name comes from
  *	xchange dotand wdot
  */
+int
 xdw()
 {
 	register char *cp;
@@ -807,6 +815,7 @@ xdw()
 /*
  * Routine for vremote to call to implement shifts.
  */
+void
 vshift()
 {
 
@@ -817,6 +826,7 @@ vshift()
  * Replace a single character with the next input character.
  * A funny kind of insert.
  */
+void
 vrep(int cnt)
 {
 	register int i, c;
@@ -856,6 +866,7 @@ vrep(int cnt)
  * Yanking to string registers occurs for free (essentially)
  * in the routine xdw().
  */
+void
 vyankit()
 {
 	register int cnt;
@@ -886,6 +897,7 @@ vyankit()
  * the first and last lines.  The compromise
  * is for put to be more clever.
  */
+void
 setpk()
 {
 

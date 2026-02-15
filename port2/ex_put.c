@@ -30,13 +30,13 @@
  * During open/visual, outchar and putchar will be set to
  * routines in the file ex_vput.c (vputchar, vinschar, etc.).
  */
-int	(*Outchar)() = termchar;
-int	(*Putchar)() = normchar;
-int	(*Pline)() = normline;
+int	(*Outchar)(int) = termchar;
+int	(*Putchar)(int) = normchar;
+int	(*Pline)(int) = normline;
 
-int (*setlist(bool t))()
+int (*setlist(bool t))(int)
 {
-	int (*P)();
+	int (*P)(int);
 
 	listf = t;
 	P = Putchar;
@@ -44,9 +44,9 @@ int (*setlist(bool t))()
 	return (P);
 }
 
-int (*setnumb(bool t))()
+int (*setnumb(bool t))(int)
 {
-	int (*P)();
+	int (*P)(int);
 
 	numberf = t;
 	P = Pline;
@@ -58,6 +58,7 @@ int (*setnumb(bool t))()
  * Format c for list mode; leave things in common
  * with normal print mode to be done by normchar.
  */
+int
 listchar(short c)
 {
 
@@ -91,6 +92,7 @@ listchar(short c)
  * Format c for printing.  Handle funnies of upper case terminals
  * and crocky hazeltines which don't have ~.
  */
+int
 normchar(short c)
 {
 	register char *colp;
@@ -134,6 +136,7 @@ normchar(short c)
 /*
  * Print a line with a number.
  */
+int
 numbline(int i)
 {
 
@@ -146,6 +149,7 @@ numbline(int i)
 /*
  * Normal line output, no numbering.
  */
+int
 normline()
 {
 	register char *cp;
@@ -165,6 +169,7 @@ normline()
  * the printing of the line will erase or otherwise obliterate
  * the prompt which was printed before.  If it won't, do it now.
  */
+void
 slobber(int c)
 {
 
@@ -208,6 +213,7 @@ static	bool phadnl;
 /*
  * Indirect to current definition of putchar.
  */
+int
 putchar(int c)
 {
 
@@ -220,6 +226,7 @@ putchar(int c)
  * Otherwise flush into next level of buffering when
  * small buffer fills or at a newline.
  */
+int
 termchar(int c)
 {
 
@@ -236,6 +243,7 @@ termchar(int c)
 	}
 }
 
+void
 flush()
 {
 
@@ -248,6 +256,7 @@ flush()
  * Work here is destroying motion into positions, and then
  * letting fgoto do the optimized motion.
  */
+void
 flush1()
 {
 	register char *lp;
@@ -309,6 +318,7 @@ flush1()
 	linp = linb;
 }
 
+void
 flush2()
 {
 
@@ -323,6 +333,7 @@ flush2()
  * column position implied by wraparound or the lack thereof and
  * rolling up the screen to get destline on the screen.
  */
+void
 fgoto()
 {
 	register int l, c;
@@ -400,6 +411,7 @@ fgoto()
  * Tab to column col by flushing and then setting destcol.
  * Used by "set all".
  */
+void
 gotab(int col)
 {
 
@@ -416,7 +428,8 @@ gotab(int col)
 
 static int plodcnt, plodflg;
 
-plodput(c)
+int
+plodput(int c)
 {
 
 	if (plodflg)
@@ -425,7 +438,8 @@ plodput(c)
 		putch(c);
 }
 
-plod(cnt)
+int
+plod(int cnt)
 {
 	register int i, j, k;
 	register int soutcol, soutline;
@@ -685,6 +699,7 @@ out:
  * Approximate because kill character echoes newline with
  * no feedback and also because of long input lines.
  */
+void
 noteinp()
 {
 
@@ -703,6 +718,7 @@ noteinp()
  * On cursor addressible terminals setting to unknown
  * will force a cursor address soon.
  */
+void
 termreset()
 {
 
@@ -726,12 +742,14 @@ termreset()
  */
 char	*obp = obuf;
 
+void
 draino()
 {
 
 	obp = obuf;
 }
 
+void
 flusho()
 {
 	if (obp != obuf) {
@@ -740,12 +758,14 @@ flusho()
 	}
 }
 
+void
 putnl()
 {
 
 	putchar('\n');
 }
 
+void
 putS(char *cp)
 {
 
@@ -756,6 +776,7 @@ putS(char *cp)
 }
 
 
+int
 putch(int c)
 {
 
@@ -771,6 +792,7 @@ putch(int c)
 /*
  * Put with padding
  */
+void
 putpad(char *cp)
 {
 
@@ -781,6 +803,7 @@ putpad(char *cp)
 /*
  * Set output through normal command mode routine.
  */
+void
 setoutt()
 {
 
@@ -791,9 +814,10 @@ setoutt()
  * Printf (temporarily) in list mode.
  */
 /*VARARGS2*/
+void
 lprintf(char *cp, char *dp)
 {
-	register int (*P)();
+	int (*P)(int);
 
 	P = setlist(1);
 	printf(cp, dp);
@@ -803,6 +827,7 @@ lprintf(char *cp, char *dp)
 /*
  * Newline + flush.
  */
+void
 putNFL()
 {
 
@@ -813,6 +838,7 @@ putNFL()
 /*
  * Try to start -nl mode.
  */
+void
 pstart()
 {
 
@@ -836,6 +862,7 @@ pstart()
 /*
  * Stop -nl mode.
  */
+void
 pstop()
 {
 
@@ -878,6 +905,7 @@ ostart()
 }
 
 /* actions associated with putting the terminal in open mode */
+void
 tostart()
 {
 	putpad(cursor_visible);
@@ -909,6 +937,7 @@ tostart()
  * We always turn off quit since datamedias send ^\ for their
  * right arrow key.
  */
+void
 ttcharoff()
 {
 	tty.c_cc[VQUIT] = '\377';
@@ -928,6 +957,7 @@ ttcharoff()
 /*
  * Stop open, restoring tty modes.
  */
+void
 ostop(ttymode f)
 {
 
@@ -938,6 +968,7 @@ ostop(ttymode f)
 }
 
 /* Actions associated with putting the terminal in the right mode. */
+void
 tostop()
 {
 	putpad(clr_eos);
@@ -950,6 +981,7 @@ tostop()
 /*
  * Restore flags to normal state f.
  */
+void
 normal(ttymode f)
 {
 
@@ -980,6 +1012,7 @@ setty(ttymode f)
 	return (ot);
 }
 
+void
 gTTY(int i)
 {
 
@@ -990,6 +1023,7 @@ gTTY(int i)
  * sTTY: set the tty modes on file descriptor i to be what's
  * currently in global "tty".  (Also use nttyc if needed.)
  */
+void
 sTTY(int i)
 {
 
@@ -1000,6 +1034,7 @@ sTTY(int i)
 /*
  * Print newline, or blank if in open/visual
  */
+void
 noonl()
 {
 

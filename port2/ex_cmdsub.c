@@ -16,12 +16,12 @@
 #include "ex_tty.h"
 #include "ex_vis.h"
 
-static splitit();
+static void splitit();
 
 int delete(bool hush);
-int pragged(bool kill);
-int plines(line *adr1, line *adr2, bool movedot);
-int undo(bool c);
+void pragged(bool kill);
+void plines(line *adr1, line *adr2, bool movedot);
+void undo(bool c);
 
 /*
  * Command mode subroutines implementing
@@ -31,13 +31,14 @@ int undo(bool c);
 
 bool	endline = 1;
 line	*tad1;
-static	jnoop();
+static	int jnoop();
 
 /*
  * Append after line a lines returned by function f.
  * Be careful about intermediate states to avoid scramble
  * if an interrupt comes in.
  */
+int
 append(int (*f)(), line *a)
 {
 	register line *a1, *a2, *rdot;
@@ -79,6 +80,7 @@ append(int (*f)(), line *a)
 	return (nline);
 }
 
+void
 appendnone()
 {
 
@@ -91,6 +93,7 @@ appendnone()
 /*
  * Print out the argument list, with []'s around the current name.
  */
+void
 pargs()
 {
 	register char **av = argv0, *as = args0;
@@ -113,6 +116,7 @@ pargs()
  * Delete lines; two cases are if we are really deleting,
  * more commonly we are just moving lines to the undo save area.
  */
+int
 delete(bool hush)
 {
 	register line *a1, *a2;
@@ -164,6 +168,7 @@ delete(bool hush)
 		killed();
 }
 
+void
 deletenone()
 {
 
@@ -178,6 +183,7 @@ deletenone()
  * Crush out the undo save area, moving the open/visual
  * save area down in its place.
  */
+void
 squish()
 {
 	register line *a1 = dol + 1, *a2 = unddol + 1, *a3 = truedol + 1;
@@ -198,8 +204,10 @@ squish()
  * Join lines.  Special hacks put in spaces, two spaces if
  * preceding line ends with '.', or no spaces if next line starts with ).
  */
-static	int jcount, jnoop();
+static	int jcount;
+static	int jnoop();
 
+void
 join(int c)
 {
 	register line *a1;
@@ -236,7 +244,7 @@ join(int c)
 		vundkind = VMANY;
 }
 
-static
+static 
 jnoop()
 {
 
@@ -322,6 +330,7 @@ move1(int cflag, line *addrt)
 		}
 }
 
+int
 getcopy()
 {
 
@@ -334,6 +343,7 @@ getcopy()
 /*
  * Put lines in the buffer from the undo save area.
  */
+int
 getput()
 {
 
@@ -344,6 +354,7 @@ getput()
 	return (0);
 }
 
+void
 put()
 {
 	register int cnt;
@@ -368,6 +379,7 @@ put()
  * Argument says pkills have meaning, e.g. called from
  * put; it is 0 on calls from putreg.
  */
+void
 pragged(bool kill)
 {
 	extern char *cursor;
@@ -404,6 +416,7 @@ pragged(bool kill)
  * Shift lines, based on c.
  * If c is neither < nor >, then this is a lisp aligning =.
  */
+void
 shift(int c, int cnt)
 {
 	register line *addr;
@@ -454,6 +467,7 @@ shift(int c, int cnt)
  * Find a tag in the tags file.
  * Most work here is in parsing the tags file itself.
  */
+void
 tagfind(bool quick)
 {
 	char cmdbuf[BUFSIZ];
@@ -625,6 +639,7 @@ badtags:
  * Save lines from addr1 thru addr2 as though
  * they had been deleted.
  */
+void
 yank()
 {
 
@@ -649,6 +664,7 @@ bool	zhadpr;
 bool	znoclear;
 short	zweight;
 
+void
 zop(int hadpr)
 {
 	register int c, nlines, op;
@@ -709,6 +725,7 @@ zop(int hadpr)
 	zop2(nlines, op);
 }
 
+void
 zop2(int nlines, int op)
 {
 	register line *split;
@@ -787,7 +804,7 @@ zop2(int nlines, int op)
 	plines(addr1, addr2, 0);
 }
 
-static
+static 
 splitit()
 {
 	register int l;
@@ -797,6 +814,7 @@ splitit()
 	putnl();
 }
 
+void
 plines(line *adr1, line *adr2, bool movedot)
 {
 	register line *addr;
@@ -812,6 +830,7 @@ plines(line *adr1, line *adr2, bool movedot)
 	}
 }
 
+void
 pofix()
 {
 
@@ -838,6 +857,7 @@ pofix()
  *
  * Undo is its own inverse.
  */
+void
 undo(bool c)
 {
 	register int i;
@@ -962,6 +982,7 @@ undo(bool c)
  * Be (almost completely) sure there really
  * was a change, before claiming to undo.
  */
+void
 somechange()
 {
 	register line *ip, *jp;
@@ -999,9 +1020,8 @@ somechange()
  * Map command:
  * map src dest
  */
-mapcmd(un, ab)
-	int un;	/* true if this is unmap command */
-	int ab;	/* true if this is abbr command */
+void
+mapcmd(int un, int ab)
 {
 	char lhs[100], rhs[100];	/* max sizes resp. */
 	register char *p;
@@ -1095,6 +1115,7 @@ mapcmd(un, ab)
  * using NOSTR for dest.  Dname is what to show in listings.  mp is
  * the structure to affect (arrows, etc).
  */
+void
 addmac(char *src, char *dest, char *dname, struct maps *mp)
 {
 	register int slot, zer;
@@ -1185,6 +1206,7 @@ addmac(char *src, char *dest, char *dname, struct maps *mp)
  * Implements macros from command mode. c is the buffer to
  * get the macro from.
  */
+void
 cmdmac(char c)
 {
 	char macbuf[BUFSIZ];

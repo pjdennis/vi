@@ -34,6 +34,7 @@ bool	wasend;
  * rather than (), implying past atoms in a list (or a paragraph
  * rather than a sentence.
  */
+int
 lfind(bool pastatom, int cnt, int (*f)(), line *limit)
 {
 	register int c;
@@ -204,6 +205,7 @@ ret:
 /*
  * Is this the end of a sentence?
  */
+int
 endsent(bool pastatom)
 {
 	register char *cp = wcursor;
@@ -240,6 +242,7 @@ tryps:
  * End of paragraphs/sections are respective
  * macros as well as blank lines and form feeds.
  */
+int
 endPS()
 {
 
@@ -248,6 +251,7 @@ endPS()
 
 }
 
+int
 lindent(line *addr)
 {
 	register int i;
@@ -302,6 +306,7 @@ again:
 	return (i);
 }
 
+int
 lmatchp(line *addr)
 {
 	register int i;
@@ -329,6 +334,7 @@ lmatchp(line *addr)
 	return (i);
 }
 
+void
 lsmatch(char *cp)
 {
 	char save[LBSIZE];
@@ -366,12 +372,14 @@ lsmatch(char *cp)
 	cursor = scurs;
 }
 
+int
 ltosolid()
 {
 
 	return (ltosol1("()"));
 }
 
+int
 ltosol1(char *parens)
 {
 	register char *cp;
@@ -390,6 +398,7 @@ ltosol1(char *parens)
 	return (1);
 }
 
+int
 lskipbal(char *parens)
 {
 	register int level = dir;
@@ -409,12 +418,14 @@ lskipbal(char *parens)
 	return (1);
 }
 
+int
 lskipatom()
 {
 
 	return (lskipa1("()"));
 }
 
+int
 lskipa1(char *parens)
 {
 	register int c;
@@ -436,6 +447,7 @@ lskipa1(char *parens)
 	return (ltosol1(parens));
 }
 
+int
 lnext()
 {
 
@@ -470,6 +482,7 @@ lnext()
 	}
 }
 
+int
 lbrack(int c, int (*f)())
 {
 	register line *addr;
@@ -505,6 +518,7 @@ lbrack(int c, int (*f)())
 	return (1);
 }
 
+int
 isa(char *cp)
 {
 

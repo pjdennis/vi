@@ -9,6 +9,7 @@
  * Really hard stuff here is utilizing insert character operations
  * on intelligent terminals which differs widely from terminal to terminal.
  */
+void
 vclear()
 {
 
@@ -24,6 +25,7 @@ vclear()
 /*
  * Clear memory.
  */
+void
 vclrbyte(char *cp, int i)
 {
 
@@ -36,6 +38,7 @@ vclrbyte(char *cp, int i)
 /*
  * Clear a physical display line, high level.
  */
+void
 vclrlin(int l, line *tp)
 {
 
@@ -50,6 +53,7 @@ vclrlin(int l, line *tp)
 /*
  * Clear to the end of the current physical line
  */
+void
 vclreol()
 {
 	register int i, j;
@@ -90,6 +94,7 @@ vclreol()
  * If work here is being held off, just remember, in
  * heldech, if work needs to be done, don't do anything.
  */
+void
 vclrech(bool didphys)
 {
 
@@ -156,6 +161,7 @@ vclrech(bool didphys)
  * the state variable splitw so we wont rollup
  * when we move the cursor there.
  */
+void
 fixech()
 {
 
@@ -170,6 +176,7 @@ fixech()
 /*
  * Put the cursor ``before'' cp.
  */
+void
 vcursbef(char *cp)
 {
 
@@ -182,6 +189,7 @@ vcursbef(char *cp)
 /*
  * Put the cursor ``at'' cp.
  */
+void
 vcursat(char *cp)
 {
 
@@ -194,6 +202,7 @@ vcursat(char *cp)
 /*
  * Put the cursor ``after'' cp.
  */
+void
 vcursaft(char *cp)
 {
 
@@ -204,6 +213,7 @@ vcursaft(char *cp)
  * Fix the cursor to be positioned in the correct place
  * to accept a command.
  */
+void
 vfixcurs()
 {
 
@@ -214,6 +224,7 @@ vfixcurs()
  * Compute the column position implied by the cursor at ``nc'',
  * and move the cursor there.
  */
+void
 vsetcurs(char *nc)
 {
 	register int col;
@@ -228,6 +239,7 @@ vsetcurs(char *nc)
 /*
  * Move the cursor invisibly, i.e. only remember to do it.
  */
+void
 vigoto(int y, int x)
 {
 
@@ -239,6 +251,7 @@ vigoto(int y, int x)
  * Move the cursor to the position implied by any previous
  * vigoto (or low level hacking with destcol/destline as in readecho).
  */
+void
 vcsync()
 {
 
@@ -248,6 +261,7 @@ vcsync()
 /*
  * Goto column x of the current line.
  */
+void
 vgotoCL(int x)
 {
 
@@ -260,6 +274,7 @@ vgotoCL(int x)
 /*
  * Invisible goto column x of current line.
  */
+void
 vigotoCL(int x)
 {
 
@@ -273,6 +288,7 @@ vigotoCL(int x)
  * Show the current mode in the right hand part of the echo line,
  * then return the cursor to where it is now.
  */
+void
 vshowmode(char *msg)
 {
 	char locmsg[20];
@@ -311,6 +327,7 @@ vshowmode(char *msg)
 /*
  * Move cursor to line y, column x, handling wraparound and scrolling.
  */
+void
 vgoto(int y, int x)
 {
 	register char *tp;
@@ -450,6 +467,7 @@ vgoto(int y, int x)
  * with a QUOTE.  We use QUOTE internally to represent a position
  * which is part of the expansion of a tab.
  */
+void
 vgotab()
 {
 	register int i = tabcol(destcol, value(TABSTOP)) - destcol;
@@ -478,6 +496,7 @@ int	slakused;		/* This much of tabslack will be used up */
  * of the screen image buffer so it is easier for us to
  * maniuplate them.
  */
+void
 vprepins()
 {
 	register int i;
@@ -489,6 +508,7 @@ vprepins()
 	}
 }
 
+void
 vmaktop(int p, char *cp)
 {
 	register int i;
@@ -515,8 +535,8 @@ vmaktop(int p, char *cp)
  * for tabs) and code assumes this in several place
  * to make life simpler.
  */
-vinschar(c)
-	int c;		/* mjm: char --> int */
+void
+vinschar(int c)
 {
 	register int i;
 	register char *tp;
@@ -689,6 +709,7 @@ vinschar(c)
  * Rigidify the rest of the line after the first
  * group of following tabs, typing blanks over ``spaces''.
  */
+void
 vrigid()
 {
 	register int col;
@@ -710,6 +731,7 @@ vrigid()
  * On a dumb terminal we may infact redisplay the rest of the
  * screen here brute force to keep it pretty.
  */
+void
 vneedpos(int cnt)
 {
 	register int d = DEPTH(vcline);
@@ -721,6 +743,7 @@ vneedpos(int cnt)
 	vnpins(1);
 }
 
+int
 vnpins(int dosync)
 {
 	register int d = DEPTH(vcline);
@@ -737,7 +760,7 @@ vnpins(int dosync)
 		e = vglitchup(vcline, d);
 		vigoto(e, 0); vclreol();
 		if (dosync) {
-			int (*Ooutchar)() = Outchar;
+			int (*Ooutchar)(int) = Outchar;
 			Outchar = vputchar;
 			vsync(e + 1);
 			Outchar = Ooutchar;
@@ -754,6 +777,7 @@ vnpins(int dosync)
  * Do the shift of the next tabstop implied by
  * insertion so it expands.
  */
+void
 vishft()
 {
 	int tshft = 0;
@@ -850,8 +874,8 @@ vishft()
 /*
  * Now do the insert of the characters (finally).
  */
-viin(c)
-	int c;		/* mjm: char --> int */
+void
+viin(int c)
 {
 	register char *tp, *up;
 	register int i, j;
@@ -1000,6 +1024,7 @@ viin(c)
  * is the same as that which goes into insert
  * mode, then we are in delete mode already.
  */
+void
 godm()
 {
 
@@ -1019,6 +1044,7 @@ godm()
  * if we just moved over to delete space from part of
  * a tab (above).
  */
+void
 enddm()
 {
 
@@ -1036,6 +1062,7 @@ enddm()
  * if the terminal does all insertions a single character
  * at a time, since it branches based on whether enter_insert_mode is null.
  */
+void
 goim()
 {
 
@@ -1044,6 +1071,7 @@ goim()
 	insmode = 1;
 }
 
+void
 endim()
 {
 
@@ -1063,6 +1091,7 @@ endim()
  * you can erase overstrikes with some work.  CRT's which do underlining
  * implicitly which has to be erased (like CONCEPTS) are also handled.
  */
+int
 vputchar(int c)
 {
 	register char *tp;
@@ -1228,6 +1257,7 @@ def:
  * Delete display positions stcol through endcol.
  * Amount of use of special terminal features here is limited.
  */
+void
 physdc(int stcol, int endcol)
 {
 	register char *tp, *up;

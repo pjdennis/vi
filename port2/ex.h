@@ -225,13 +225,13 @@ extern	line	*undadot;	/* If we saved all lines, dot reverts here */
 #define	NOSTR	(char *) 0
 #define	NOLINE	(line *) 0
 
-extern	int	(*Outchar)();
-extern	int	(*Pline)();
-extern	int	(*Putchar)();
-extern	void	(*oldhup)();
-int	(*setlist(bool t))();
-int	(*setnorm())();
-int	(*setnumb(bool t))();
+extern	int	(*Outchar)(int);
+extern	int	(*Pline)(int);
+extern	int	(*Putchar)(int);
+extern	void	(*oldhup)(int);
+int	(*setlist(bool t))(int);
+int	(*setnorm())(int);
+int	(*setnumb(bool t))(int);
 line	*address();
 char	*cgoto();
 char	*genindent();
@@ -250,31 +250,31 @@ char	*vgetline(int cnt, char *gcursor, bool *aescaped, char commch);
 char	*vinit();
 char	*vpastwh();
 char	*vskipwh();
-int	put();
-int	putreg(char c);
-int	YANKreg();
+void	put();
+void	putreg(char c);
+void	YANKreg();
 int	delete(bool hush);
-int	filter();
+void	filter();
 int	getfile();
 int	getsub();
 int	gettty();
-int	join();
+void	join();
 int	listchar(short c);
 int	normchar(short c);
 int	normline();
 int	numbline();
-extern	void	(*oldquit)();
-void	onhup();
-void	onintr();
-void	onsusp();
+extern	void	(*oldquit)(int);
+void	onhup(int);
+void	onintr(int);
+void	onsusp(int);
 int	putch();
-int	shift();
-int	termchar();
-int	vfilter();
-int	vintr();
+void	shift();
+int	termchar(int);
+void	vfilter();
+void	vintr(int);
 int	vputch();
-int	vshftop();
-int	yank();
+void	vshftop();
+void	yank();
 
 #	define	ignore(a)	a
 #	define	ignorf(a)	a

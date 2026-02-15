@@ -13,8 +13,8 @@
 /*
  * Return the key.
  */
-ungetkey(c)
-	int c;		/* mjm: char --> int */
+void
+ungetkey(int c)
 {
 
 	if (Peekkey != ATTN)
@@ -24,6 +24,7 @@ ungetkey(c)
 /*
  * Return a keystroke, but never a ^@.
  */
+int
 getkey()
 {
 	register int c;		/* mjm: char --> int */
@@ -39,6 +40,7 @@ getkey()
 /*
  * Tell whether next keystroke would be a ^@.
  */
+int
 peekbr()
 {
 
@@ -58,6 +60,7 @@ short	precbksl;
  * The hard work here is in mapping of \ escaped
  * characters on upper case only terminals.
  */
+int
 getbr()
 {
 	char ch;
@@ -171,6 +174,7 @@ again:
  * Get a key, but if a delete, quit or attention
  * is typed return 0 so we will abort a partial command.
  */
+int
 getesc()
 {
 	register int c;
@@ -197,6 +201,7 @@ getesc()
 /*
  * Peek at the next keystroke.
  */
+int
 peekkey()
 {
 
@@ -208,10 +213,11 @@ peekkey()
  * Read a line from the echo area, with single character prompt c.
  * A return value of 1 means the user blewit or blewit away.
  */
+int
 readecho(char c)
 {
 	register char *sc = cursor;
-	register int (*OP)();
+	int (*OP)(int);
 	bool waste;
 	register int OPeek;
 
@@ -256,6 +262,7 @@ blewit:
  * the purposes of repeat, so copy it from
  * the working to the previous command buffer.
  */
+void
 setLAST()
 {
 
@@ -273,6 +280,7 @@ setLAST()
  * If the insertion buffer oveflows, then destroy
  * the repeatability of the insert.
  */
+void
 addtext(char *cp)
 {
 
@@ -283,6 +291,7 @@ addtext(char *cp)
 		lastcmd[0] = 0;
 }
 
+void
 setDEL()
 {
 
@@ -292,6 +301,7 @@ setDEL()
 /*
  * Put text from cursor upto wcursor in BUF.
  */
+void
 setBUF(char *BUF)
 {
 	register int c;
@@ -304,6 +314,7 @@ setBUF(char *BUF)
 	*wp = c;
 }
 
+void
 addto(char *buf, char *str)
 {
 
@@ -322,6 +333,7 @@ addto(char *buf, char *str)
  * to do this for open modes now; return and save for later
  * notification in visual.
  */
+int
 noteit(bool must)
 {
 	register int sdl = destline, sdc = destcol;
@@ -356,6 +368,7 @@ noteit(bool must)
  * Rrrrringgggggg.
  * If possible, flash screen.
  */
+void
 beep()
 {
 
@@ -372,6 +385,7 @@ beep()
  * DM1520 for example has a lot of mappable characters.
  */
 
+int
 map(int c, struct maps *maps)
 {
 	register int d;
@@ -453,6 +467,7 @@ map(int c, struct maps *maps)
  * is false for, for example, pushing back lookahead from fastpeekkey(),
  * since otherwise two fast escapes can clobber our undo.
  */
+void
 macpush(char *st, int canundo)
 {
 	char tmpbuf[BUFSIZ];
@@ -481,6 +496,7 @@ macpush(char *st, int canundo)
  * Get a count from the keyed input stream.
  * A zero count is indistinguishable from no count.
  */
+int
 vgetcnt()
 {
 	register int c, cnt;
@@ -504,9 +520,10 @@ vgetcnt()
  * a machine generated sequence (such as a function pad from an escape
  * flavor terminal) but fail for a human hitting escape then waiting.
  */
+int
 fastpeekkey()
 {
-	int trapalarm();
+	void trapalarm(int);
 	register int c;
 
 	/*
@@ -539,6 +556,7 @@ fastpeekkey()
  * hang very long if the user didn't type anything.  There are
  * various ways to do this on different systems.
  */
+void
 setalarm()
 {
 	/*
@@ -550,12 +568,14 @@ setalarm()
 /*
  * Get rid of any impending incoming SIGALRM.
  */
+void
 cancelalarm()
 {
 	alarm(0);	/* Have to do this whether or not FTIOCSET */
 }
 
-trapalarm() {
+void
+trapalarm(int sig) {
 	sigset_t set;
 	alarm(0);
 	sigemptyset(&set);

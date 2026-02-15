@@ -32,6 +32,7 @@ int	havetmp;
 int	tfile = -1;
 short	rfile = -1;
 
+void
 fileinit()
 {
 	register char *p;
@@ -83,6 +84,7 @@ dumbness:
 		goto dumbness;
 }
 
+int
 cleanup(bool all)
 {
 	if (all) {
@@ -119,6 +121,7 @@ getline(line tl)
 		}
 }
 
+int
 putline()
 {
 	register char *bp, *lp;
@@ -226,6 +229,7 @@ blkio(short b, char *buf, int (*iofcn)())
 		filioerr(tfname);
 }
 
+void
 tlaste()
 {
 
@@ -233,6 +237,7 @@ tlaste()
 		dirtcnt = 0;
 }
 
+void
 tflush()
 {
 	int i = stilinc;
@@ -247,6 +252,7 @@ tflush()
  * Synchronize the state of the temporary file in case
  * a crash occurs.
  */
+void
 synctmp()
 {
 	register int cnt;
@@ -303,6 +309,7 @@ oops:
 		goto oops;
 }
 
+void
 TSYNC()
 {
 
@@ -369,6 +376,7 @@ oops:
 	rblock = b;
 }
 
+int
 REGblk()
 {
 	register int i, j, m;
@@ -400,6 +408,7 @@ mapreg(int c)
 
 int	shread();
 
+void
 KILLreg(int c)
 {
 	register struct strreg *sp;
@@ -417,6 +426,7 @@ KILLreg(int c)
 }
 
 /*VARARGS*/
+int
 shread()
 {
 	struct front { short a; short b; };
@@ -428,6 +438,7 @@ shread()
 
 int	getREG();
 
+void
 putreg(char c)
 {
 	register line *odot = dot;
@@ -468,6 +479,7 @@ putreg(char c)
 	notecnt = cnt;
 }
 
+int
 partreg(char c)
 {
 
@@ -481,6 +493,7 @@ notpart(int c)
 		mapreg(c)->rg_flags = 0;
 }
 
+int
 getREG()
 {
 	register char *lp = linebuf;
@@ -507,6 +520,7 @@ getREG()
 	}
 }
 
+void
 YANKreg(int c)
 {
 	register line *addr;
@@ -544,6 +558,7 @@ YANKreg(int c)
 	CP(linebuf,savelb);
 }
 
+void
 kshift()
 {
 	register int i;
@@ -553,6 +568,7 @@ kshift()
 		copy(mapreg(i+1), mapreg(i), sizeof (struct strreg));
 }
 
+void
 YANKline()
 {
 	register char *lp = linebuf;
@@ -579,6 +595,7 @@ YANKline()
 		*rbufcp = 0;
 }
 
+void
 rbflush()
 {
 	register struct strreg *sp = strp;
@@ -593,6 +610,7 @@ rbflush()
 }
 
 /* Register c to char buffer buf of size buflen */
+void
 regbuf(char c, char *buf, int buflen)
 {
 	register char *p, *lp;

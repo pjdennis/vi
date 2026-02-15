@@ -49,6 +49,7 @@
 /*
  * Enter open mode
  */
+void
 oop()
 {
 	register char *ic;
@@ -113,6 +114,7 @@ oop()
 	ovend(f);
 }
 
+void
 ovbeg()
 {
 
@@ -125,6 +127,7 @@ ovbeg()
 	dot = addr2;
 }
 
+void
 ovend(ttymode f)
 {
 
@@ -146,6 +149,7 @@ ovend(ttymode f)
 /*
  * Enter visual mode
  */
+void
 vop()
 {
 	register int c;
@@ -210,6 +214,7 @@ toopen:
  * empty buffer since routines internally
  * demand at least one line.
  */
+void
 fixzero()
 {
 
@@ -218,7 +223,7 @@ fixzero()
 
 		vdoappend("");
 		if (!ochng)
-			sync();
+			vi_sync();
 		addr1 = addr2 = one;
 	} else if (addr2 == zero)
 		addr2 = one;
@@ -237,6 +242,7 @@ fixzero()
  * at some point, and then quit from the visual and undo
  * you get the old file back.  Somewhat weird.
  */
+void
 savevis()
 {
 
@@ -252,6 +258,7 @@ savevis()
  * Restore a sensible state after a visual/open, moving the saved
  * stuff back to [unddol,dol], and killing the partial line kill indicators.
  */
+void
 undvis()
 {
 
@@ -272,6 +279,7 @@ undvis()
  * Set the window parameters based on the base state bastate
  * and the available buffer space.
  */
+void
 setwind()
 {
 
@@ -311,6 +319,7 @@ setwind()
  * If so, then divide the screen buffer up into lines,
  * and initialize a bunch of state variables before we start.
  */
+void
 vok(char *atube)
 {
 	register int i;
@@ -346,12 +355,13 @@ vok(char *atube)
 		vSCROLL = value(SCROLL);
 }
 
-vintr()
+void
+vintr(int sig)
 {
 
 	signal(SIGINT, vintr);
 	if (vcatch)
-		onintr();
+		onintr(0);
 	ungetkey(ATTN);
 	draino();
 }
@@ -360,6 +370,7 @@ vintr()
  * Set the size of the screen to size lines, to take effect the
  * next time the screen is redrawn.
  */
+void
 vsetsiz(int size)
 {
 	register int b;

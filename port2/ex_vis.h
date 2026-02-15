@@ -137,13 +137,13 @@ extern	char	workcmd[5];	/* Temporary for lastcmd */
 /*
  * Function types
  */
-int	beep();
-int	qcount();
+void	beep();
+int	qcount(int);
 int	vchange(char c);
 int	vdelete(char c);
 int	vgrabit();
-int	vinschar();
-int	vmove();
-int	vputchar();
-int	vshift();
-int	vyankit();
+void	vinschar(int);
+void	vmove();
+int	vputchar(int);
+void	vshift();
+void	vyankit();

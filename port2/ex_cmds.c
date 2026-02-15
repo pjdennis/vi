@@ -27,6 +27,7 @@ int	poffset;
  * is to strip command addresses, do a little address oriented
  * processing and call command routines to do the real work.
  */
+void
 commands(bool noprompt, bool exitoneof)
 {
 	register line *addr;
@@ -277,7 +278,7 @@ doecmd:
 			init();
 			addr2 = zero;
 			laste++;
-			sync();
+			vi_sync();
 			rop(c);
 			nochng();
 			continue;
@@ -508,7 +509,7 @@ quit:
 					init();
 					addr2 = zero;
 					laste++;
-					sync();
+					vi_sync();
 					recover();
 					rop2();
 					revocer();
@@ -586,7 +587,7 @@ suspend:
 				eol();
 				if (!c)
 					ckaw();
-				onsusp();
+				onsusp(0);
 				continue;
 
 			}
@@ -848,7 +849,7 @@ numberit:
 					 * input which was a tty to suddenly be
 					 * turned into /dev/null.
 					 */
-					onhup();
+					onhup(0);
 				return;
 			}
 			if (addr2 != 0) {

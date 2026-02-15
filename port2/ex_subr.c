@@ -19,6 +19,7 @@
  * Random routines, in alphabetical order.
  */
 
+int
 any(int c, char *s)
 {
 	register int x;
@@ -29,6 +30,7 @@ any(int c, char *s)
 	return (0);
 }
 
+int
 backtab(int i)
 {
 	register int j;
@@ -42,6 +44,7 @@ backtab(int i)
 	return (i);
 }
 
+void
 change()
 {
 
@@ -55,6 +58,7 @@ change()
  * characters through position cp of the
  * current line.
  */
+int
 column(char *cp)
 {
 
@@ -67,6 +71,7 @@ column(char *cp)
  * Ignore a comment to the end of the line.
  * This routine eats the trailing newline so don't call donewline().
  */
+void
 comment()
 {
 	register int c;
@@ -78,6 +83,7 @@ comment()
 		ungetchar(c);
 }
 
+void
 Copy(char *to, char *from, int size)
 {
 
@@ -87,6 +93,7 @@ Copy(char *to, char *from, int size)
 		while (--size > 0);
 }
 
+void
 copyw(line *to, line *from, int size)
 {
 
@@ -96,6 +103,7 @@ copyw(line *to, line *from, int size)
 		while (--size > 0);
 }
 
+void
 copywR(line *to, line *from, int size)
 {
 
@@ -103,12 +111,14 @@ copywR(line *to, line *from, int size)
 		to[size] = from[size];
 }
 
+int
 ctlof(int c)
 {
 
 	return (c == TRIM ? '?' : c | ('A' - 1));
 }
 
+void
 dingdong()
 {
 
@@ -118,6 +128,7 @@ dingdong()
 		putpad(bell);
 }
 
+int
 fixindent(int indent)
 {
 	register int i;
@@ -133,6 +144,7 @@ fixindent(int indent)
 	return (i);
 }
 
+void
 filioerr(char *cp)
 {
 	register int oerrno = errno;
@@ -154,6 +166,7 @@ genindent(int indent)
 	return (cp);
 }
 
+void
 getDOT()
 {
 
@@ -172,6 +185,7 @@ getmark(int c)
 	return (0);
 }
 
+int
 getn(char *cp)
 {
 	register int i = 0;
@@ -183,6 +197,7 @@ getn(char *cp)
 	return (i);
 }
 
+void
 ignnEOF()
 {
 	register int c = getchar();
@@ -193,12 +208,14 @@ ignnEOF()
 		comment();
 }
 
+int
 iswhite(int c)
 {
 
 	return (c == ' ' || c == '\t');
 }
 
+int
 junk(int c)
 {
 
@@ -218,12 +235,14 @@ junk(int c)
 	}
 }
 
+void
 killed()
 {
 
 	killcnt(addr2 - addr1 + 1);
 }
 
+void
 killcnt(int cnt)
 {
 
@@ -244,30 +263,35 @@ killcnt(int cnt)
 	putNFL();
 }
 
+int
 lineno(line *a)
 {
 
 	return (a - zero);
 }
 
+int
 lineDOL()
 {
 
 	return (lineno(dol));
 }
 
+int
 lineDOT()
 {
 
 	return (lineno(dot));
 }
 
+void
 markDOT()
 {
 
 	markpr(dot);
 }
 
+void
 markpr(line *which)
 {
 
@@ -278,6 +302,7 @@ markpr(line *which)
 	}
 }
 
+int
 markreg(int c)
 {
 
@@ -320,6 +345,7 @@ mesg(char *str)
 }
 
 /*VARARGS2*/
+void
 merror(char *seekpt, long i)
 {
 	register char *cp = linebuf;
@@ -338,17 +364,20 @@ merror(char *seekpt, long i)
 		putpad(exit_standout_mode);
 }
 
+void
 merror1(char *seekpt)
 {
 
 	strcpy(linebuf, seekpt);
 }
 
+int
 morelines()
 {
 	return vi_morelines();
 }
 
+void
 nonzero()
 {
 
@@ -358,6 +387,7 @@ nonzero()
 	}
 }
 
+int
 notable(int i)
 {
 
@@ -365,6 +395,7 @@ notable(int i)
 }
 
 
+void
 notempty()
 {
 
@@ -373,12 +404,14 @@ notempty()
 }
 
 
+void
 netchHAD(int cnt)
 {
 
 	netchange(lineDOL() - cnt);
 }
 
+void
 netchange(int i)
 {
 	register char *cp;
@@ -398,12 +431,14 @@ netchange(int i)
 	putNFL();
 }
 
+void
 putmark(line *addr)
 {
 
 	putmk1(addr, putline());
 }
 
+void
 putmk1(line *addr, int n)
 {
 	register line *markp;
@@ -428,10 +463,11 @@ plural(long i)
 int	qcount();
 short	vcntcol;
 
+int
 qcolumn(char *lim, char *gp)
 {
 	register int x;
-	int (*OO)();
+	int (*OO)(int);
 
 	OO = Outchar;
 	Outchar = qcount;
@@ -459,6 +495,7 @@ qcount(int c)
 	vcntcol++;
 }
 
+void
 reverse(line *a1, line *a2)
 {
 	register line t;
@@ -472,6 +509,7 @@ reverse(line *a1, line *a2)
 	}
 }
 
+void
 save(line *a1, line *a2)
 {
 	register int more;
@@ -496,25 +534,29 @@ save(line *a1, line *a2)
 	undap2 = a2 + 1;
 }
 
+void
 save12()
 {
 
 	save(addr1, addr2);
 }
 
+void
 saveall()
 {
 
 	save(one, dol);
 }
 
+int
 span()
 {
 
 	return (addr2 - addr1 + 1);
 }
 
-sync()
+void
+vi_sync()
 {
 
 	chng = 0;
@@ -523,6 +565,7 @@ sync()
 }
 
 
+int
 skipwh()
 {
 	register int wh;
@@ -536,6 +579,7 @@ skipwh()
 }
 
 /*VARARGS2*/
+void
 smerror(char *seekpt, char *cp)
 {
 
@@ -563,6 +607,7 @@ strend(char *cp)
 	return (cp);
 }
 
+void
 strcLIN(char *dp)
 {
 
@@ -575,6 +620,7 @@ strcLIN(char *dp)
  * the file or our buffer, e.g. a write error in the
  * middle of a write operation, or a temp file error.
  */
+void
 syserror(int danger)
 {
 	register int e = errno;
@@ -591,6 +637,7 @@ syserror(int danger)
  * hitting a tab, where tabs are set every ts columns.  Work right for
  * the case where col > columns, even if ts does not divide columns.
  */
+int
 tabcol(int col, int ts)
 {
 	int offset, result;
@@ -608,7 +655,7 @@ char *
 vfindcol(int i)
 {
 	register char *cp;
-	register int (*OO)() = Outchar;
+	int (*OO)(int) = Outchar;
 
 	Outchar = qcount;
 	ignore(qcolumn(linebuf - 1, NOSTR));
@@ -639,6 +686,7 @@ vpastwh(char *cp)
 	return (cp);
 }
 
+int
 whitecnt(char *cp)
 {
 	register int i;
@@ -661,6 +709,7 @@ whitecnt(char *cp)
 }
 
 
+void
 markit(line *addr)
 {
 
@@ -677,6 +726,7 @@ markit(line *addr)
  * in a weird state, etc.
  */
 int _ovno;
+void
 onemt()
 {
 }
@@ -691,7 +741,8 @@ onemt()
  * as they are a backup even without preservation if they
  * are not removed.
  */
-onhup()
+void
+onhup(int sig)
 {
 
 	/*
@@ -716,6 +767,7 @@ onhup()
  * Similar to onhup.  This happens when any random core dump occurs,
  * e.g. a bug in vi.  We preserve the file and then generate a core.
  */
+void
 oncore(int sig)
 {
 	static int timescalled = 0;
@@ -749,7 +801,8 @@ oncore(int sig)
  * Then like a normal error (with the \n before Interrupt
  * suppressed in visual mode).
  */
-onintr()
+void
+onintr(int sig)
 {
 	signal(SIGINT, inopen ? vintr : onintr);
 	cancelalarm();
@@ -766,6 +819,7 @@ onintr()
  * In some critical sections we turn interrupts off,
  * but not very often.
  */
+void
 setrupt()
 {
 
@@ -776,6 +830,7 @@ setrupt()
 	}
 }
 
+int
 preserve()
 {
 
@@ -800,7 +855,8 @@ preserve()
 /*
  * We have just gotten a susp.  Suspend and prepare to resume.
  */
-onsusp()
+void
+onsusp(int sig)
 {
 	ttymode f;
 	int savenormtty;

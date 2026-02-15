@@ -20,6 +20,7 @@ int dosubcon(bool f, line *a);
  * Very similar to ed, with some re extensions and
  * confirmed substitute.
  */
+void
 global(bool k)
 {
 	register char *gp;
@@ -130,6 +131,7 @@ out:
  * and g/r.e./.,/r.e.2/d are not treated specially.  There is no
  * good reason for this except the question: where to you draw the line?
  */
+void
 gdelete()
 {
 	register line *a1, *a2, *a3;
@@ -156,6 +158,7 @@ gdelete()
 bool	cflag;
 int	scount, slines, stotal;
 
+int
 substitute(int c)
 {
 	register line *addr;
@@ -199,7 +202,8 @@ substitute(int c)
 	return (stotal);
 }
 
-compsub(ch)
+int
+compsub(int ch)
 {
 	register int seof, c, uselastre;
 	static int gsubf;
@@ -265,6 +269,7 @@ compsub(ch)
 	}
 }
 
+void
 comprhs(int seof)
 {
 	register char *rp, *orp;
@@ -328,6 +333,7 @@ endrhs:
 	*rp++ = 0;
 }
 
+int
 getsub()
 {
 	register char *p;
@@ -339,6 +345,7 @@ getsub()
 	return (0);
 }
 
+int
 dosubcon(bool f, line *a)
 {
 
@@ -351,6 +358,7 @@ dosubcon(bool f, line *a)
 	return (1);
 }
 
+int
 confirmed(line *a)
 {
 	register int c, ch;
@@ -379,6 +387,7 @@ again:
 	return (ch == 'y');
 }
 
+int
 getch()
 {
 	char c;
@@ -388,6 +397,7 @@ getch()
 	return (c & TRIM);
 }
 
+void
 ugo(int cnt, int with)
 {
 
@@ -400,6 +410,7 @@ ugo(int cnt, int with)
 int	casecnt;
 bool	destuc;
 
+void
 dosub()
 {
 	register char *lp, *sp, *rp;
@@ -477,6 +488,7 @@ ovflo:
 	strcLIN(genbuf);
 }
 
+int
 fixcase(int c)
 {
 
@@ -504,6 +516,7 @@ place(char *sp, char *l1, char *l2)
 	return (sp);
 }
 
+void
 snote(int total, int nlines)
 {
 
@@ -516,6 +529,7 @@ snote(int total, int nlines)
 	flush();
 }
 
+int
 compile(int eof, int oknl)
 {
 	register int c;
@@ -724,6 +738,7 @@ defchar:
 	}
 }
 
+void
 cerror(char *s)
 {
 
@@ -731,6 +746,7 @@ cerror(char *s)
 	error(s);
 }
 
+int
 same(int a, int b)
 {
 
@@ -740,6 +756,7 @@ same(int a, int b)
 
 char	*locs;
 
+int
 execute(int gf, line *addr)
 {
 	register char *p1, *p2;
@@ -788,6 +805,7 @@ execute(int gf, line *addr)
 
 #define	uletter(c)	(isalpha(c) || c == '_')
 
+int
 advance(char *lp, char *ep)
 {
 	register char *curlp;
@@ -899,6 +917,7 @@ star:
 	}
 }
 
+int
 cclass(char *set, int c, int af)
 {
 	register int n;
