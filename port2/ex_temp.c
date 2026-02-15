@@ -16,7 +16,7 @@
 #include "ex_tty.h"
 #include <time.h>
 
-typedef ssize_t (*iofcn_t)();
+typedef ssize_t (*iofcn_t)(int, void *, size_t);
 
 /*
  * Editor temporary file routines.
@@ -403,7 +403,7 @@ mapreg(int c)
 	return (isdigit(c) ? &strregs[('z'-'a'+1)+(c-'0')] : &strregs[c-'a']);
 }
 
-ssize_t	shread();
+static ssize_t shread(int fd, void *buf, size_t size);
 
 void
 KILLreg(int c)
@@ -417,23 +417,23 @@ KILLreg(int c)
 	sp->rg_flags = sp->rg_nleft = 0;
 	while (rblock != 0) {
 		rused[rblock / 16] &= ~(1 << (rblock % 16));
-		regio(rblock, (iofcn_t)shread);
+		regio(rblock, shread);
 		rblock = rbuf->rb_next;
 	}
 }
 
-/*VARARGS*/
-ssize_t
-shread()
+static ssize_t
+shread(int fd, void *buf, size_t size)
 {
 	struct front { short a; short b; };
+	(void)size;
 
-	if (read(rfile, (char *) rbuf, sizeof (struct front)) == sizeof (struct front))
-		return (sizeof (struct rbuf));
+	if (read(fd, buf, sizeof(struct front)) == sizeof(struct front))
+		return (sizeof(struct rbuf));
 	return (0);
 }
 
-int	getREG();
+static int getREG(void);
 
 void
 putreg(int c)
@@ -491,8 +491,8 @@ notpart(int c)
 		mapreg(c)->rg_flags = 0;
 }
 
-int
-getREG()
+static int
+getREG(void)
 {
 	char *lp = linebuf;
 	int c;

@@ -468,7 +468,7 @@ plural(long i)
 	return (i == 1 ? "" : "s");
 }
 
-int	qcount();
+int	qcount(int c);
 short	vcntcol;
 
 int

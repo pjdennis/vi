@@ -26,7 +26,7 @@ static void splitit(void);
 
 bool	endline = 1;
 line	*tad1;
-static	int jnoop();
+static	int jnoop(void);
 
 /*
  * Append after line a lines returned by function f.
@@ -34,7 +34,7 @@ static	int jnoop();
  * if an interrupt comes in.
  */
 int
-append(int (*f)(), line *a)
+append(int (*f)(void), line *a)
 {
 	line *a1, *a2, *rdot;
 	int nline;
@@ -203,7 +203,7 @@ squish()
  * preceding line ends with '.', or no spaces if next line starts with ).
  */
 static	int jcount;
-static	int jnoop();
+static	int jnoop(void);
 
 void
 join(int c)
@@ -243,7 +243,7 @@ join(int c)
 }
 
 static int
-jnoop()
+jnoop(void)
 {
 
 	return(--jcount);
@@ -253,7 +253,7 @@ jnoop()
  * Move and copy lines.  Hard work is done by move1 which
  * is also called by undo.
  */
-int	getcopy();
+static int getcopy(void);
 
 void
 move()
@@ -330,8 +330,8 @@ move1(int cflag, line *addrt)
 		}
 }
 
-int
-getcopy()
+static int
+getcopy(void)
 {
 
 	if (tad1 > addr2)

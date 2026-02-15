@@ -295,7 +295,7 @@ void	vnfl(void);
 /*
  * Function prototypes - ex_cmdsub.c
  */
-int	append(int (*f)(), line *a);
+int	append(int (*f)(void), line *a);
 void	appendnone(void);
 void	pargs(void);
 void	delete(int hush);
@@ -487,7 +487,7 @@ int	cleanup(bool all);
 void	getline(line tl);
 int	putline(void);
 char	*getblock(line atl, int iof);
-void	blkio(short b, char *buf, ssize_t (*iofcn)());
+void	blkio(short b, char *buf, ssize_t (*iofcn)(int, void *, size_t));
 void	tlaste(void);
 void	tflush(void);
 void	synctmp(void);
