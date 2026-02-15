@@ -6,12 +6,12 @@
 struct	regexp {
 	char	Expbuf[ESIZE + 2];
 	bool	Circfl;
-	short	Nbra;
+	int	Nbra;
 };
 
-var struct	regexp re;		/* Last re */
-var struct	regexp scanre;		/* Last scanning re */
-var struct	regexp subre;		/* Last substitute re */
+extern struct	regexp re;		/* Last re */
+extern struct	regexp scanre;		/* Last scanning re */
+extern struct	regexp subre;		/* Last substitute re */
 
 #define	expbuf	re.Expbuf
 #define	circfl	re.Circfl
@@ -23,9 +23,9 @@ var struct	regexp subre;		/* Last substitute re */
 /*
  * Definitions for substitute
  */
-var char	*braslist[NBRA];	/* Starts of \(\)'ed text in lhs */
-var char	*braelist[NBRA];	/* Ends... */
-var char	rhsbuf[RHSSIZE];	/* Rhs of last substitute */
+extern char	*braslist[NBRA];	/* Starts of \(\)'ed text in lhs */
+extern char	*braelist[NBRA];	/* Ends... */
+extern char	rhsbuf[RHSSIZE];	/* Rhs of last substitute */
 
 /*
  * Definitions of codes for the compiled re's.

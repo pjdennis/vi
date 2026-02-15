@@ -5,8 +5,6 @@
  * The original vi grew the data segment to hold line pointers.
  * We allocate a dynamic array and realloc as needed.
  */
-
-#define var	/* define globals here */
 /* Need ex.h for line type and global variables, but ex.h includes us.
  * We break the circularity by including the minimum needed. */
 #include <stdlib.h>

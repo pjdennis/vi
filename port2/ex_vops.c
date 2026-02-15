@@ -63,7 +63,7 @@ bool show;	/* if true update the screen */
 	char temp[LBSIZE];
 	bool savenote;
 	int (*OO)();
-	short oldhold = hold;
+	int oldhold = hold;
 
 	switch (vundkind) {
 
@@ -599,7 +599,7 @@ voOpen(c, cnt)
 	register int cnt;
 {
 	register int ind = 0, i;
-	short oldhold = hold;
+	int oldhold = hold;
 
 	if (value(SLOWOPEN) || value(REDRAW) && insert_line && delete_line)
 		cnt = 1;

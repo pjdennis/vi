@@ -35,14 +35,9 @@ typedef struct termios SGTTY;
  */
 #include "vi_term.h"
 
-#ifndef var
-#define var	extern
-#endif
-
-
 
 typedef	int	line;
-typedef	short	bool;
+#include <stdbool.h>
 
 #include "ex_tune.h"
 #include "ex_vars.h"
@@ -54,9 +49,9 @@ typedef	short	bool;
 struct	option {
 	char	*oname;
 	char	*oabbrev;
-	short	otype;		/* Types -- see below */
-	short	odefault;	/* Default value */
-	short	ovalue;		/* Current value */
+	int	otype;		/* Types -- see below */
+	int	odefault;	/* Default value */
+	int	ovalue;		/* Current value */
 	char	*osvalue;
 };
 
@@ -102,63 +97,63 @@ extern	 struct	option options[NOPTS + 1];
 /*
  * Miscellaneous random variables used in more than one place
  */
-var	bool	aiflag;		/* Append/change/insert with autoindent */
-var	bool	anymarks;	/* We have used '[a-z] */
-var	int	chng;		/* Warn "No write" */
-var	char	*Command;
-var	short	defwind;	/* -w# change default window size */
-var	int	dirtcnt;	/* When >= MAXDIRT, should sync temporary */
-var	bool	dosusp;		/* Do SIGTSTP in visual when ^Z typed */
-var	bool	edited;		/* Current file is [Edited] */
-var	line	*endcore;	/* Last available core location */
+extern	bool	aiflag;		/* Append/change/insert with autoindent */
+extern	bool	anymarks;	/* We have used '[a-z] */
+extern	int	chng;		/* Warn "No write" */
+extern	char	*Command;
+extern	int	defwind;	/* -w# change default window size */
+extern	int	dirtcnt;	/* When >= MAXDIRT, should sync temporary */
+extern	bool	dosusp;		/* Do SIGTSTP in visual when ^Z typed */
+extern	bool	edited;		/* Current file is [Edited] */
+extern	line	*endcore;	/* Last available core location */
 extern	 bool	endline;	/* Last cmd mode command ended with \n */
 /* var short erfile; */
-var	line	*fendcore;	/* First address in line pointer space */
-var	char	file[FNSIZE];	/* Working file name */
-var	char	genbuf[LBSIZE];	/* Working buffer when manipulating linebuf */
-var	bool	hush;		/* Command line option - was given, hush up! */
-var	char	*globp;		/* (Untyped) input string to command mode */
-var	bool	holdcm;		/* Don't cursor address */
-var	bool	inappend;	/* in ex command append mode */
-var	bool	inglobal;	/* Inside g//... or v//... */
-var	char	*initev;	/* Initial : escape for visual */
-var	bool	inopen;		/* Inside open or visual */
-var	char	*input;		/* Current position in cmd line input buffer */
-var	bool	intty;		/* Input is a tty */
-var	short	io;		/* General i/o unit (auto-closed on error!) */
-extern	 short	lastc;		/* Last character ret'd from cmd input */
-var	bool	laste;		/* Last command was an "e" (or "rec") */
-var	char	lastmac;	/* Last macro called for ** */
-var	char	lasttag[TAGSIZE];	/* Last argument to a tag command */
-var	char	*linebp;	/* Used in substituting in \n */
-var	char	linebuf[LBSIZE];	/* The primary line buffer */
-var	bool	listf;		/* Command should run in list mode */
-var	char	*loc1;		/* Where re began to match (in linebuf) */
-var	char	*loc2;		/* First char after re match (") */
-var	line	names['z'-'a'+2];	/* Mark registers a-z,' */
-var	int	notecnt;	/* Count for notify (to visual from cmd) */
-var	bool	numberf;	/* Command should run in number mode */
-var	char	obuf[BUFSIZ];	/* Buffer for tty output */
-var	short	oprompt;	/* Saved during source */
-var	short	ospeed;		/* Output speed (from gtty) */
-var	int	otchng;		/* Backup tchng to find changes in macros */
-var	short	peekc;		/* Peek ahead character (cmd mode input) */
-var	char	*pkill[2];	/* Trim for put with ragged (LISP) delete */
-var	bool	pfast;		/* Have stty -nl'ed to go faster */
-var	int	pid;		/* Process id of child */
-var	int	ppid;		/* Process id of parent (e.g. main ex proc) */
-var	jmp_buf	resetlab;	/* For error throws to top level (cmd mode) */
-var	int	rpid;		/* Pid returned from wait() */
-var	bool	ruptible;	/* Interruptible is normal state */
-var	bool	seenprompt;	/* 1 if have gotten user input */
-var	bool	shudclob;	/* Have a prompt to clobber (e.g. on ^D) */
-var	int	status;		/* Status returned from wait() */
-var	int	tchng;		/* If nonzero, then [Modified] */
-extern	short	tfile;		/* Temporary file unit */
-var	bool	vcatch;		/* Want to catch an error (open/visual) */
-var	jmp_buf	vreslab;	/* For error throws to a visual catch */
-var	bool	writing;	/* 1 if in middle of a file write */
-var	int	xchng;		/* Suppresses multiple "No writes" in !cmd */
+extern	line	*fendcore;	/* First address in line pointer space */
+extern	char	file[FNSIZE];	/* Working file name */
+extern	char	genbuf[LBSIZE];	/* Working buffer when manipulating linebuf */
+extern	bool	hush;		/* Command line option - was given, hush up! */
+extern	char	*globp;		/* (Untyped) input string to command mode */
+extern	bool	holdcm;		/* Don't cursor address */
+extern	bool	inappend;	/* in ex command append mode */
+extern	bool	inglobal;	/* Inside g//... or v//... */
+extern	char	*initev;	/* Initial : escape for visual */
+extern	bool	inopen;		/* Inside open or visual */
+extern	char	*input;		/* Current position in cmd line input buffer */
+extern	bool	intty;		/* Input is a tty */
+extern	int	io;		/* General i/o unit (auto-closed on error!) */
+extern	 int	lastc;		/* Last character ret'd from cmd input */
+extern	bool	laste;		/* Last command was an "e" (or "rec") */
+extern	char	lastmac;	/* Last macro called for ** */
+extern	char	lasttag[TAGSIZE];	/* Last argument to a tag command */
+extern	char	*linebp;	/* Used in substituting in \n */
+extern	char	linebuf[LBSIZE];	/* The primary line buffer */
+extern	bool	listf;		/* Command should run in list mode */
+extern	char	*loc1;		/* Where re began to match (in linebuf) */
+extern	char	*loc2;		/* First char after re match (") */
+extern	line	names['z'-'a'+2];	/* Mark registers a-z,' */
+extern	int	notecnt;	/* Count for notify (to visual from cmd) */
+extern	bool	numberf;	/* Command should run in number mode */
+extern	char	obuf[BUFSIZ];	/* Buffer for tty output */
+extern	int	oprompt;	/* Saved during source */
+extern	int	ospeed;		/* Output speed (from gtty) */
+extern	int	otchng;		/* Backup tchng to find changes in macros */
+extern	int	peekc;		/* Peek ahead character (cmd mode input) */
+extern	char	*pkill[2];	/* Trim for put with ragged (LISP) delete */
+extern	bool	pfast;		/* Have stty -nl'ed to go faster */
+extern	int	pid;		/* Process id of child */
+extern	int	ppid;		/* Process id of parent (e.g. main ex proc) */
+extern	jmp_buf	resetlab;	/* For error throws to top level (cmd mode) */
+extern	int	rpid;		/* Pid returned from wait() */
+extern	bool	ruptible;	/* Interruptible is normal state */
+extern	bool	seenprompt;	/* 1 if have gotten user input */
+extern	bool	shudclob;	/* Have a prompt to clobber (e.g. on ^D) */
+extern	int	status;		/* Status returned from wait() */
+extern	int	tchng;		/* If nonzero, then [Modified] */
+extern	int	tfile;		/* Temporary file unit */
+extern	bool	vcatch;		/* Want to catch an error (open/visual) */
+extern	jmp_buf	vreslab;	/* For error throws to a visual catch */
+extern	bool	writing;	/* 1 if in middle of a file write */
+extern	int	xchng;		/* Suppresses multiple "No writes" in !cmd */
 
 /*
  * Macros
@@ -190,33 +185,33 @@ var	int	xchng;		/* Suppresses multiple "No writes" in !cmd */
 /*
  * Environment like memory
  */
-var	char	altfile[FNSIZE];	/* Alternate file name */
+extern	char	altfile[FNSIZE];	/* Alternate file name */
 extern	char	direct[ONMSZ];		/* Temp file goes here */
 extern	char	shell[ONMSZ];		/* Copied to be settable */
-var	char	uxb[UXBSIZE + 2];	/* Last !command for !! */
+extern	char	uxb[UXBSIZE + 2];	/* Last !command for !! */
 
 /*
  * The editor data structure for accessing the current file consists
  * of an incore array of pointers into the temporary file tfile.
  */
-var	line	*addr1;			/* First addressed line in a command */
-var	line	*addr2;			/* Second addressed line */
-var	line	*dol;			/* Last line in buffer */
-var	line	*dot;			/* Current line */
-var	line	*one;			/* First line */
-var	line	*truedol;		/* End of all lines, including saves */
-var	line	*unddol;		/* End of undo saved lines */
-var	line	*zero;			/* Points to empty slot before one */
+extern	line	*addr1;			/* First addressed line in a command */
+extern	line	*addr2;			/* Second addressed line */
+extern	line	*dol;			/* Last line in buffer */
+extern	line	*dot;			/* Current line */
+extern	line	*one;			/* First line */
+extern	line	*truedol;		/* End of all lines, including saves */
+extern	line	*unddol;		/* End of undo saved lines */
+extern	line	*zero;			/* Points to empty slot before one */
 
 /*
  * Undo information
  */
-var	short	undkind;
+extern	int	undkind;
 
-var	line	*unddel;	/* Saved deleted lines go after here */
-var	line	*undap1;	/* Beginning of new lines */
-var	line	*undap2;	/* New lines end before undap2 */
-var	line	*undadot;	/* If we saved all lines, dot reverts here */
+extern	line	*unddel;	/* Saved deleted lines go after here */
+extern	line	*undap1;	/* Beginning of new lines */
+extern	line	*undap2;	/* New lines end before undap2 */
+extern	line	*undadot;	/* If we saved all lines, dot reverts here */
 
 #define	UNDCHANGE	0
 #define	UNDMOVE		1
@@ -233,7 +228,7 @@ var	line	*undadot;	/* If we saved all lines, dot reverts here */
 extern	int	(*Outchar)();
 extern	int	(*Pline)();
 extern	int	(*Putchar)();
-var	void	(*oldhup)();
+extern	void	(*oldhup)();
 int	(*setlist())();
 int	(*setnorm())();
 int	(*setnumb())();
@@ -268,7 +263,7 @@ int	listchar();
 int	normchar();
 int	normline();
 int	numbline();
-var	void	(*oldquit)();
+extern	void	(*oldquit)();
 void	onhup();
 void	onintr();
 void	onsusp();
@@ -281,9 +276,6 @@ int	vputch();
 int	vshftop();
 int	yank();
 
-/*
- * C doesn't have a (void) cast, so we have to fake it for lint's sake.
- */
 #	define	ignore(a)	a
 #	define	ignorf(a)	a
 

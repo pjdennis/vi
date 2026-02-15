@@ -171,7 +171,7 @@ vglitchup(l, o)
 	register struct vlinfo *vp = &vlinfo[l];
 	register int need;
 	register int p = vp->vliny;
-	short oldhold, oldheldech;
+	int oldhold, oldheldech;
 	bool glitched = 0;
 
  	if (l < vcnt - 1) {
@@ -531,7 +531,7 @@ vrepaint(curs)
 	 * the screen.
 	 */
 	if (vcline >= vcnt || LINE(vcline) > WBOT) {
-		short oldhold = hold;
+		int oldhold = hold;
 		hold |= HOLDAT, vredraw(LASTLINE), hold = oldhold;
 		if (vcline >= vcnt) {
 			register int i = vcline - vcnt + 1;
@@ -569,7 +569,7 @@ vredraw(p)
 	register line *tp;
 	char temp[LBSIZE];
 	bool anydl = 0;
-	short oldhold = hold;
+	int oldhold = hold;
 
 	if (holdupd) {
 		holdupd = 3;
@@ -768,7 +768,7 @@ vsync1(p)
 	register int l;
 	char temp[LBSIZE];
 	register struct vlinfo *vp = &vlinfo[0];
-	short oldhold = hold;
+	int oldhold = hold;
 
 	if (holdupd) {
 		if (holdupd < 3)

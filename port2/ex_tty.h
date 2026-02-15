@@ -7,38 +7,38 @@
 /*
  * From the tty modes...
  */
-var	bool	NONL;		/* Terminal can't hack linefeeds doing a CR */
-var	bool	UPPERCASE;	/* Ick! */
-var	short	OCOLUMNS;	/* Save columns for a hack in open mode */
+extern	bool	NONL;		/* Terminal can't hack linefeeds doing a CR */
+extern	bool	UPPERCASE;	/* Ick! */
+extern	int	OCOLUMNS;	/* Save columns for a hack in open mode */
 
-var	short	outcol;		/* Where the cursor is */
-var	short	outline;
+extern	int	outcol;		/* Where the cursor is */
+extern	int	outline;
 
-var	short	destcol;	/* Where the cursor should be */
-var	short	destline;
+extern	int	destcol;	/* Where the cursor should be */
+extern	int	destline;
 
 /*
  * TTY mode handling.
  */
-var	struct	termios tty;	/* Use this one structure to change modes */
+extern	struct	termios tty;	/* Use this one structure to change modes */
 typedef	struct termios ttymode;	/* Mode to contain tty flags */
 
 /* var struct tchars ottyc, nttyc;   */
 /* var struct ltchars olttyc, nlttyc; */
 
-var	ttymode	normf;		/* Restore tty flags to this (someday) */
-var	bool	normtty;	/* Have to restore normal mode from normf */
+extern	ttymode	normf;		/* Restore tty flags to this (someday) */
+extern	bool	normtty;	/* Have to restore normal mode from normf */
 
 ttymode ostart(), setty(), unixex();
 
-var	short	costCM;	/* # chars to output a typical cursor_address */
-var	short	costSR;	/* likewise for scroll reverse */
-var	short	costAL;	/* likewise for insert line */
-var	short	costDP;	/* likewise for parm_down_cursor */
-var	short	costLP;	/* likewise for parm_left_cursor */
-var	short	costRP;	/* likewise for parm_right_cursor */
-var	short	costCE;	/* likewise for clear to end of line */
-var	short	costCD;	/* likewise for clear to end of display */
+extern	int	costCM;	/* # chars to output a typical cursor_address */
+extern	int	costSR;	/* likewise for scroll reverse */
+extern	int	costAL;	/* likewise for insert line */
+extern	int	costDP;	/* likewise for parm_down_cursor */
+extern	int	costLP;	/* likewise for parm_left_cursor */
+extern	int	costRP;	/* likewise for parm_right_cursor */
+extern	int	costCE;	/* likewise for clear to end of line */
+extern	int	costCD;	/* likewise for clear to end of display */
 
 #define MAXNOMACS	128	/* max number of macros of each kind */
 #define MAXCHARMACS	2048	/* max # of chars total in macros */
@@ -48,13 +48,13 @@ struct maps {
 	char *mapto;	/* .. maps to this string */
 	char *descr;	/* legible description of key */
 };
-var	struct maps arrows[MAXNOMACS];	/* macro defs - 1st 5 built in */
-var	struct maps immacs[MAXNOMACS];	/* for while in insert mode */
-var	struct maps abbrevs[MAXNOMACS];	/* for word abbreviations */
-var	int	ldisc;			/* line discipline for ucb tty driver */
-var	char	mapspace[MAXCHARMACS];
-var	char	*msnext;	/* next free location in mapspace */
-var	int	maphopcnt;	/* check for infinite mapping loops */
-var	bool	anyabbrs;	/* true if abbr or unabbr has been done */
-var	char	ttynbuf[20];	/* result of ttyname() */
-var	int	ttymesg;	/* original mode of users tty */
+extern	struct maps arrows[MAXNOMACS];	/* macro defs - 1st 5 built in */
+extern	struct maps immacs[MAXNOMACS];	/* for while in insert mode */
+extern	struct maps abbrevs[MAXNOMACS];	/* for word abbreviations */
+extern	int	ldisc;			/* line discipline for ucb tty driver */
+extern	char	mapspace[MAXCHARMACS];
+extern	char	*msnext;	/* next free location in mapspace */
+extern	int	maphopcnt;	/* check for infinite mapping loops */
+extern	bool	anyabbrs;	/* true if abbr or unabbr has been done */
+extern	char	ttynbuf[20];	/* result of ttyname() */
+extern	int	ttymesg;	/* original mode of users tty */

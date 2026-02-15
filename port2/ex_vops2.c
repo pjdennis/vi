@@ -118,7 +118,7 @@ vappend(ch, cnt, indent)
 	register char *gcursor;
 	bool escape;
 	int repcnt, savedoomed;
-	short oldhold = hold;
+	int oldhold = hold;
 
 	/*
 	 * Before a move in hardopen when the line is dirty

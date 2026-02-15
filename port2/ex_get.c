@@ -19,7 +19,7 @@
  * we have different flavors of routines which do/don't return such.
  */
 static	bool junkbs;
-short	lastc = '\n';
+int	lastc = '\n';
 
 ignchar()
 {

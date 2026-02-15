@@ -779,7 +779,7 @@ vishft()
 	register int i;
 	register char *tp = vtube0;
 	register char *up;
-	short oldhold = hold;
+	int oldhold = hold;
 
 	shft = value(TABSTOP);
 	hold |= HOLDPUPD;
@@ -875,7 +875,7 @@ viin(c)
 	register int i, j;
 	register bool noim = 0;
 	int remdoom;
-	short oldhold = hold;
+	int oldhold = hold;
 
 	hold |= HOLDPUPD;
 	if (tabsize && (enter_insert_mode && exit_insert_mode) && inssiz - doomed > tabslack)

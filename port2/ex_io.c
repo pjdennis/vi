@@ -726,7 +726,7 @@ source(fil, okfail)
 	jmp_buf osetexit;
 	register int saveinp, ointty, oerrno;
 	char *saveglobp;
-	short savepeekc;
+	int savepeekc;
 
 	signal(SIGINT, SIG_IGN);
 	saveinp = dup(0);

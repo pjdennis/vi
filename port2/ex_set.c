@@ -25,7 +25,7 @@ set()
 	register struct option *op;
 	register int c;
 	bool no;
-	extern short ospeed;
+	extern int ospeed;
 
 	setnoaddr();
 	if (skipend()) {

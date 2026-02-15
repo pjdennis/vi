@@ -13,19 +13,19 @@
 #define	OFFMSK	01777
 #define	SHFT	0
 
-var bool	hitin2;		/* Last read hit was ibuff2 not ibuff */
-var bool	ichang2;	/* Have actually changed ibuff2 */
-var bool	ichanged;	/* Have actually changed ibuff */
-var short	iblock;		/* Temp file block number of ibuff (or -1) */
-var short	iblock2;	/* Temp file block number of ibuff2 (or -1) */
-var short	ninbuf;		/* Number useful chars left in input buffer */
-var short	nleft;		/* Number usable chars left in output buffer */
-var short	oblock;		/* Temp file block number of obuff (or -1) */
-var int	tline;
+extern bool	hitin2;		/* Last read hit was ibuff2 not ibuff */
+extern bool	ichang2;	/* Have actually changed ibuff2 */
+extern bool	ichanged;	/* Have actually changed ibuff */
+extern int	iblock;		/* Temp file block number of ibuff (or -1) */
+extern int	iblock2;	/* Temp file block number of ibuff2 (or -1) */
+extern int	ninbuf;		/* Number useful chars left in input buffer */
+extern int	nleft;		/* Number usable chars left in output buffer */
+extern int	oblock;		/* Temp file block number of obuff (or -1) */
+extern int	tline;
 
-var char	ibuff[BUFSIZ];
-var char	ibuff2[BUFSIZ];
-var char	obuff[BUFSIZ];
+extern char	ibuff[BUFSIZ];
+extern char	ibuff2[BUFSIZ];
+extern char	obuff[BUFSIZ];
 
 /*
  * Structure of the descriptor block which resides
@@ -38,9 +38,9 @@ struct 	header {
 	int	Uid;
 	int	Flines;			/* Number of lines in file */
 	char	Savedfile[FNSIZE];	/* The current file name */
-	short	Blocks[LBLKS];		/* Blocks where line pointers stashed */
+	int	Blocks[LBLKS];		/* Blocks where line pointers stashed */
 };
-var struct 	header H;
+extern struct 	header H;
 
 #define	uid		H.Uid
 #define	flines		H.Flines

@@ -233,7 +233,7 @@ vshow(addr, top)
 {
 	register int cnt = addr - dot;
 	register int i = vcline + cnt;
-	short oldhold = hold;
+	int oldhold = hold;
 
 	if (state != HARDOPEN && state != ONEOPEN && i >= 0 && i < vcnt) {
 		dot = addr;
@@ -329,7 +329,7 @@ vfit(tp, cnt)
 vroll(cnt)
 	register int cnt;
 {
-	short oldhold = hold;
+	int oldhold = hold;
 
 	if (state != VISUAL)
 		hold |= HOLDAT|HOLDROL;
@@ -356,7 +356,7 @@ vrollR(cnt)
 	register int cnt;
 {
 	register bool fried = 0;
-	short oldhold = hold;
+	int oldhold = hold;
 
 	if (WBOT == WECHO)
 		vcnt = 0;
