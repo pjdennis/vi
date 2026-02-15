@@ -3,6 +3,8 @@
 #include "ex_tty.h"
 #include "ex_vis.h"
 
+int vmaxrep(char ch, int cnt);
+
 /*
  * Low level routines for operations sequences,
  * and mostly, insert mode (and a subroutine
@@ -15,9 +17,7 @@ extern char	*vUD1, *vUD2;		/* mjm: extern; also in ex_vops.c */
  * Obleeperate characters in hardcopy
  * open with \'s.
  */
-bleep(i, cp)
-	register int i;
-	char *cp;
+bleep(int i, char *cp)
 {
 
 	i -= column(cp);
@@ -50,8 +50,7 @@ vdcMID()
  * in the VBSIZE buffer BUF.  Used to save
  * deleted text of part of line.
  */
-takeout(BUF)
-	char *BUF;
+takeout(char *BUF)
 {
 	register char *cp;
 
@@ -420,11 +419,7 @@ back1()
  * involved, including the prompt for readline.
  */
 char *
-vgetline(cnt, gcursor, aescaped, commch)
-	int cnt;
-	register char *gcursor;
-	bool *aescaped;
-	char commch;
+vgetline(int cnt, char *gcursor, bool *aescaped, char commch)
 {
 	register int c, ch;
 	register char *cp;
@@ -834,8 +829,7 @@ char	*vsplitpt;
  * Append the line in buffer at lp
  * to the buffer after dot.
  */
-vdoappend(lp)
-	char *lp;
+vdoappend(char *lp)
 {
 	register int oing = inglobal;
 
@@ -863,9 +857,7 @@ vgetsplit()
  * allowed that will yield total line length less than
  * LBSIZE characters and also does hacks for the R command.
  */
-vmaxrep(ch, cnt)
-	char ch;
-	register int cnt;
+vmaxrep(char ch, int cnt)
 {
 	register int len, replen;
 

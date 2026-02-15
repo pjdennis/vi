@@ -27,8 +27,7 @@ int	poffset;
  * is to strip command addresses, do a little address oriented
  * processing and call command routines to do the real work.
  */
-commands(noprompt, exitoneof)
-	bool noprompt, exitoneof;
+commands(bool noprompt, bool exitoneof)
 {
 	register line *addr;
 	register int c;

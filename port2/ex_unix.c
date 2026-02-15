@@ -23,8 +23,7 @@
  * First part of a shell escape,
  * parse the line, expanding # and % and ! and printing if implied.
  */
-unix0(warn)
-	bool warn;
+unix0(bool warn)
 {
 	register char *up, *fp;
 	register short c;
@@ -133,9 +132,7 @@ uexp:
  * must have been setup already.
  */
 ttymode
-unixex(opt, up, newstdin, mode)
-	char *opt, *up;
-	int newstdin, mode;
+unixex(char *opt, char *up, int newstdin, int mode)
 {
 	int pvec[2];
 	ttymode f;
@@ -202,9 +199,7 @@ unixex(opt, up, newstdin, mode)
  * F is for restoration of tty mode if from open/visual.
  * C flags suppression of printing.
  */
-unixwt(c, f)
-	bool c;
-	ttymode f;
+unixwt(bool c, ttymode f)
 {
 
 	waitfor();
@@ -227,8 +222,7 @@ unixwt(c, f)
  * the filter, then a child editor is created to write it.
  * If output is catch it from io which is created by unixex.
  */
-filter(mode)
-	register int mode;
+filter(int mode)
 {
 	static int pvec[2];
 	ttymode f;	/* mjm: was register */

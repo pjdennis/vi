@@ -15,6 +15,10 @@
 #include "ex_vis.h"
 #include "ex_tty.h"
 
+int cleanup(bool all);
+int blkio(short b, char *buf, int (*iofcn)());
+int partreg(char c);
+
 /*
  * Editor temporary file routines.
  * Very similar to those of ed, except uses 2 input buffers.
@@ -79,8 +83,7 @@ dumbness:
 		goto dumbness;
 }
 
-cleanup(all)
-	bool all;
+cleanup(bool all)
 {
 	if (all) {
 		putpad(exit_ca_mode);
@@ -100,8 +103,7 @@ cleanup(all)
 		exit(0);
 }
 
-getline(tl)
-	line tl;
+getline(line tl)
 {
 	register char *bp, *lp;
 	register int nl;
@@ -148,9 +150,7 @@ putline()
 
 
 char *
-getblock(atl, iof)
-	line atl;
-	int iof;
+getblock(line atl, int iof)
 {
 	register int bno, off;
         register char *p1, *p2;
@@ -205,10 +205,7 @@ char	incorb[INCORB+1][BUFSIZ];
 #define	pagrnd(a)	((char *)(((uintptr_t)(a))&~(BUFSIZ-1)))
 int	stilinc;	/* up to here not written yet */
 
-blkio(b, buf, iofcn)
-	short b;
-	char *buf;
-	int (*iofcn)();
+blkio(short b, char *buf, int (*iofcn)())
 {
 
 	if (b < INCORB) {
@@ -351,9 +348,7 @@ short	rblock;
 short	rnext;
 char	*rbufcp;
 
-regio(b, iofcn)
-	short b;
-	int (*iofcn)();
+regio(short b, int (*iofcn)())
 {
 
 	if (rfile == -1) {
@@ -395,8 +390,7 @@ REGblk()
 }
 
 struct	strreg *
-mapreg(c)
-	register int c;
+mapreg(int c)
 {
 
 	if (isupper(c))
@@ -406,8 +400,7 @@ mapreg(c)
 
 int	shread();
 
-KILLreg(c)
-	register int c;
+KILLreg(int c)
 {
 	register struct strreg *sp;
 
@@ -435,8 +428,7 @@ shread()
 
 int	getREG();
 
-putreg(c)
-	char c;
+putreg(char c)
 {
 	register line *odot = dot;
 	register line *odol = dol;
@@ -476,15 +468,13 @@ putreg(c)
 	notecnt = cnt;
 }
 
-partreg(c)
-	char c;
+partreg(char c)
 {
 
 	return (mapreg(c)->rg_flags);
 }
 
-notpart(c)
-	register int c;
+notpart(int c)
 {
 
 	if (c)
@@ -517,8 +507,7 @@ getREG()
 	}
 }
 
-YANKreg(c)
-	register int c;
+YANKreg(int c)
 {
 	register line *addr;
 	register struct strreg *sp;
@@ -604,10 +593,7 @@ rbflush()
 }
 
 /* Register c to char buffer buf of size buflen */
-regbuf(c, buf, buflen)
-char c;
-char *buf;
-int buflen;
+regbuf(char c, char *buf, int buflen)
 {
 	register char *p, *lp;
 

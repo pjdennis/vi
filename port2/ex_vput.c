@@ -24,9 +24,7 @@ vclear()
 /*
  * Clear memory.
  */
-vclrbyte(cp, i)
-	register char *cp;
-	register int i;
+vclrbyte(char *cp, int i)
 {
 
 	if (i > 0)
@@ -38,9 +36,7 @@ vclrbyte(cp, i)
 /*
  * Clear a physical display line, high level.
  */
-vclrlin(l, tp)
-	int l;
-	line *tp;
+vclrlin(int l, line *tp)
 {
 
 	vigoto(l, 0);
@@ -94,8 +90,7 @@ vclreol()
  * If work here is being held off, just remember, in
  * heldech, if work needs to be done, don't do anything.
  */
-vclrech(didphys)
-	bool didphys;
+vclrech(bool didphys)
 {
 
 	if (Peekkey == ATTN)
@@ -175,8 +170,7 @@ fixech()
 /*
  * Put the cursor ``before'' cp.
  */
-vcursbef(cp)
-	register char *cp;
+vcursbef(char *cp)
 {
 
 	if (cp <= linebuf)
@@ -188,8 +182,7 @@ vcursbef(cp)
 /*
  * Put the cursor ``at'' cp.
  */
-vcursat(cp)
-	register char *cp;
+vcursat(char *cp)
 {
 
 	if (cp <= linebuf && linebuf[0] == 0)
@@ -201,8 +194,7 @@ vcursat(cp)
 /*
  * Put the cursor ``after'' cp.
  */
-vcursaft(cp)
-	register char *cp;
+vcursaft(char *cp)
 {
 
 	vgotoCL(column(cp));
@@ -222,8 +214,7 @@ vfixcurs()
  * Compute the column position implied by the cursor at ``nc'',
  * and move the cursor there.
  */
-vsetcurs(nc)
-	register char *nc;
+vsetcurs(char *nc)
 {
 	register int col;
 
@@ -237,8 +228,7 @@ vsetcurs(nc)
 /*
  * Move the cursor invisibly, i.e. only remember to do it.
  */
-vigoto(y, x)
-	int y, x;
+vigoto(int y, int x)
 {
 
 	destline = y;
@@ -258,8 +248,7 @@ vcsync()
 /*
  * Goto column x of the current line.
  */
-vgotoCL(x)
-	register int x;
+vgotoCL(int x)
 {
 
 	if (splitw)
@@ -271,8 +260,7 @@ vgotoCL(x)
 /*
  * Invisible goto column x of current line.
  */
-vigotoCL(x)
-	register int x;
+vigotoCL(int x)
 {
 
 	if (splitw)
@@ -285,8 +273,7 @@ vigotoCL(x)
  * Show the current mode in the right hand part of the echo line,
  * then return the cursor to where it is now.
  */
-vshowmode(msg)
-char *msg;
+vshowmode(char *msg)
 {
 	char locmsg[20];
 	int savecol, saveline, savesplit;
@@ -324,8 +311,7 @@ char *msg;
 /*
  * Move cursor to line y, column x, handling wraparound and scrolling.
  */
-vgoto(y, x)
-	register int y, x;
+vgoto(int y, int x)
 {
 	register char *tp;
 	register int c;
@@ -503,9 +489,7 @@ vprepins()
 	}
 }
 
-vmaktop(p, cp)
-	register int p;
-	char *cp;
+vmaktop(int p, char *cp)
 {
 	register int i;
 	char temp[TUBECOLS];
@@ -726,8 +710,7 @@ vrigid()
  * On a dumb terminal we may infact redisplay the rest of the
  * screen here brute force to keep it pretty.
  */
-vneedpos(cnt)
-	int cnt;
+vneedpos(int cnt)
 {
 	register int d = DEPTH(vcline);
 	register int rmdr = d * WCOLS - linend;
@@ -738,8 +721,7 @@ vneedpos(cnt)
 	vnpins(1);
 }
 
-vnpins(dosync)
-	int dosync;
+vnpins(int dosync)
 {
 	register int d = DEPTH(vcline);
 	register int e;
@@ -1081,8 +1063,7 @@ endim()
  * you can erase overstrikes with some work.  CRT's which do underlining
  * implicitly which has to be erased (like CONCEPTS) are also handled.
  */
-vputchar(c)
-	register int c;
+vputchar(int c)
 {
 	register char *tp;
 	register int d;
@@ -1247,8 +1228,7 @@ def:
  * Delete display positions stcol through endcol.
  * Amount of use of special terminal features here is limited.
  */
-physdc(stcol, endcol)
-	int stcol, endcol;
+physdc(int stcol, int endcol)
 {
 	register char *tp, *up;
 	char *tpe;
@@ -1335,8 +1315,7 @@ physdc(stcol, endcol)
 /*
  * Put a character with possible tracing.
  */
-vputch(c)
-	int c;
+vputch(int c)
 {
 
 	vputc(c);

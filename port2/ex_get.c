@@ -13,6 +13,8 @@
 #include "ex.h"
 #include "ex_tty.h"
 
+int checkjunk(char c);
+
 /*
  * Input routines for command mode.
  * Since we translate the end of reads into the implied ^D's
@@ -232,9 +234,7 @@ gettty()
  * This should really be done differently so as to use the whitecnt routine
  * and also to hack indenting for LISP.
  */
-smunch(col, ocp)
-	register int col;
-	char *ocp;
+smunch(int col, char *ocp)
 {
 	register char *cp;
 
@@ -259,8 +259,7 @@ smunch(col, ocp)
 
 char	*cntrlhm =	"^H discarded\n";
 
-checkjunk(c)
-	char c;
+checkjunk(char c)
 {
 
 	if (junkbs == 0 && c == '\b') {
@@ -270,8 +269,7 @@ checkjunk(c)
 }
 
 line *
-setin(addr)
-	line *addr;
+setin(line *addr)
 {
 
 	if (addr == zero)

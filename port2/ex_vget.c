@@ -208,8 +208,7 @@ peekkey()
  * Read a line from the echo area, with single character prompt c.
  * A return value of 1 means the user blewit or blewit away.
  */
-readecho(c)
-	char c;
+readecho(char c)
 {
 	register char *sc = cursor;
 	register int (*OP)();
@@ -274,8 +273,7 @@ setLAST()
  * If the insertion buffer oveflows, then destroy
  * the repeatability of the insert.
  */
-addtext(cp)
-	char *cp;
+addtext(char *cp)
 {
 
 	if (vglobp)
@@ -294,8 +292,7 @@ setDEL()
 /*
  * Put text from cursor upto wcursor in BUF.
  */
-setBUF(BUF)
-	register char *BUF;
+setBUF(char *BUF)
 {
 	register int c;
 	register char *wp = wcursor;
@@ -307,8 +304,7 @@ setBUF(BUF)
 	*wp = c;
 }
 
-addto(buf, str)
-	register char *buf, *str;
+addto(char *buf, char *str)
 {
 
 	if ((buf[0] & (QUOTE|TRIM)) == OVERBUF)
@@ -326,8 +322,7 @@ addto(buf, str)
  * to do this for open modes now; return and save for later
  * notification in visual.
  */
-noteit(must)
-	bool must;
+noteit(bool must)
 {
 	register int sdl = destline, sdc = destcol;
 
@@ -377,9 +372,7 @@ beep()
  * DM1520 for example has a lot of mappable characters.
  */
 
-map(c,maps)
-	register int c;
-	register struct maps *maps;
+map(int c, struct maps *maps)
 {
 	register int d;
 	register char *p, *q;
@@ -460,9 +453,7 @@ map(c,maps)
  * is false for, for example, pushing back lookahead from fastpeekkey(),
  * since otherwise two fast escapes can clobber our undo.
  */
-macpush(st, canundo)
-char *st;
-int canundo;
+macpush(char *st, int canundo)
 {
 	char tmpbuf[BUFSIZ];
 

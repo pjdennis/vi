@@ -53,8 +53,7 @@ gettmode()
 	NONL = (tty.c_oflag & ONLCR) == 0;
 }
 
-setterm(type)
-	char *type;
+setterm(char *type)
 {
 	register int unknown, i;
 	register int l;
@@ -158,9 +157,7 @@ setterm(type)
 /*
  * Map both map1 and map2 as below.  map2 surrounded by esc and i.
  */
-kpboth(map1, map2, key, mapto, desc)
-struct maps *map1, *map2;
-char *key, *mapto, *desc;
+kpboth(struct maps *map1, struct maps *map2, char *key, char *mapto, char *desc)
 {
 	char surmapto[30];
 	char *p;
@@ -184,9 +181,7 @@ char *key, *mapto, *desc;
  * key is the input sequence, mapto what it turns into, and desc is a
  * human-readable description of what's going on.
  */
-kpadd(mapstr, key, mapto, desc)
-struct maps *mapstr;
-char *key, *mapto, *desc;
+kpadd(struct maps *mapstr, char *key, char *mapto, char *desc)
 {
 	int i;
 
@@ -201,8 +196,7 @@ char *key, *mapto, *desc;
 }
 
 char *
-fkey(i)
-	int i;
+fkey(int i)
 {
 	if (i < 0 || i > 9)
 		return NOSTR;
@@ -232,10 +226,9 @@ fkey(i)
  * than insert_line vs scroll_reverse, won't be really affected.)
  */
 static int costnum;
-cost(str)
-char *str;
+cost(char *str)
 {
-	int countnum();
+	int countnum(char ch);
 
 	if (str == NULL || *str=='O')	/* OOPS */
 		return 10000;	/* infinity */
@@ -245,8 +238,7 @@ char *str;
 }
 
 /* ARGSUSED */
-countnum(ch)
-char ch;
+countnum(char ch)
 {
 	costnum++;
 }

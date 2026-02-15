@@ -362,8 +362,7 @@ init()
  * Return last component of unix path name p.
  */
 char *
-tailpath(p)
-register char *p;
+tailpath(char *p)
 {
 	register char *r;
 

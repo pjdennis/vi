@@ -139,8 +139,8 @@ extern	char	workcmd[5];	/* Temporary for lastcmd */
  */
 int	beep();
 int	qcount();
-int	vchange();
-int	vdelete();
+int	vchange(char c);
+int	vdelete(char c);
 int	vgrabit();
 int	vinschar();
 int	vmove();

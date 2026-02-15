@@ -18,6 +18,11 @@
 
 static splitit();
 
+int delete(bool hush);
+int pragged(bool kill);
+int plines(line *adr1, line *adr2, bool movedot);
+int undo(bool c);
+
 /*
  * Command mode subroutines implementing
  *	append, args, copy, delete, join, move, put,
@@ -33,9 +38,7 @@ static	jnoop();
  * Be careful about intermediate states to avoid scramble
  * if an interrupt comes in.
  */
-append(f, a)
-	int (*f)();
-	line *a;
+append(int (*f)(), line *a)
 {
 	register line *a1, *a2, *rdot;
 	int nline;
@@ -110,8 +113,7 @@ pargs()
  * Delete lines; two cases are if we are really deleting,
  * more commonly we are just moving lines to the undo save area.
  */
-delete(hush)
-	bool hush;
+delete(bool hush)
 {
 	register line *a1, *a2;
 
@@ -198,8 +200,7 @@ squish()
  */
 static	int jcount, jnoop();
 
-join(c)
-	int c;
+join(int c)
 {
 	register line *a1;
 	register char *cp, *cp1;
@@ -269,9 +270,7 @@ move()
 	killed();
 }
 
-move1(cflag, addrt)
-	int cflag;
-	line *addrt;
+move1(int cflag, line *addrt)
 {
 	register line *adt, *ad1, *ad2;
 	int nlines;
@@ -369,8 +368,7 @@ put()
  * Argument says pkills have meaning, e.g. called from
  * put; it is 0 on calls from putreg.
  */
-pragged(kill)
-	bool kill;
+pragged(bool kill)
 {
 	extern char *cursor;
 	register char *gp = &genbuf[cursor - linebuf];
@@ -406,9 +404,7 @@ pragged(kill)
  * Shift lines, based on c.
  * If c is neither < nor >, then this is a lisp aligning =.
  */
-shift(c, cnt)
-	int c;
-	int cnt;
+shift(int c, int cnt)
 {
 	register line *addr;
 	register char *cp;
@@ -458,8 +454,7 @@ shift(c, cnt)
  * Find a tag in the tags file.
  * Most work here is in parsing the tags file itself.
  */
-tagfind(quick)
-	bool quick;
+tagfind(bool quick)
 {
 	char cmdbuf[BUFSIZ];
 	char filebuf[FNSIZE];
@@ -654,8 +649,7 @@ bool	zhadpr;
 bool	znoclear;
 short	zweight;
 
-zop(hadpr)
-	int hadpr;
+zop(int hadpr)
 {
 	register int c, nlines, op;
 	bool excl;
@@ -715,9 +709,7 @@ zop(hadpr)
 	zop2(nlines, op);
 }
 
-zop2(nlines, op)
-	register int nlines;
-	register int op;
+zop2(int nlines, int op)
 {
 	register line *split;
 
@@ -805,10 +797,7 @@ splitit()
 	putnl();
 }
 
-plines(adr1, adr2, movedot)
-	line *adr1;
-	register line *adr2;
-	bool movedot;
+plines(line *adr1, line *adr2, bool movedot)
 {
 	register line *addr;
 
@@ -849,8 +838,7 @@ pofix()
  *
  * Undo is its own inverse.
  */
-undo(c)
-	bool c;
+undo(bool c)
 {
 	register int i;
 	register line *jp, *kp;
@@ -1107,9 +1095,7 @@ mapcmd(un, ab)
  * using NOSTR for dest.  Dname is what to show in listings.  mp is
  * the structure to affect (arrows, etc).
  */
-addmac(src,dest,dname,mp)
-	register char *src, *dest, *dname;
-	register struct maps *mp;
+addmac(char *src, char *dest, char *dname, struct maps *mp)
 {
 	register int slot, zer;
 
@@ -1199,8 +1185,7 @@ addmac(src,dest,dname,mp)
  * Implements macros from command mode. c is the buffer to
  * get the macro from.
  */
-cmdmac(c)
-char c;
+cmdmac(char c)
 {
 	char macbuf[BUFSIZ];
 	line *ad, *a1, *a2;
@@ -1227,8 +1212,7 @@ char c;
 }
 
 char *
-vgetpass(prompt)
-char *prompt;
+vgetpass(char *prompt)
 {
 	register char *p;
 	register c;

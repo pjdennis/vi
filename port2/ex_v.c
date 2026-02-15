@@ -125,8 +125,7 @@ ovbeg()
 	dot = addr2;
 }
 
-ovend(f)
-	ttymode f;
+ovend(ttymode f)
 {
 
 	splitw++;
@@ -312,8 +311,7 @@ setwind()
  * If so, then divide the screen buffer up into lines,
  * and initialize a bunch of state variables before we start.
  */
-vok(atube)
-	register char *atube;
+vok(char *atube)
 {
 	register int i;
 
@@ -362,8 +360,7 @@ vintr()
  * Set the size of the screen to size lines, to take effect the
  * next time the screen is redrawn.
  */
-vsetsiz(size)
-	int size;
+vsetsiz(int size)
 {
 	register int b;
 

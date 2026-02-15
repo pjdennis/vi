@@ -3,6 +3,8 @@
 #include "ex_tty.h"
 #include "ex_vis.h"
 
+int vzop(bool hadcnt, int cnt, int c);
+
 /*
  * This is the main routine for visual.
  * We here decode the count and possible named buffer specification
@@ -1088,8 +1090,7 @@ prepapp()
  * Execute function f with the address bounds addr1
  * and addr2 surrounding cnt lines starting at dot.
  */
-vremote(cnt, f, arg)
-	int cnt, (*f)(), arg;
+vremote(int cnt, int (*f)(), int arg)
 {
 	register int oing = inglobal;
 
@@ -1149,10 +1150,7 @@ vsave()
  * Do a z operation.
  * Code here is rather long, and very uninteresting.
  */
-vzop(hadcnt, cnt, c)
-	bool hadcnt;
-	int cnt;
-	register int c;
+vzop(bool hadcnt, int cnt, int c)
 {
 	register line *addr;
 

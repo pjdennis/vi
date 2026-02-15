@@ -167,8 +167,7 @@ bool show;	/* if true update the screen */
  * opposed to an ex command).  This has nothing to do with being
  * in open/visual mode as :s/foo/bar is not fromvis.
  */
-vmacchng(fromvis)
-bool fromvis;
+vmacchng(bool fromvis)
 {
 	line *savedot, *savedol;
 	char *savecursor;
@@ -319,8 +318,7 @@ vmove()
  * by vchange (although vchange may pass it back if it degenerates
  * to a full line range delete.)
  */
-vdelete(c)
-	char c;
+vdelete(char c)
 {
 	register char *cp;
 	register int i;
@@ -379,8 +377,7 @@ vdelete(c)
  * Across lines with both wcursor and wdot given, we delete
  * and sync then append (but one operation for undo).
  */
-vchange(c)
-	char c;
+vchange(char c)
 {
 	register char *cp;
 	register int i, ind, cnt;
@@ -820,8 +817,7 @@ vshift()
  * Replace a single character with the next input character.
  * A funny kind of insert.
  */
-vrep(cnt)
-	register int cnt;
+vrep(int cnt)
 {
 	register int i, c;
 

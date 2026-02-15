@@ -34,11 +34,9 @@ int	(*Outchar)() = termchar;
 int	(*Putchar)() = normchar;
 int	(*Pline)() = normline;
 
-int (*
-setlist(t))()
-	bool t;
+int (*setlist(bool t))()
 {
-	register int (*P)();
+	int (*P)();
 
 	listf = t;
 	P = Putchar;
@@ -46,11 +44,9 @@ setlist(t))()
 	return (P);
 }
 
-int (*
-setnumb(t))()
-	bool t;
+int (*setnumb(bool t))()
 {
-	register int (*P)();
+	int (*P)();
 
 	numberf = t;
 	P = Pline;
@@ -62,8 +58,7 @@ setnumb(t))()
  * Format c for list mode; leave things in common
  * with normal print mode to be done by normchar.
  */
-listchar(c)
-	register short c;
+listchar(short c)
 {
 
 	c &= (TRIM|QUOTE);
@@ -96,8 +91,7 @@ listchar(c)
  * Format c for printing.  Handle funnies of upper case terminals
  * and crocky hazeltines which don't have ~.
  */
-normchar(c)
-	register short c;
+normchar(short c)
 {
 	register char *colp;
 
@@ -140,8 +134,7 @@ normchar(c)
 /*
  * Print a line with a number.
  */
-numbline(i)
-	int i;
+numbline(int i)
 {
 
 	if (shudclob)
@@ -172,8 +165,7 @@ normline()
  * the printing of the line will erase or otherwise obliterate
  * the prompt which was printed before.  If it won't, do it now.
  */
-slobber(c)
-	int c;
+slobber(int c)
 {
 
 	shudclob = 0;
@@ -216,8 +208,7 @@ static	bool phadnl;
 /*
  * Indirect to current definition of putchar.
  */
-putchar(c)
-	int c;
+putchar(int c)
 {
 
 	(*Putchar)(c);
@@ -229,8 +220,7 @@ putchar(c)
  * Otherwise flush into next level of buffering when
  * small buffer fills or at a newline.
  */
-termchar(c)
-	int c;
+termchar(int c)
 {
 
 	if (pfast == 0 && phadnl)
@@ -410,8 +400,7 @@ fgoto()
  * Tab to column col by flushing and then setting destcol.
  * Used by "set all".
  */
-gotab(col)
-	int col;
+gotab(int col)
 {
 
 	flush1();
@@ -757,8 +746,7 @@ putnl()
 	putchar('\n');
 }
 
-putS(cp)
-	char *cp;
+putS(char *cp)
 {
 
 	if (cp == NULL)
@@ -768,8 +756,7 @@ putS(cp)
 }
 
 
-putch(c)
-	int c;
+putch(int c)
 {
 
 	*obp++ = c & 0177;
@@ -784,8 +771,7 @@ putch(c)
 /*
  * Put with padding
  */
-putpad(cp)
-	char *cp;
+putpad(char *cp)
 {
 
 	flush();
@@ -805,8 +791,7 @@ setoutt()
  * Printf (temporarily) in list mode.
  */
 /*VARARGS2*/
-lprintf(cp, dp)
-	char *cp, *dp;
+lprintf(char *cp, char *dp)
 {
 	register int (*P)();
 
@@ -943,8 +928,7 @@ ttcharoff()
 /*
  * Stop open, restoring tty modes.
  */
-ostop(f)
-	ttymode f;
+ostop(ttymode f)
 {
 
 	pfast = (f.c_oflag & ONLCR) == 0;
@@ -966,8 +950,7 @@ tostop()
 /*
  * Restore flags to normal state f.
  */
-normal(f)
-	ttymode f;
+normal(ttymode f)
 {
 
 	if (normtty > 0) {
@@ -980,8 +963,7 @@ normal(f)
  * Straight set of flags to state f.
  */
 ttymode
-setty(f)
-	ttymode f;
+setty(ttymode f)
 {
 	int isnorm = 0;
 	ttymode ot;
@@ -998,8 +980,7 @@ setty(f)
 	return (ot);
 }
 
-gTTY(i)
-	int i;
+gTTY(int i)
 {
 
 	tcgetattr(i, &tty);
@@ -1009,8 +990,7 @@ gTTY(i)
  * sTTY: set the tty modes on file descriptor i to be what's
  * currently in global "tty".  (Also use nttyc if needed.)
  */
-sTTY(i)
-	int i;
+sTTY(int i)
 {
 
 	/* USG 3 very simple: just set everything */

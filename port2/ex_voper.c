@@ -6,6 +6,9 @@
 #define	blank()		isspace(wcursor[0])
 #define	forbid(a)	if (a) goto errlab;
 
+int find(char c);
+int wordof(char which, char *wc);
+
 char	vscandir[2] =	{ '/', 0 };
 
 /*
@@ -18,8 +21,7 @@ char	vscandir[2] =	{ '/', 0 };
  * and if wcursor is zero, then the first non-blank location of the
  * other line is implied.
  */
-operate(c, cnt)
-	register int c, cnt;
+operate(int c, int cnt)
 {
 	register int i;
 	int (*moveop)(), (*deleteop)();
@@ -694,8 +696,7 @@ slerr:
 /*
  * Find single character c, in direction dir from cursor.
  */
-find(c)
-	char c;
+find(char c)
 {
 
 	for(;;) {
@@ -711,9 +712,7 @@ find(c)
  * Do a word motion with operator op, and cnt more words
  * to go after this.
  */
-word(op, cnt)
-	register int (*op)();
-	int cnt;
+word(int (*op)(), int cnt)
 {
 	register int which;
 	register char *iwc;
@@ -762,8 +761,7 @@ word(op, cnt)
  * To end of word, with operator op and cnt more motions
  * remaining after this.
  */
-eend(op)
-	register int (*op)();
+eend(int (*op)())
 {
 	register int which;
 
@@ -789,9 +787,7 @@ eend(op)
  * Wordof tells whether the character at *wc is in a word of
  * kind which (blank/nonblank words are 0, conservative words 1).
  */
-wordof(which, wc)
-	char which;
-	register char *wc;
+wordof(char which, char *wc)
 {
 
 	if (isspace(*wc))
@@ -803,8 +799,7 @@ wordof(which, wc)
  * Wordch tells whether character at *wc is a word character
  * i.e. an alfa, digit, or underscore.
  */
-wordch(wc)
-	char *wc;
+wordch(char *wc)
 {
 	register int c;
 

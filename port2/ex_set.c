@@ -206,8 +206,7 @@ propts()
 	flush();
 }
 
-propt(op)
-	register struct option *op;
+propt(struct option *op)
 {
 	register char *name;
 

@@ -19,9 +19,7 @@
  * Random routines, in alphabetical order.
  */
 
-any(c, s)
-	int c;
-	register char *s;
+any(int c, char *s)
 {
 	register int x;
 
@@ -31,8 +29,7 @@ any(c, s)
 	return (0);
 }
 
-backtab(i)
-	register int i;
+backtab(int i)
 {
 	register int j;
 
@@ -58,8 +55,7 @@ change()
  * characters through position cp of the
  * current line.
  */
-column(cp)
-	register char *cp;
+column(char *cp)
 {
 
 	if (cp == 0)
@@ -82,9 +78,7 @@ comment()
 		ungetchar(c);
 }
 
-Copy(to, from, size)
-	register char *from, *to;
-	register int size;
+Copy(char *to, char *from, int size)
 {
 
 	if (size > 0)
@@ -93,9 +87,7 @@ Copy(to, from, size)
 		while (--size > 0);
 }
 
-copyw(to, from, size)
-	register line *from, *to;
-	register int size;
+copyw(line *to, line *from, int size)
 {
 
 	if (size > 0)
@@ -104,17 +96,14 @@ copyw(to, from, size)
 		while (--size > 0);
 }
 
-copywR(to, from, size)
-	register line *from, *to;
-	register int size;
+copywR(line *to, line *from, int size)
 {
 
 	while (--size >= 0)
 		to[size] = from[size];
 }
 
-ctlof(c)
-	int c;
+ctlof(int c)
 {
 
 	return (c == TRIM ? '?' : c | ('A' - 1));
@@ -129,8 +118,7 @@ dingdong()
 		putpad(bell);
 }
 
-fixindent(indent)
-	int indent;
+fixindent(int indent)
 {
 	register int i;
 	register char *cp;
@@ -145,8 +133,7 @@ fixindent(indent)
 	return (i);
 }
 
-filioerr(cp)
-	char *cp;
+filioerr(char *cp)
 {
 	register int oerrno = errno;
 
@@ -156,8 +143,7 @@ filioerr(cp)
 }
 
 char *
-genindent(indent)
-	register int indent;
+genindent(int indent)
 {
 	register char *cp;
 
@@ -175,8 +161,7 @@ getDOT()
 }
 
 line *
-getmark(c)
-	register int c;
+getmark(int c)
 {
 	register line *addr;
 
@@ -187,8 +172,7 @@ getmark(c)
 	return (0);
 }
 
-getn(cp)
-	register char *cp;
+getn(char *cp)
 {
 	register int i = 0;
 
@@ -209,15 +193,13 @@ ignnEOF()
 		comment();
 }
 
-iswhite(c)
-	int c;
+iswhite(int c)
 {
 
 	return (c == ' ' || c == '\t');
 }
 
-junk(c)
-	register int c;
+junk(int c)
 {
 
 	if (c && !value(BEAUTIFY))
@@ -242,8 +224,7 @@ killed()
 	killcnt(addr2 - addr1 + 1);
 }
 
-killcnt(cnt)
-	register int cnt;
+killcnt(int cnt)
 {
 
 	if (inopen) {
@@ -263,8 +244,7 @@ killcnt(cnt)
 	putNFL();
 }
 
-lineno(a)
-	line *a;
+lineno(line *a)
 {
 
 	return (a - zero);
@@ -288,8 +268,7 @@ markDOT()
 	markpr(dot);
 }
 
-markpr(which)
-	line *which;
+markpr(line *which)
 {
 
 	if ((inglobal == 0 || inopen) && which <= endcore) {
@@ -299,8 +278,7 @@ markpr(which)
 	}
 }
 
-markreg(c)
-	register int c;
+markreg(int c)
 {
 
 	if (c == '\'' || c == '`')
@@ -317,8 +295,7 @@ markreg(c)
  * All others map to themselves.
  */
 char *
-mesg(str)
-	register char *str;
+mesg(char *str)
 {
 	register char *cp;
 
@@ -343,9 +320,7 @@ mesg(str)
 }
 
 /*VARARGS2*/
-merror(seekpt, i)
-	char *seekpt;
-	long i;
+merror(char *seekpt, long i)
 {
 	register char *cp = linebuf;
 
@@ -363,8 +338,7 @@ merror(seekpt, i)
 		putpad(exit_standout_mode);
 }
 
-merror1(seekpt)
-	char *seekpt;
+merror1(char *seekpt)
 {
 
 	strcpy(linebuf, seekpt);
@@ -384,8 +358,7 @@ nonzero()
 	}
 }
 
-notable(i)
-	int i;
+notable(int i)
 {
 
 	return (hush == 0 && !inglobal && i > value(REPORT));
@@ -400,15 +373,13 @@ notempty()
 }
 
 
-netchHAD(cnt)
-	int cnt;
+netchHAD(int cnt)
 {
 
 	netchange(lineDOL() - cnt);
 }
 
-netchange(i)
-	register int i;
+netchange(int i)
 {
 	register char *cp;
 
@@ -427,16 +398,13 @@ netchange(i)
 	putNFL();
 }
 
-putmark(addr)
-	line *addr;
+putmark(line *addr)
 {
 
 	putmk1(addr, putline());
 }
 
-putmk1(addr, n)
-	register line *addr;
-	int n;
+putmk1(line *addr, int n)
 {
 	register line *markp;
 	register oldglobmk;
@@ -451,8 +419,7 @@ putmk1(addr, n)
 }
 
 char *
-plural(i)
-	long i;
+plural(long i)
 {
 
 	return (i == 1 ? "" : "s");
@@ -461,8 +428,7 @@ plural(i)
 int	qcount();
 short	vcntcol;
 
-qcolumn(lim, gp)
-	register char *lim, *gp;
+qcolumn(char *lim, char *gp)
 {
 	register int x;
 	int (*OO)();
@@ -483,8 +449,7 @@ qcolumn(lim, gp)
 }
 
 int
-qcount(c)
-	int c;
+qcount(int c)
 {
 
 	if (c == '\t') {
@@ -494,8 +459,7 @@ qcount(c)
 	vcntcol++;
 }
 
-reverse(a1, a2)
-	register line *a1, *a2;
+reverse(line *a1, line *a2)
 {
 	register line t;
 
@@ -508,9 +472,7 @@ reverse(a1, a2)
 	}
 }
 
-save(a1, a2)
-	line *a1;
-	register line *a2;
+save(line *a1, line *a2)
 {
 	register int more;
 
@@ -574,9 +536,7 @@ skipwh()
 }
 
 /*VARARGS2*/
-smerror(seekpt, cp)
-	char *seekpt;
-	char *cp;
+smerror(char *seekpt, char *cp)
 {
 
 	if (seekpt == 0)
@@ -595,8 +555,7 @@ smerror(seekpt, cp)
 #undef	error
 
 char *
-strend(cp)
-	register char *cp;
+strend(char *cp)
 {
 
 	while (*cp)
@@ -604,8 +563,7 @@ strend(cp)
 	return (cp);
 }
 
-strcLIN(dp)
-	char *dp;
+strcLIN(char *dp)
 {
 
 	CP(linebuf, dp);
@@ -617,8 +575,7 @@ strcLIN(dp)
  * the file or our buffer, e.g. a write error in the
  * middle of a write operation, or a temp file error.
  */
-syserror(danger)
-int danger;
+syserror(int danger)
 {
 	register int e = errno;
 
@@ -634,8 +591,7 @@ int danger;
  * hitting a tab, where tabs are set every ts columns.  Work right for
  * the case where col > columns, even if ts does not divide columns.
  */
-tabcol(col, ts)
-int col, ts;
+tabcol(int col, int ts)
 {
 	int offset, result;
 
@@ -649,8 +605,7 @@ int col, ts;
 }
 
 char *
-vfindcol(i)
-	int i;
+vfindcol(int i)
 {
 	register char *cp;
 	register int (*OO)() = Outchar;
@@ -666,8 +621,7 @@ vfindcol(i)
 }
 
 char *
-vskipwh(cp)
-	register char *cp;
+vskipwh(char *cp)
 {
 
 	while (iswhite(*cp) && cp[1])
@@ -677,8 +631,7 @@ vskipwh(cp)
 
 
 char *
-vpastwh(cp)
-	register char *cp;
+vpastwh(char *cp)
 {
 
 	while (iswhite(*cp))
@@ -686,8 +639,7 @@ vpastwh(cp)
 	return (cp);
 }
 
-whitecnt(cp)
-	register char *cp;
+whitecnt(char *cp)
 {
 	register int i;
 
@@ -709,8 +661,7 @@ whitecnt(cp)
 }
 
 
-markit(addr)
-	line *addr;
+markit(line *addr)
 {
 
 	if (addr != dot && addr >= one && addr <= dol)
@@ -765,8 +716,7 @@ onhup()
  * Similar to onhup.  This happens when any random core dump occurs,
  * e.g. a bug in vi.  We preserve the file and then generate a core.
  */
-oncore(sig)
-int sig;
+oncore(int sig)
 {
 	static int timescalled = 0;
 

@@ -13,13 +13,14 @@
 #include "ex.h"
 #include "ex_re.h"
 
+int dosubcon(bool f, line *a);
+
 /*
  * Global, substitute and regular expressions.
  * Very similar to ed, with some re extensions and
  * confirmed substitute.
  */
-global(k)
-	bool k;
+global(bool k)
 {
 	register char *gp;
 	register int c;
@@ -155,8 +156,7 @@ gdelete()
 bool	cflag;
 int	scount, slines, stotal;
 
-substitute(c)
-	int c;
+substitute(int c)
 {
 	register line *addr;
 	register int n;
@@ -265,8 +265,7 @@ compsub(ch)
 	}
 }
 
-comprhs(seof)
-	int seof;
+comprhs(int seof)
 {
 	register char *rp, *orp;
 	register int c;
@@ -340,9 +339,7 @@ getsub()
 	return (0);
 }
 
-dosubcon(f, a)
-	bool f;
-	line *a;
+dosubcon(bool f, line *a)
 {
 
 	if (execute(f, a) == 0)
@@ -354,8 +351,7 @@ dosubcon(f, a)
 	return (1);
 }
 
-confirmed(a)
-	line *a;
+confirmed(line *a)
 {
 	register int c, ch;
 
@@ -392,9 +388,7 @@ getch()
 	return (c & TRIM);
 }
 
-ugo(cnt, with)
-	int with;
-	int cnt;
+ugo(int cnt, int with)
 {
 
 	if (cnt > 0)
@@ -483,8 +477,7 @@ ovflo:
 	strcLIN(genbuf);
 }
 
-fixcase(c)
-	register int c;
+fixcase(int c)
 {
 
 	if (casecnt == 0)
@@ -500,8 +493,7 @@ fixcase(c)
 }
 
 char *
-place(sp, l1, l2)
-	register char *sp, *l1, *l2;
+place(char *sp, char *l1, char *l2)
 {
 
 	while (l1 < l2) {
@@ -512,8 +504,7 @@ place(sp, l1, l2)
 	return (sp);
 }
 
-snote(total, nlines)
-	register int total, nlines;
+snote(int total, int nlines)
 {
 
 	if (!notable(total))
@@ -525,9 +516,7 @@ snote(total, nlines)
 	flush();
 }
 
-compile(eof, oknl)
-	int eof;
-	int oknl;
+compile(int eof, int oknl)
 {
 	register int c;
 	register char *ep;
@@ -735,16 +724,14 @@ defchar:
 	}
 }
 
-cerror(s)
-	char *s;
+cerror(char *s)
 {
 
 	expbuf[0] = 0;
 	error(s);
 }
 
-same(a, b)
-	register int a, b;
+same(int a, int b)
 {
 
 	return (a == b || value(IGNORECASE) &&
@@ -753,8 +740,7 @@ same(a, b)
 
 char	*locs;
 
-execute(gf, addr)
-	line *addr;
+execute(int gf, line *addr)
 {
 	register char *p1, *p2;
 	register int c;
@@ -802,8 +788,7 @@ execute(gf, addr)
 
 #define	uletter(c)	(isalpha(c) || c == '_')
 
-advance(lp, ep)
-	register char *lp, *ep;
+advance(char *lp, char *ep)
 {
 	register char *curlp;
 	char *sp, *sp1;
@@ -914,10 +899,7 @@ star:
 	}
 }
 
-cclass(set, c, af)
-	register char *set;
-	register int c;
-	int af;
+cclass(char *set, int c, int af)
 {
 	register int n;
 

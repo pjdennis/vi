@@ -3,6 +3,12 @@
 #include "ex_tty.h"
 #include "ex_vis.h"
 
+int vjumpto(line *addr, char *curs, char context);
+int vup(int cnt, int ind, bool scroll);
+int vdown(int cnt, int ind, bool scroll);
+int vcontext(line *addr, char where);
+int vreset(bool inecho);
+
 /*
  * Routines to adjust the window, showing specified lines
  * in certain positions on the screen, and scrolling in both
@@ -15,10 +21,7 @@
  * New position for cursor is curs.
  * Like most routines here, we vsave().
  */
-vmoveto(addr, curs, context)
-	register line *addr;
-	char *curs;
-	char context;
+vmoveto(line *addr, char *curs, char context)
 {
 
 	markit(addr);
@@ -30,10 +33,7 @@ vmoveto(addr, curs, context)
  * Vjumpto is like vmoveto, but doesn't mark previous
  * context or save linebuf as current line.
  */
-vjumpto(addr, curs, context)
-	register line *addr;
-	char *curs;
-	char context;
+vjumpto(line *addr, char *curs, char context)
 {
 
 	noteit(0);
@@ -48,9 +48,7 @@ vjumpto(addr, curs, context)
 /*
  * Go up or down cnt (negative is up) to new position curs.
  */
-vupdown(cnt, curs)
-	register int cnt;
-	char *curs;
+vupdown(int cnt, char *curs)
 {
 
 	if (cnt > 0)
@@ -69,9 +67,7 @@ vupdown(cnt, curs)
  * If scroll, then we MUST use a scroll.
  * Otherwise clear and redraw if motion is far.
  */
-vup(cnt, ind, scroll)
-	register int cnt, ind;
-	bool scroll;
+vup(int cnt, int ind, bool scroll)
 {
 	register int i, tot;
 
@@ -118,9 +114,7 @@ okr:
 /*
  * Like vup, but scrolling down.
  */
-vdown(cnt, ind, scroll)
-	register int cnt, ind;
-	bool scroll;
+vdown(int cnt, int ind, bool scroll)
 {
 	register int i, tot;
 
@@ -167,9 +161,7 @@ dcontxt:
  * Work here is in determining new top line implied by
  * this placement of line addr, since we always draw from the top.
  */
-vcontext(addr, where)
-	register line *addr;
-	char where;
+vcontext(line *addr, char where)
 {
 	register line *top;
 
@@ -228,8 +220,7 @@ vclean()
  * (and call us recursively).  Eventually, we clear the screen
  * (or its open mode equivalent) and redraw.
  */
-vshow(addr, top)
-	line *addr, *top;
+vshow(line *addr, line *top)
 {
 	register int cnt = addr - dot;
 	register int i = vcline + cnt;
@@ -270,8 +261,7 @@ vshow(addr, top)
  * area;  we are called this way in the middle of a :e escape
  * from visual, e.g.
  */
-vreset(inecho)
-	bool inecho;
+vreset(bool inecho)
 {
 
 	vcnt = vcline = 0;
@@ -286,9 +276,7 @@ vreset(inecho)
  * than) cnt physical lines?
  */
 line *
-vback(tp, cnt)
-	register int cnt;
-	register line *tp;
+vback(line *tp, int cnt)
 {
 	register int d;
 
@@ -306,9 +294,7 @@ vback(tp, cnt)
 /*
  * How much scrolling will it take to roll cnt lines starting at tp?
  */
-vfit(tp, cnt)
-	register line *tp;
-	int cnt;
+vfit(line *tp, int cnt)
 {
 	register int j;
 
@@ -326,8 +312,7 @@ vfit(tp, cnt)
 /*
  * Roll cnt lines onto the screen.
  */
-vroll(cnt)
-	register int cnt;
+vroll(int cnt)
 {
 	int oldhold = hold;
 
@@ -352,8 +337,7 @@ vroll(cnt)
 /*
  * Roll backwards (scroll up).
  */
-vrollR(cnt)
-	register int cnt;
+vrollR(int cnt)
 {
 	register bool fried = 0;
 	int oldhold = hold;
@@ -382,8 +366,7 @@ vrollR(cnt)
  * BUG:		An interrupt during a scroll in this way
  *		dumps to command mode.
  */
-vcookit(cnt)
-	register int cnt;
+vcookit(int cnt)
 {
 
 	return (cnt > 1 && (ospeed < B1200 && !initev || cnt > lines * 2));
@@ -403,8 +386,7 @@ vdepth()
 /*
  * Move onto a new line, with cursor at position curs.
  */
-vnline(curs)
-	char *curs;
+vnline(char *curs)
 {
 
 	if (curs)

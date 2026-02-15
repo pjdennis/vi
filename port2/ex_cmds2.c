@@ -19,6 +19,9 @@
 extern bool	pflag, nflag;		/* mjm: extern; also in ex_cmds.c */
 extern int	poffset;		/* mjm: extern; also in ex_cmds.c */
 
+int tailprim(char *comm, int i, bool notinvis);
+int vcontin(bool ask);
+
 /*
  * Subroutines for major command loop.
  */
@@ -39,8 +42,7 @@ cmdreg()
 /*
  * Tell whether the character ends a command
  */
-endcmd(ch)
-	int ch;
+endcmd(int ch)
 {
 	switch (ch) {
 
@@ -73,9 +75,7 @@ eol()
  * with i an integer argument to printf.
  */
 /*VARARGS2*/
-error(str, i)
-	register char *str;
-	long i;
+error(char *str, long i)
 {
 
 	error0();
@@ -163,8 +163,7 @@ error0()
  * Otherwise, in the normal command mode error case,
  * finish state reset, and throw to top.
  */
-error1(str)
-	char *str;
+error1(char *str)
 {
 	bool die;
 
@@ -246,7 +245,7 @@ next()
 	extern short isalt;	/* defined in ex_io.c */
 
 	if (argc == 0)
-		error("No more files@to edit");
+		error("No more files@to edit", 0);
 	morargc = argc;
 	isalt = (strcmp(altfile, args)==0) + 1;
 	if (savedfile[0])
@@ -363,9 +362,7 @@ resetflav()
  * Print an error message with a %s type argument to printf.
  * Message text comes from error message file.
  */
-serror(str, cp)
-	register char *str;
-	char *cp;
+serror(char *str, char *cp)
 {
 
 	error0();
@@ -402,8 +399,7 @@ skipend()
 /*
  * Set the command name for non-word commands.
  */
-tailspec(c)
-	int c;
+tailspec(int c)
 {
 	static char foocmd[2];
 
@@ -415,15 +411,13 @@ tailspec(c)
  * Try to read off the rest of the command word.
  * If alphabetics follow, then this is not the command we seek.
  */
-tail(comm)
-	char *comm;
+tail(char *comm)
 {
 
 	tailprim(comm, 1, 0);
 }
 
-tail2of(comm)
-	char *comm;
+tail2of(char *comm)
 {
 
 	tailprim(comm, 2, 0);
@@ -431,10 +425,7 @@ tail2of(comm)
 
 char	tcommand[20];
 
-tailprim(comm, i, notinvis)
-	register char *comm;
-	int i;
-	bool notinvis;
+tailprim(char *comm, int i, bool notinvis)
 {
 	register char *cp;
 	register int c;
@@ -469,8 +460,7 @@ ret:
 /*
  * Continue after a : command from open/visual.
  */
-vcontin(ask)
-	bool ask;
+vcontin(bool ask)
 {
 
 	if (vcnt > 0)

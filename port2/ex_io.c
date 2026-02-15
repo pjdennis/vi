@@ -39,8 +39,7 @@ long	cntodd;			/* Count of non-ascii characters " */
  * If comm is E then command is doomed and we are
  * parsing just so user won't have to retype the name.
  */
-filename(comm)
-	int comm;
+filename(int comm)
 {
 	register int c = comm, d;
 	register int i;
@@ -189,8 +188,7 @@ filexp:
  * Glob the argument words in genbuf, or if no globbing
  * is implied, just split them up directly.
  */
-glob(gp)
-	struct glob *gp;
+glob(struct glob *gp)
 {
 	int pvec[2];
 	register char **argv = gp->argv;
@@ -304,8 +302,7 @@ samef:
  * Read a file from the world.
  * C is command, 'e' if this really an edit (or a recover).
  */
-rop(c)
-	int c;
+rop(int c)
 {
 	register int i;
 	struct stat stbuf;
@@ -424,8 +421,7 @@ rop2()
 	}
 }
 
-rop3(c)
-	int c;
+rop3(int c)
 {
 
 	if (iostats() == 0 && c == 'e')
@@ -470,9 +466,7 @@ other:
 /*
  * Are these two really the same inode?
  */
-samei(sp, cp)
-	struct stat *sp;
-	char *cp;
+samei(struct stat *sp, char *cp)
 {
 	struct stat stb;
 
@@ -659,8 +653,7 @@ getfile()
 /*
  * Write a range onto the io stream.
  */
-putfile(isfilter)
-int isfilter;
+putfile(int isfilter)
 {
 	line *a1;
 	register char *fp, *lp;
@@ -719,9 +712,7 @@ wrerror()
 short slevel;
 short ttyindes;
 
-source(fil, okfail)
-	char *fil;
-	bool okfail;
+source(char *fil, bool okfail)
 {
 	jmp_buf osetexit;
 	register int saveinp, ointty, oerrno;
@@ -824,8 +815,7 @@ iostats()
 # define index strchr
 # define rindex strrchr
 
-checkmodeline(l)
-char *l;
+checkmodeline(char *l)
 {
 	char *beg, *end;
 	char cmdbuf[1024];

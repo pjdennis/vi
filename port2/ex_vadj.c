@@ -3,6 +3,9 @@
 #include "ex_tty.h"
 #include "ex_vis.h"
 
+int vopenup(int cnt, bool could, int l);
+int vmoveitup(int cnt, bool doclr);
+
 /*
  * Routines to deal with management of logical versus physical
  * display, opening and redisplaying lines on the screen, and
@@ -19,9 +22,7 @@
  * on the screen in which case the line may actually end up
  * somewhere other than line p.
  */
-vopen(tp, p)
-	line *tp;
-	int p;
+vopen(line *tp, int p)
 {
 	register int cnt;
 	register struct vlinfo *vp, *vpc;
@@ -78,8 +79,7 @@ vopen(tp, p)
 /*
  * Redisplay logical line l at physical line p with line number lineno.
  */
-vreopen(p, lineno, l)
-	int p, lineno, l;
+vreopen(int p, int lineno, int l)
 {
 	register int d;
 	register struct vlinfo *vp = &vlinfo[l];
@@ -165,8 +165,7 @@ vreopen(p, lineno, l)
  * delete some (blank) lines from the top of the screen so that
  * later inserts will not push stuff off the bottom.
  */
-vglitchup(l, o)
-	int l, o;
+vglitchup(int l, int o)
 {
 	register struct vlinfo *vp = &vlinfo[l];
 	register int need;
@@ -206,9 +205,7 @@ vglitchup(l, o)
  * Insert cnt blank lines before line p,
  * logically and (if supported) physically.
  */
-vinslin(p, cnt, l)
-	register int p, cnt;
-	int l;
+vinslin(int p, int cnt, int l)
 {
 	register int i;
 	bool could = 1;
@@ -283,9 +280,7 @@ vinslin(p, cnt, l)
  * it ourselves (brute force) we will squish out @ lines in the process
  * if this will save us work.
  */
-vopenup(cnt, could, l)
-	int cnt;
-	bool could;
+vopenup(int cnt, bool could, int l)
 {
 	register struct vlinfo *vc = &vlinfo[l + 1];
 	register struct vlinfo *ve = &vlinfo[vcnt];
@@ -324,8 +319,7 @@ vopenup(cnt, could, l)
  * Adjust data structure internally to account for insertion of
  * blank lines on the screen.
  */
-vadjAL(p, cnt)
-	int p, cnt;
+vadjAL(int p, int cnt)
 {
 	char *tlines[TUBELINES];
 	register int from, to;
@@ -348,8 +342,7 @@ vadjAL(p, cnt)
  * Roll the screen up logically and physically
  * so that line dl is the bottom line on the screen.
  */
-vrollup(dl)
-	int dl;
+vrollup(int dl)
 {
 	register int cnt;
 	register int dc = destcol;
@@ -373,9 +366,7 @@ vup1()
  * If doclr is true, do a clear eol if the terminal
  * has standout (to prevent it from scrolling up)
  */
-vmoveitup(cnt, doclr)
-	register int cnt;
-	bool doclr;
+vmoveitup(int cnt, bool doclr)
 {
 
 	if (cnt == 0)
@@ -406,8 +397,7 @@ vmoveitup(cnt, doclr)
 /*
  * Scroll the screen up cnt lines logically.
  */
-vscroll(cnt)
-	register int cnt;
+vscroll(int cnt)
 {
 	register int from, to;
 	char *tlines[TUBELINES];
@@ -472,8 +462,7 @@ vscrap()
  * Repaint the screen, with cursor at curs, aftern an arbitrary change.
  * Handle notification on large changes.
  */
-vrepaint(curs)
-	char *curs;
+vrepaint(char *curs)
 {
 
 	wdot = NOLINE;
@@ -562,8 +551,7 @@ vrepaint(curs)
  * line after last won't completely fit.  The routine vsync is
  * more conservative and much less work on dumb terminals.
  */
-vredraw(p)
-	register int p;
+vredraw(int p)
 {
 	register int l;
 	register line *tp;
@@ -675,8 +663,7 @@ vredraw(p)
  * Do the real work in deleting cnt lines starting at line p from
  * the display.  First affected line is line l.
  */
-vdellin(p, cnt, l)
-	int p, cnt, l;
+vdellin(int p, int cnt, int l)
 {
 	register int i;
 
@@ -717,8 +704,7 @@ vdellin(p, cnt, l)
 /*
  * Adjust internal physical screen image to account for deleted lines.
  */
-vadjDL(p, cnt)
-	int p, cnt;
+vadjDL(int p, int cnt)
 {
 	char *tlines[TUBELINES];
 	register int from, to;
@@ -748,8 +734,7 @@ vsyncCL()
 	vsync(LINE(vcline));
 }
 
-vsync(p)
-	register int p;
+vsync(int p)
 {
 
 	if (value(REDRAW))
@@ -762,8 +747,7 @@ vsync(p)
  * The guts of a sync.  Similar to redraw but
  * just less ambitous.
  */
-vsync1(p)
-	register int p;
+vsync1(int p)
 {
 	register int l;
 	char temp[LBSIZE];
@@ -832,9 +816,7 @@ vsync1(p)
  * Subtract (logically) cnt physical lines from the
  * displayed position of lines starting with line l.
  */
-vcloseup(l, cnt)
-	int l;
-	register int cnt;
+vcloseup(int l, int cnt)
 {
 	register int i;
 
@@ -852,8 +834,7 @@ vcloseup(l, cnt)
  *
  * Many boundary conditions here.
  */
-vreplace(l, cnt, newcnt)
-	int l, cnt, newcnt;
+vreplace(int l, int cnt, int newcnt)
 {
 	register int from, to, i;
 	bool savenote = 0;
@@ -1001,8 +982,7 @@ sethard()
  * as dirty so that they will be checked for correct
  * display at next sync/redraw.
  */
-vdirty(base, i)
-	register int base, i;
+vdirty(int base, int i)
 {
 	register int l;
 

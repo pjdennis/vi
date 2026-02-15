@@ -207,9 +207,7 @@ printf(char *fmt, ...)
  * printable decimal and places it in "buffer", right-justified.
  */
 char *
-_p_dconv(value, buffer)
-	long value;
-	char *buffer;
+_p_dconv(long value, char *buffer)
 {
 	register char *bp;
 	register int svalue;
@@ -264,9 +262,7 @@ _p_dconv(value, buffer)
  * This program sends string "s" to putchar.
  */
 void
-_p_emit(s, send)
-	register char *s;
-	char *send;
+_p_emit(char *s, char *send)
 {
 	char cfill;
 	register int alen;

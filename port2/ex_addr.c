@@ -134,8 +134,7 @@ setnoaddr()
  * than the number of lines in the file.
  */
 line *
-address(inputline)
-	char *inputline;
+address(char *inputline)
 {
 	register line *addr;
 	register int offset, c;
