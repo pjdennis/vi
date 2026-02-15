@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stddef.h>
+#include <unistd.h>
 
 /* Forward-declare what we need from ex.h */
 typedef int line;

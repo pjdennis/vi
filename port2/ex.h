@@ -41,6 +41,7 @@ typedef	int	line;
 
 #include "ex_tune.h"
 #include "ex_vars.h"
+#include "ex_tty.h"
 
 /*
  * Options in the editor are referred to usually by "value(name)" where
@@ -162,7 +163,7 @@ extern	int	xchng;		/* Suppresses multiple "No writes" in !cmd */
 			 * FIXUNDO: do we want to mung undo vars?
 			 * Usually yes unless in a macro or global.
 			 */
-#define FIXUNDO		(inopen >= 0 && (inopen || !inglobal))
+#define FIXUNDO		((int)inopen >= 0 && (inopen || !inglobal))
 #define ckaw()		{if (chng && value(AUTOWRITE) && !value(READONLY)) wop(0);}
 #define	copy(a,b,c)	Copy((char *) (a), (char *) (b), (c))
 #define	eq(a, b)	((a) && (b) && strcmp(a, b) == 0)
@@ -228,53 +229,476 @@ extern	int	(*Outchar)(int);
 extern	int	(*Pline)(int);
 extern	int	(*Putchar)(int);
 extern	void	(*oldhup)(int);
-int	(*setlist(bool t))(int);
-int	(*setnorm())(int);
-int	(*setnumb(bool t))(int);
-line	*address();
-char	*cgoto();
-char	*genindent();
-char	*getblock();
-line	*getmark();
-char	*mesg();
-char	*place();
-char	*plural();
-line	*scanfor();
-line	*setin();
-char	*strend();
-char	*tailpath();
-line	*vback();
-char	*vfindcol();
-char	*vgetline(int cnt, char *gcursor, bool *aescaped, char commch);
-char	*vinit();
-char	*vpastwh();
-char	*vskipwh();
-void	put(int unused);
-void	putreg(int c);
-void	YANKreg(int c);
-void	delete(int hush);
-void	filter(int mode);
-int	getfile();
-int	getsub();
-int	gettty();
-void	join(int c);
-int	listchar(short c);
-int	normchar(short c);
-int	normline();
-int	numbline();
 extern	void	(*oldquit)(int);
+
+/*
+ * Function prototypes - ex.c
+ */
+void	init(void);
+char	*tailpath(char *p);
+
+/*
+ * Function prototypes - ex_addr.c
+ */
+void	setdot(void);
+void	setdot1(void);
+void	setcount(void);
+int	getnum(void);
+void	setall(void);
+void	setnoaddr(void);
+line	*address(char *inputline);
+void	setCNL(void);
+void	setNAEOL(void);
+
+/*
+ * Function prototypes - ex_cmds.c
+ */
+void	commands(bool noprompt, bool exitoneof);
+
+/*
+ * Function prototypes - ex_cmds2.c
+ */
+int	cmdreg(void);
+int	endcmd(int ch);
+void	eol(void);
+void	error(char *str, ...);
+void	erewind(void);
+void	error0(void);
+void	error1(char *str);
+void	fixol(void);
+int	exclam(void);
+void	makargs(void);
+void	next(void);
+void	donewline(void);
+void	nomore(void);
+int	quickly(void);
+void	resetflav(void);
+void	serror(char *str, char *cp);
+void	setflav(void);
+int	skipend(void);
+void	tailspec(int c);
+void	tail(char *comm);
+void	tail2of(char *comm);
+int	tailprim(char *comm, int i, bool notinvis);
+void	vcontin(bool ask);
+void	vnfl(void);
+
+/*
+ * Function prototypes - ex_cmdsub.c
+ */
+int	append(int (*f)(), line *a);
+void	appendnone(void);
+void	pargs(void);
+void	delete(int hush);
+void	deletenone(void);
+void	squish(void);
+void	join(int c);
+void	move(void);
+void	move1(int cflag, line *addrt);
+void	put(int unused);
+void	pragged(bool kill);
+void	shift(int c, int cnt);
+void	tagfind(bool quick);
+void	yank(int unused);
+void	zop(int hadpr);
+void	zop2(int nlines, int op);
+void	plines(line *adr1, line *adr2, bool movedot);
+void	pofix(void);
+void	undo(bool c);
+void	somechange(void);
+void	mapcmd(int un, int ab);
+void	addmac(char *src, char *dest, char *dname, struct maps *mp);
+void	cmdmac(char c);
+char	*vgetpass(char *prompt);
+
+/*
+ * Function prototypes - ex_get.c
+ */
+void	ignchar(void);
+int	getchar(void);
+int	getcd(void);
+int	peekchar(void);
+int	peekcd(void);
+int	getach(void);
+int	gettty(void);
+int	smunch(int col, char *ocp);
+line	*setin(line *addr);
+
+/*
+ * Function prototypes - ex_io.c
+ */
+struct	glob;	/* Forward declaration (defined in ex_argv.h) */
+void	filename(int comm);
+int	getargs(void);
+void	glob(struct glob *gp);
+void	getone(void);
+void	rop(int c);
+void	rop2(void);
+void	rop3(int c);
+int	wop(bool dofname);
+int	getfile(void);
+void	putfile(int isfilter);
+void	source(char *fil, bool okfail);
+int	iostats(void);
+void	clrstats(void);
+
+/*
+ * Function prototypes - ex_put.c
+ */
+int	(*setlist(bool t))(int);
+int	(*setnorm(void))(int);
+int	(*setnumb(bool t))(int);
+int	listchar(int c);
+int	normchar(int c);
+int	numbline(int i);
+int	normline(int);
+void	slobber(int c);
+int	putchar(int c);
+int	termchar(int c);
+void	flush(void);
+void	flush1(void);
+void	flush2(void);
+void	fgoto(void);
+void	gotab(int col);
+int	plod(int cnt);
+void	noteinp(void);
+void	termreset(void);
+void	draino(void);
+void	flusho(void);
+void	putnl(void);
+void	putS(char *cp);
+int	putch(int c);
+void	putpad(char *cp);
+void	setoutt(void);
+void	lprintf(char *cp, char *dp);
+void	putNFL(void);
+void	pstart(void);
+void	pstop(void);
+ttymode	ostart(void);
+void	tostart(void);
+void	ttcharoff(void);
+void	ostop(ttymode f);
+void	tostop(void);
+void	normal(ttymode f);
+ttymode	setty(ttymode f);
+void	gTTY(int i);
+void	sTTY(int i);
+void	noonl(void);
+
+/*
+ * Function prototypes - ex_re.c
+ */
+void	global(bool k);
+int	substitute(int c);
+int	compsub(int ch);
+int	getsub(void);
+int	compile(int eof, int oknl);
+int	execute(int gf, ...);
+int	advance(char *lp, char *ep);
+char	*place(char *sp, char *l1, char *l2);
+
+/*
+ * Function prototypes - ex_set.c
+ */
+void	set(void);
+
+/*
+ * Function prototypes - ex_subr.c
+ */
+int	any(int c, char *s);
+int	backtab(int i);
+void	change(void);
+int	column(char *cp);
+void	comment(void);
+void	Copy(char *to, char *from, int size);
+void	copyw(line *to, line *from, int size);
+void	copywR(line *to, line *from, int size);
+int	ctlof(int c);
+void	dingdong(void);
+int	fixindent(int indent);
+void	filioerr(char *cp);
+char	*genindent(int indent);
+void	getDOT(void);
+line	*getmark(int c);
+int	getn(char *cp);
+void	ignnEOF(void);
+int	iswhite(int c);
+int	junk(int c);
+void	killed(void);
+void	killcnt(int cnt);
+int	lineno(line *a);
+int	lineDOL(void);
+int	lineDOT(void);
+void	markDOT(void);
+void	markpr(line *which);
+int	markreg(int c);
+char	*mesg(char *str);
+void	merror(char *seekpt, ...);
+void	merror1(char *seekpt);
+int	morelines(void);
+void	nonzero(void);
+int	notable(int i);
+void	notempty(void);
+void	netchHAD(int cnt);
+void	netchange(int i);
+void	putmark(line *addr);
+void	putmk1(line *addr, int n);
+char	*plural(long i);
+int	qcolumn(char *lim, char *gp);
+int	qcount(int c);
+void	reverse(line *a1, line *a2);
+void	save(line *a1, line *a2);
+void	save12(void);
+void	saveall(void);
+int	span(void);
+void	vi_sync(void);
+int	skipwh(void);
+void	smerror(char *seekpt, char *cp);
+char	*strend(char *cp);
+void	strcLIN(char *dp);
+void	syserror(int danger);
+int	tabcol(int col, int ts);
+char	*vfindcol(int i);
+char	*vskipwh(char *cp);
+char	*vpastwh(char *cp);
+int	whitecnt(char *cp);
+void	markit(line *addr);
 void	onhup(int);
 void	onintr(int);
+void	setrupt(void);
+int	preserve(void);
 void	onsusp(int);
 void	vi_signal(int sig, void (*handler)(int));
-int	putch(int);
-void	shift();
-int	termchar(int);
-void	vfilter(int c);
+
+/*
+ * Function prototypes - ex_temp.c
+ */
+void	fileinit(void);
+int	cleanup(bool all);
+void	getline(line tl);
+int	putline(void);
+char	*getblock(line atl, int iof);
+void	blkio(short b, char *buf, ssize_t (*iofcn)());
+void	tlaste(void);
+void	tflush(void);
+void	synctmp(void);
+void	TSYNC(void);
+void	putreg(int c);
+int	partreg(char c);
+void	notpart(int c);
+void	YANKreg(int c);
+void	kshift(void);
+void	YANKline(void);
+void	rbflush(void);
+void	regbuf(char c, char *buf, int buflen);
+
+/*
+ * Function prototypes - ex_tty.c
+ */
+void	gettmode(void);
+void	setterm(char *type);
+char	*fkey(int i);
+int	cost(char *str);
+
+/*
+ * Function prototypes - ex_unix.c
+ */
+void	unix0(bool warn);
+ttymode	unixex(char *opt, char *up, int newstdin, int mode);
+void	unixwt(bool c, ttymode f);
+void	filter(int mode);
+void	recover(void);
+void	waitfor(void);
+void	revocer(void);
+
+/*
+ * Function prototypes - ex_v.c
+ */
+void	oop(void);
+void	ovbeg(void);
+void	ovend(ttymode f);
+void	vop(void);
+void	fixzero(void);
+void	savevis(void);
+void	undvis(void);
+void	setwind(void);
+void	vok(char *atube);
 void	vintr(int);
-int	vputch(int);
+void	vsetsiz(int size);
+
+/*
+ * Function prototypes - ex_vadj.c
+ */
+void	vopen(line *tp, int p);
+int	vreopen(int p, int lineno, int l);
+int	vglitchup(int l, int o);
+void	vinslin(int p, int cnt, int l);
+void	vopenup(int cnt, bool could, int l);
+void	vadjAL(int p, int cnt);
+void	vrollup(int dl);
+void	vup1(void);
+void	vmoveitup(int cnt, bool doclr);
+void	vscroll(int cnt);
+void	vscrap(void);
+void	vrepaint(char *curs);
+void	vredraw(int p);
+void	vdellin(int p, int cnt, int l);
+void	vadjDL(int p, int cnt);
+void	vsyncCL(void);
+void	vsync(int p);
+void	vsync1(int p);
+void	vcloseup(int l, int cnt);
+void	vreplace(int l, int cnt, int newcnt);
+void	sethard(void);
+void	vdirty(int base, int i);
+
+/*
+ * Function prototypes - ex_vget.c
+ */
+void	ungetkey(int c);
+int	getkey(void);
+int	peekbr(void);
+int	getbr(void);
+int	getesc(void);
+int	peekkey(void);
+int	readecho(char c);
+void	setLAST(void);
+void	addtext(char *cp);
+void	setDEL(void);
+void	setBUF(char *BUF);
+void	addto(char *buf, char *str);
+int	noteit(bool must);
+void	beep(void);
+int	map(int c, struct maps *maps);
+void	macpush(char *st, int canundo);
+int	vgetcnt(void);
+int	fastpeekkey(void);
+void	setalarm(void);
+void	cancelalarm(void);
+
+/*
+ * Function prototypes - ex_vmain.c
+ */
+void	vmain(void);
+void	grabtag(void);
+void	prepapp(void);
+void	vremote(int cnt, void (*f)(int), int arg);
+void	vsave(void);
+void	vzop(bool hadcnt, int cnt, int c);
+
+/*
+ * Function prototypes - ex_voper.c
+ */
+void	operate(int c, int cnt);
+int	find(char c);
+int	word(void (*op)(int), int cnt);
+void	eend(void (*op)(int));
+int	wordof(char which, char *wc);
+int	wordch(char *wc);
+int	edge(void);
+int	margin(void);
+
+/*
+ * Function prototypes - ex_vops.c
+ */
+void	vUndo(void);
+void	vundo(bool show);
+void	vmacchng(bool fromvis);
+void	vnoapp(void);
+void	vmove(int c);
+void	vdelete(int c);
+void	vchange(int c);
+void	voOpen(int c, int cnt);
 void	vshftop(int c);
-void	yank(int unused);
+void	vfilter(int c);
+int	xdw(void);
+void	vshift(int unused);
+void	vrep(int cnt);
+void	vyankit(int c);
+void	setpk(void);
+
+/*
+ * Function prototypes - ex_vops2.c
+ */
+void	bleep(int i, char *cp);
+int	vdcMID(void);
+void	takeout(char *BUF);
+int	ateopr(void);
+void	vappend(int ch, int cnt, int indent);
+void	back1(void);
+char	*vgetline(int cnt, char *gcursor, bool *aescaped, char commch);
+void	vdoappend(char *lp);
+
+/*
+ * Function prototypes - ex_vops3.c
+ */
+int	lfind(bool pastatom, int cnt, void (*f)(int), line *limit);
+int	endsent(bool pastatom);
+int	endPS(void);
+int	lindent(line *addr);
+int	lmatchp(line *addr);
+void	lsmatch(char *cp);
+int	ltosolid(void);
+int	ltosol1(char *parens);
+int	lskipbal(char *parens);
+int	lskipatom(void);
+int	lskipa1(char *parens);
+int	lnext(void);
+int	lbrack(int c, void (*f)(int));
+int	isa(char *cp);
+
+/*
+ * Function prototypes - ex_vput.c
+ */
+void	vclear(void);
+void	vclrbyte(char *cp, int i);
+void	vclrlin(int l, line *tp);
+void	vclreol(void);
+void	vclrech(bool didphys);
+void	fixech(void);
+void	vcursbef(char *cp);
+void	vcursat(char *cp);
+void	vcursaft(char *cp);
+void	vfixcurs(void);
+void	vsetcurs(char *nc);
+void	vigoto(int y, int x);
+void	vcsync(void);
+void	vgotoCL(int x);
+void	vshowmode(char *msg);
+void	vgoto(int y, int x);
+void	vprepins(void);
+void	vmaktop(int p, char *cp);
+int	vinschar(int c);
+void	vneedpos(int cnt);
+void	vnpins(int dosync);
+void	vishft(void);
+void	viin(int c);
+void	godm(void);
+void	enddm(void);
+void	goim(void);
+void	endim(void);
+int	vputchar(int c);
+void	physdc(int stcol, int endcol);
+int	vputch(int);
+
+/*
+ * Function prototypes - ex_vwind.c
+ */
+void	vmoveto(line *addr, char *curs, char context);
+void	vjumpto(line *addr, char *curs, char context);
+void	vupdown(int cnt, char *curs);
+void	vup(int cnt, int ind, bool scroll);
+void	vdown(int cnt, int ind, bool scroll);
+void	vcontext(line *addr, char where);
+void	vclean(void);
+void	vshow(line *addr, line *top);
+void	vreset(bool inecho);
+line	*vback(line *tp, int cnt);
+int	vfit(line *tp, int cnt);
+void	vroll(int cnt);
+void	vrollR(int cnt);
+int	vdepth(void);
+void	vnline(char *curs);
 
 #	define	ignore(a)	a
 #	define	ignorf(a)	a

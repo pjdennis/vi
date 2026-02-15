@@ -16,6 +16,12 @@
 #include "ex_tty.h"
 #include "ex_vis.h"
 
+static int edfile(void);
+static void wrerror(void);
+static void checkmodeline(char *l);
+static int gscan(void);
+static int samei(struct stat *sp, char *cp);
+
 /*
  * File input/output, source, preserve and recover
  */
@@ -71,7 +77,7 @@ filename(int comm)
 
 		case 'f':
 			edited = 0;
-			/* fall into ... */
+			/* FALLTHROUGH */
 
 		case 'e':
 			if (savedfile[0]) {
@@ -90,7 +96,7 @@ filename(int comm)
 			break;
 		}
 	}
-	if (hush && comm != 'f' || comm == 'E')
+	if ((hush && comm != 'f') || comm == 'E')
 		return;
 	if (file[0] != 0) {
 		lprintf("\"%s\"", file);
@@ -154,7 +160,7 @@ getargs()
 		case '\\':
 			if (any(peekchar(), "#%|"))
 				c = getchar();
-			/* fall into... */
+			/* FALLTHROUGH */
 
 		default:
 			if (cp > &genbuf[LBSIZE - 2])
@@ -194,11 +200,11 @@ void
 glob(struct glob *gp)
 {
 	int pvec[2];
-	register char **argv = gp->argv;
+	register char **gargv = gp->argv;
 	register char *cp = gp->argspac;
 	register int c;
 	char ch;
-	int nleft = NCARGS;
+	int gnleft = NCARGS;
 
 	gp->argc0 = 0;
 	if (gscan() == 0) {
@@ -209,13 +215,13 @@ glob(struct glob *gp)
 				v++;
 			if (!*v)
 				break;
-			*argv++ = cp;
+			*gargv++ = cp;
 			while (*v && !isspace(*v))
 				*cp++ = *v++;
 			*cp++ = 0;
 			gp->argc0++;
 		}
-		*argv = 0;
+		*gargv = 0;
 		return;
 	}
 	if (pipe(pvec) < 0)
@@ -240,7 +246,7 @@ glob(struct glob *gp)
 	}
 	close(pvec[1]);
 	do {
-		*argv = cp;
+		*gargv = cp;
 		for (;;) {
 			if (read(io, &ch, 1) != 1) {
 				close(io);
@@ -250,16 +256,16 @@ glob(struct glob *gp)
 			if (c <= 0 || isspace(c))
 				break;
 			*cp++ = c;
-			if (--nleft <= 0)
+			if (--gnleft <= 0)
 				error("Arg list too long");
 		}
-		if (cp != *argv) {
-			--nleft;
+		if (cp != *gargv) {
+			--gnleft;
 			*cp++ = 0;
 			gp->argc0++;
 			if (gp->argc0 >= NARGS)
 				error("Arg list too long");
-			argv++;
+			gargv++;
 		}
 	} while (c >= 0);
 	waitfor();
@@ -271,8 +277,8 @@ glob(struct glob *gp)
  * Scan genbuf for shell metacharacters.
  * Set is union of v7 shell and csh metas.
  */
-int
-gscan()
+static int
+gscan(void)
 {
 	register char *cp;
 
@@ -299,7 +305,6 @@ getone()
 	str = G.argv[G.argc0 - 1];
 	if (strlen(str) > FNSIZE - 4)
 		error("Filename too long");
-samef:
 	CP(file, str);
 }
 
@@ -319,7 +324,7 @@ rop(int c)
 	io = open(file, 0);
 	if (io < 0) {
 		if (c == 'e' && errno == ENOENT) {
-			edited++;
+			edited = 1;
 			/*
 			 * If the user just did "ex foo" he is probably
 			 * creating a new file.  Don't be an error, since
@@ -339,6 +344,7 @@ rop(int c)
 
 	case S_IFBLK:
 		error(" Block special file");
+		/* FALLTHROUGH */
 
 	case S_IFCHR:
 		if (isatty(io))
@@ -346,9 +352,11 @@ rop(int c)
 		if (samei(&stbuf, "/dev/null"))
 			break;
 		error(" Character special file");
+		/* FALLTHROUGH */
 
 	case S_IFDIR:
 		error(" Directory");
+		/* FALLTHROUGH */
 
 	case S_IFREG:
 		i = read(io, (char *) &magic, sizeof(magic));
@@ -413,7 +421,7 @@ rop3(int c)
 {
 
 	if (iostats() == 0 && c == 'e')
-		edited++;
+		edited = 1;
 	if (c == 'e') {
 		if (wasalt || firstpat) {
 			register line *addr = zero + oldadot;
@@ -454,7 +462,7 @@ other:
 /*
  * Are these two really the same inode?
  */
-int
+static int
 samei(struct stat *sp, char *cp)
 {
 	struct stat stb;
@@ -500,7 +508,7 @@ wop(bool dofname)
 		CP(file, savedfile);
 		if (inopen) {
 			vclrech(0);
-			splitw++;
+			splitw = 1;
 		}
 		lprintf("\"%s\"", file);
 	}
@@ -546,11 +554,12 @@ cre:
 		if (io < 0)
 			syserror(0);
 		writing = 1;
-		if (hush == 0)
+		if (hush == 0) {
 			if (nonexist)
 				printf(" [New file]");
 			else if (value(WRITEANY) && edfile() != EDF)
 				printf(" [Existing file]");
+		}
 		break;
 
 	case 2:
@@ -566,7 +575,7 @@ cre:
 	putfile(0);
 	ignore(iostats());
 	if (c != 2 && addr1 == one && addr2 == dol) {
-		if (eq(file, savedfile))
+		if (strcmp(file, savedfile) == 0)
 			edited = 1;
 		vi_sync();
 	}
@@ -575,6 +584,7 @@ cre:
 		addr2 = saddr2;
 	}
 	writing = 0;
+	return 0;
 }
 
 /*
@@ -583,11 +593,11 @@ cre:
  * if this is a partial buffer, and distinguish
  * all cases.
  */
-int
-edfile()
+static int
+edfile(void)
 {
 
-	if (!edited || !eq(file, savedfile))
+	if (!edited || strcmp(file, savedfile) != 0)
 		return (NOTEDF);
 	return (addr1 == one && addr2 == dol ? EDF : PARTBUF);
 }
@@ -647,6 +657,7 @@ getfile()
 void
 putfile(int isfilter)
 {
+	(void)isfilter;
 	line *a1;
 	register char *fp, *lp;
 	register int nib;
@@ -689,11 +700,11 @@ putfile(int isfilter)
  * the edited file then we consider it to have changed since it is
  * now likely scrambled.
  */
-void
-wrerror()
+static void
+wrerror(void)
 {
 
-	if (eq(file, savedfile) && edited)
+	if (strcmp(file, savedfile) == 0 && edited)
 		change();
 	syserror(1);
 }
@@ -786,19 +797,19 @@ iostats()
 	io = -1;
 	if (hush == 0) {
 		if (value(TERSE))
-			printf(" %d/%D", cntln, cntch);
+			printf(" %d/%ld", cntln, cntch);
 		else
-			printf(" %d line%s, %D character%s", cntln, plural((long) cntln),
+			printf(" %d line%s, %ld character%s", cntln, plural((long) cntln),
 			    cntch, plural(cntch));
 		if (cntnull || cntodd) {
 			printf(" (");
 			if (cntnull) {
-				printf("%D null", cntnull);
+				printf("%ld null", cntnull);
 				if (cntodd)
 					printf(", ");
 			}
 			if (cntodd)
-				printf("%D non-ASCII", cntodd);
+				printf("%ld non-ASCII", cntodd);
 			putchar(')');
 		}
 		noonl();
@@ -811,7 +822,7 @@ iostats()
 # define index strchr
 # define rindex strrchr
 
-void
+static void
 checkmodeline(char *l)
 {
 	char *beg, *end;

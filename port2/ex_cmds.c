@@ -59,7 +59,7 @@ commands(bool noprompt, bool exitoneof)
 		 * before the next command.
 		 */
 		if (pflag ||
-		    lchng != chng && value(AUTOPRINT) && !inglobal && !inopen && endline) {
+		    (lchng != chng && value(AUTOPRINT) && !inglobal && !inopen && endline)) {
 			pflag = 0;
 			nochng();
 			if (dol != zero) {
@@ -96,7 +96,7 @@ error("Offset out-of-bounds|Offset after command too large");
 			addr1 = addr2;
 			addr = address(0);
 			c = getcd();
-			if (addr == 0)
+			if (addr == 0) {
 				if (c == ',')
 					addr = dot;
 				else if (addr1 != 0) {
@@ -104,6 +104,7 @@ error("Offset out-of-bounds|Offset after command too large");
 					break;
 				} else
 					break;
+			}
 			addr2 = addr;
 			given++;
 			if (c == ';') {
@@ -145,7 +146,6 @@ error("Offset out-of-bounds|Offset after command too large");
 notinvis:
 				tailprim(Command, 1, 1);
 		}
-choice:
 		laste = 0;
 		switch (c) {
 
@@ -277,7 +277,7 @@ editcmd:
 doecmd:
 			init();
 			addr2 = zero;
-			laste++;
+			laste = 1;
 			vi_sync();
 			rop(c);
 			nochng();
@@ -508,7 +508,7 @@ quit:
 					}
 					init();
 					addr2 = zero;
-					laste++;
+					laste = 1;
 					vi_sync();
 					recover();
 					rop2();
@@ -591,7 +591,7 @@ suspend:
 				continue;
 
 			}
-			/* fall into ... */
+			/* FALLTHROUGH */
 
 /* & */
 /* ~ */
@@ -797,7 +797,7 @@ numberit:
 		case '=':
 			donewline();
 			setall();
-			if (inglobal == 2)
+			if ((int)inglobal == 2)
 				pofix();
 			printf("%d", lineno(addr2));
 			noonl();

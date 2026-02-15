@@ -175,7 +175,7 @@ int main(int ac, char *av[])
 		if (c == 0) {
 			hush = 1;
 			value(AUTOPRINT) = 0;
-			fast++;
+			fast = 1;
 		} else switch (c) {
 
 		case 'R':
@@ -191,7 +191,7 @@ int main(int ac, char *av[])
 			break;
 
 		case 'r':
-			recov++;
+			recov = 1;
 			break;
 
 		case 'V':
@@ -233,7 +233,7 @@ int main(int ac, char *av[])
 		sa.sa_flags = 0;
 		sigaction(SIGTSTP, &sa, &osa);
 		if (!hush && osa.sa_handler == SIG_DFL)
-			vi_signal(SIGTSTP, onsusp), dosusp++;
+			vi_signal(SIGTSTP, onsusp), dosusp = 1;
 	}
 
 	if (ac && av[0][0] == '+') {
@@ -276,7 +276,7 @@ int main(int ac, char *av[])
 		setrupt();
 		intty = isatty(0);
 		value(PROMPT) = intty;
-		if (cp = getenv("SHELL"))
+		if ((cp = getenv("SHELL")))
 			CP(shell, cp);
 		if (fast)
 			setterm("dumb");

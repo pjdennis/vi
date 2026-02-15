@@ -42,6 +42,7 @@ unix0(bool warn)
 		case '\\':
 			if (any(peekchar(), "%#!"))
 				c = getchar();
+			/* FALLTHROUGH */
 		default:
 			if (up >= &uxb[UXBSIZE]) {
 tunix:
@@ -100,7 +101,7 @@ uexp:
 	if (warn && hush == 0 && chng && xchng != chng && value(WARN) && dol > zero) {
 		xchng = chng;
 		vnfl();
-		printf(mesg("[No write]|[No write since last change]"));
+		printf("%s", mesg("[No write]|[No write since last change]"));
 		noonl();
 		flush();
 	} else
@@ -109,7 +110,7 @@ uexp:
 		if (uxb[0] == 0)
 			error("No previous command@to repeat");
 		if (inopen) {
-			splitw++;
+			splitw = 1;
 			vclean();
 			vgoto(WECHO, 0);
 		}
@@ -200,6 +201,7 @@ unixex(char *opt, char *up, int newstdin, int mode)
  * F is for restoration of tty mode if from open/visual.
  * C flags suppression of printing.
  */
+void
 unixwt(bool c, ttymode f)
 {
 

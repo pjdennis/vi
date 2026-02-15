@@ -4,6 +4,8 @@
 #include "ex_vis.h"
 
 int vmaxrep(char ch, int cnt);
+void back1(void);
+int vgetsplit(void);
 
 /*
  * Low level routines for operations sequences,
@@ -274,19 +276,19 @@ vappend(int ch, int cnt, int indent)
 		do {
 			CP(cursor, genbuf);
 			if (cnt > 1) {
-				int oldhold = hold;
+				int inner_oldhold = hold;
 
 				Outchar = vinschar;
 				hold |= HOLDQIK;
 				printf("%s", genbuf);
-				hold = oldhold;
+				hold = inner_oldhold;
 				Outchar = vputchar;
 			}
 			cursor += gcursor - genbuf;
 		} while (--cnt > 0);
 		endim();
 		vUA2 = cursor;
-		if (escape != '\n')
+		if ((int)escape != '\n')
 			CP(cursor, gcursor + 1);
 
 		/*
@@ -310,7 +312,7 @@ vappend(int ch, int cnt, int indent)
 		/*
 		 * All done unless we are continuing on to another line.
 		 */
-		if (escape != '\n') {
+		if ((int)escape != '\n') {
 			vshowmode("");
 			break;
 		}
@@ -460,7 +462,7 @@ vgetline(int cnt, char *gcursor, bool *aescaped, char commch)
 	for (;;) {
 		backsl = 0;
 		if (gobblebl)
-			gobblebl--;
+			gobblebl = 0;
 		if (cnt != 0) {
 			cnt--;
 			if (cnt == 0)
@@ -620,7 +622,7 @@ vbackup:
 			}
 			if (value(WRAPMARGIN) &&
 				(outcol >= OCOLUMNS - value(WRAPMARGIN) ||
-				 backsl && outcol==0) &&
+				 (backsl && outcol==0)) &&
 				commch != 'r') {
 				/*
 				 * At end of word and hit wrapmargin.
@@ -690,7 +692,7 @@ vbackup:
 				for (abno=0; abbrevs[abno].mapto; abno++) {
 					if (eq(cp, abbrevs[abno].cap)) {
 						macpush(cstr, 0);
-						macpush(abbrevs[abno].mapto);
+						macpush(abbrevs[abno].mapto, 0);
 						goto vbackup;
 					}
 				}
@@ -705,7 +707,7 @@ vbackup:
 			if (vglobp)
 				goto def;
 			c = '\n';
-			/* presto chango ... */
+			/* FALLTHROUGH */
 
 		/*
 		 * \n		Start new line.
@@ -733,7 +735,7 @@ vbackup:
 		case CTRL('t'):
 			if (vglobp)
 				goto def;
-			/* fall into ... */
+			/* FALLTHROUGH */
 
 		/*
 		 * ^D|QUOTE	Is a backtab (in a repeated command).
@@ -764,7 +766,7 @@ vbackup:
 			 * generated autoindent.  We count the ^D for repeat
 			 * purposes.
 			 */
-			if (c == iwhite && c != 0)
+			if (c == iwhite && c != 0) {
 				if (cp == gcursor) {
 					iwhite = backtab(c);
 					CDCNT++;
@@ -788,6 +790,7 @@ vbackup:
 					vputchar(' ');
 					goto vbackup;
 				}
+			}
 			if (vglobp && vglobp - iglobp >= 2 &&
 			    (vglobp[-2] == '^' || vglobp[-2] == '0')
 			    && gcursor == ogcursor + 1)
@@ -804,7 +807,6 @@ vbackup:
 			}
 def:
 			if (!backsl) {
-				int cnt;
 				putchar(c);
 				flush();
 			}
@@ -826,7 +828,6 @@ vadone:
 	return (gcursor);
 }
 
-int	vgetsplit();
 char	*vsplitpt;
 
 /*

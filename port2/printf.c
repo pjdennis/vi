@@ -1,9 +1,13 @@
 #include <stdarg.h>
 
+#pragma GCC diagnostic ignored "-Wbuiltin-declaration-mismatch"
+
 /*
  * This version of printf is compatible with the Version 7 C
  * printf. It prints through putchar.
  */
+extern int putchar(int);
+
 
 #define MAXOCT	11	/* Maximum octal digits in a long */
 #define MAXINT	32767	/* largest normal length positive integer */
@@ -88,7 +92,7 @@ printf(char *fmt, ...)
 			case 'L':
 			case 'l':
 				length = 2;
-				/* no break!! */
+				/* FALLTHROUGH */
 			case 'h':
 			case 'H':
 				length--;
@@ -117,7 +121,7 @@ printf(char *fmt, ...)
 			case 'O':
 				length = 1;
 				fcode = 'o';
-				/* no break */
+				/* FALLTHROUGH */
 			case 'o':
 			case 'X':
 			case 'x':
@@ -143,7 +147,7 @@ printf(char *fmt, ...)
 					*--bptr = ((int) num & mask1) + 060;
 				    else
 					*--bptr = ((int) num & mask1) + 0127;
-				while (num = (num >> nbits) & mask2);
+				while ((num = (num >> nbits) & mask2));
 
 				if (fcode=='o') {
 					if (n)
@@ -166,7 +170,7 @@ printf(char *fmt, ...)
 			case 'I':
 				length = 1;
 				fcode = fcode + 'a' - 'A';
-				/* no break */
+				/* FALLTHROUGH */
 			case 'd':
 			case 'i':
 			case 'u':
@@ -179,7 +183,7 @@ printf(char *fmt, ...)
 					else
 						num = (long) n;
 				}
-				if (n = (fcode != 'u' && num < 0))
+				if ((n = (fcode != 'u' && num < 0)))
 					num = -num;
 				/* now convert to digits */
 				bptr = _p_dconv(num, buf);

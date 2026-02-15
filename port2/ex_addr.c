@@ -173,7 +173,8 @@ address(char *inputline)
 		case '$':
 		case '\'':
 		case '\\':
-			bigmove++;
+			bigmove = 1;
+			/* FALLTHROUGH */
 		case '.':
 			if (addr || offset)
 				error("Badly formed address");

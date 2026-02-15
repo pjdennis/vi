@@ -14,6 +14,7 @@
 #include "ex_re.h"
 #include "ex_tty.h"
 #include "ex_vis.h"
+#include <stdarg.h>
 
 /*
  * Random routines, in alphabetical order.
@@ -24,7 +25,7 @@ any(int c, char *s)
 {
 	register int x;
 
-	while (x = *s++)
+	while ((x = *s++))
 		if (x == c)
 			return (1);
 	return (0);
@@ -346,12 +347,17 @@ mesg(char *str)
 
 /*VARARGS2*/
 void
-merror(char *seekpt, long i)
+merror(char *seekpt, ...)
 {
+	va_list ap;
+	long i;
 	register char *cp = linebuf;
 
 	if (seekpt == 0)
 		return;
+	va_start(ap, seekpt);
+	i = va_arg(ap, long);
+	va_end(ap);
 	merror1(seekpt);
 	if (*cp == '\n')
 		putnl(), cp++;
@@ -442,7 +448,7 @@ void
 putmk1(line *addr, int n)
 {
 	register line *markp;
-	register oldglobmk;
+	register int oldglobmk;
 
 	oldglobmk = *addr & 1;
 	*addr &= ~1;
@@ -745,6 +751,7 @@ onemt()
 void
 onhup(int sig)
 {
+	(void)sig;
 
 	/*
 	 * USG tty driver can send multiple HUP's!!
@@ -805,6 +812,7 @@ oncore(int sig)
 void
 onintr(int sig)
 {
+	(void)sig;
 	vi_signal(SIGINT, inopen ? vintr : onintr);
 	cancelalarm();
 	draino();
@@ -859,6 +867,7 @@ preserve()
 void
 onsusp(int sig)
 {
+	(void)sig;
 	ttymode f;
 	int savenormtty;
 

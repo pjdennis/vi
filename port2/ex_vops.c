@@ -3,6 +3,9 @@
 #include "ex_tty.h"
 #include "ex_vis.h"
 
+int xdw(void);
+void setpk(void);
+
 /*
  * This file defines the operation sequences which interface the
  * logical changes to the file buffer with the internal and external
@@ -75,7 +78,7 @@ vundo(bool show)
 		vsave();
 		YANKreg('1');
 		notecnt = 0;
-		/* fall into ... */
+		/* FALLTHROUGH */
 
 	case VMANY:
 	case VMCHNG:
@@ -91,12 +94,13 @@ vundo(bool show)
 		 * with dol through unddol-1.  Hack screen image to
 		 * reflect this replacement.
 		 */
-		if (show)
+		if (show) {
 			if (undkind == UNDMOVE)
 				vdirty(0, lines);
 			else
 				vreplace(undap1 - addr, undap2 - undap1,
 				    undkind == UNDPUT ? 0 : unddol - dol);
+		}
 		savenote = notecnt;
 		undo(1);
 		if (show && (vundkind != VMCHNG || addr != dot))
@@ -175,10 +179,6 @@ vmacchng(bool fromvis)
 	char *savecursor;
 	char savelb[LBSIZE];
 	int nlines, more;
-	register line *a1, *a2;
-	char ch;	/* DEBUG */
-	int copyw(), copywR();
-
 	if (!inopen)
 		return;
 	if (!vmacp)
@@ -292,23 +292,23 @@ vmove(int c)
 	if (state == HARDOPEN) {
 		register char *cp;
 		if (rubble) {
-			register int c;
+			register int lc;
 			int oldhold = hold;
 
 			sethard();
 			cp = wcursor;
-			c = *cp;
+			lc = *cp;
 			*cp = 0;
 			hold |= HOLDDOL;
 			vreopen(WTOP, lineDOT(), vcline);
 			hold = oldhold;
-			*cp = c;
+			*cp = lc;
 		} else if (wcursor > cursor) {
 			vfixcurs();
 			for (cp = cursor; *cp && cp < wcursor;) {
-				register int c = *cp++ & TRIM;
+				register int lc = *cp++ & TRIM;
 
-				putchar(c ? c : ' ');
+				putchar(lc ? lc : ' ');
 			}
 		}
 	}
@@ -604,7 +604,7 @@ voOpen(int c, int cnt)
 	register int ind = 0, i;
 	int oldhold = hold;
 
-	if (value(SLOWOPEN) || value(REDRAW) && insert_line && delete_line)
+	if (value(SLOWOPEN) || (value(REDRAW) && insert_line && delete_line))
 		cnt = 1;
 	vsave();
 	setLAST();
@@ -834,7 +834,7 @@ vrep(int cnt)
 {
 	register int i, c;
 
-	if (cnt > strlen(cursor)) {
+	if (cnt > (int)strlen(cursor)) {
 		beep();
 		return;
 	}

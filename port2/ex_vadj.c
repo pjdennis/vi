@@ -4,7 +4,11 @@
 #include "ex_vis.h"
 
 void vopenup(int cnt, bool could, int l);
-void vmoveitup(int cnt, bool doclr);
+void vadjAL(int p, int cnt);
+void vscroll(int cnt);
+void vdellin(int p, int cnt, int l);
+void vadjDL(int p, int cnt);
+void vcloseup(int l, int cnt);
 
 /*
  * Routines to deal with management of logical versus physical
@@ -29,11 +33,12 @@ vopen(line *tp, int p)
 	register struct vlinfo *vp, *vpc;
 
 	if (state != VISUAL) {
-		if (vcnt)
+		if (vcnt) {
 			if (hold & HOLDROL)
 				vup1();
 			else
 				vclean();
+		}
 
 		/*
 		 * Forget all that we once knew.
@@ -80,7 +85,7 @@ vopen(line *tp, int p)
 /*
  * Redisplay logical line l at physical line p with line number lineno.
  */
-void
+int
 vreopen(int p, int lineno, int l)
 {
 	register int d;
@@ -165,7 +170,7 @@ vreopen(int p, int lineno, int l)
  * delete some (blank) lines from the top of the screen so that
  * later inserts will not push stuff off the bottom.
  */
-void
+int
 vglitchup(int l, int o)
 {
 	register struct vlinfo *vp = &vlinfo[l];
@@ -178,7 +183,7 @@ vglitchup(int l, int o)
 		need = p + vp->vdepth - (vp+1)->vliny;
 		if (need > 0) {
 			if (state == VISUAL && WTOP - ZERO >= need && insert_line && delete_line) {
-				glitched++;
+				glitched = 1;
 				WTOP -= need;
 				WLINES = WBOT - WTOP + 1;
 				p -= need;
@@ -485,15 +490,16 @@ vrepaint(char *curs)
 	/*
 	 * Deal with a totally useless display.
 	 */
-	if (vcnt == 0 || vcline < 0 || vcline > vcnt || holdupd && state != VISUAL) {
+	if (vcnt == 0 || vcline < 0 || vcline > vcnt || (holdupd && state != VISUAL)) {
 		register line *odol = dol;
 
 		vcnt = 0;
-		if (holdupd)
+		if (holdupd) {
 			if (state == VISUAL)
 				ignore(peekkey());
 			else
 				vup1();
+		}
 		holdupd = 0;
 		if (odol == zero)
 			fixzero();
@@ -793,7 +799,7 @@ vsync1(int p)
 		 * the current line, or if this line is piled under the
 		 * next line (vreplace does this and we undo it).
 		 */
-		if (l == 0 && state != VISUAL ||
+		if ((l == 0 && state != VISUAL) ||
 		    (l < vcnt && (vp->vliny <= p || vp[0].vliny == vp[1].vliny))) {
 			if (l == 0 || vp->vliny < p || (vp->vflags & VDIRT)) {
 				if (l == vcline)
@@ -878,7 +884,7 @@ vreplace(int l, int cnt, int newcnt)
 		/*
 		 * Unseen lines were affect so notify (later).
 		 */
-		savenote++;
+		savenote = 1;
 	}
 
 	/*
@@ -895,7 +901,7 @@ vreplace(int l, int cnt, int newcnt)
 	 * lines were changed.
 	 */
 	if (cnt > value(REPORT) || newcnt > value(REPORT))
-		savenote++;
+		savenote = 1;
 
 	/*
 	 * Same number of lines affeted as on screen, and we
@@ -903,9 +909,9 @@ vreplace(int l, int cnt, int newcnt)
 	 * over them, since otherwise we will push them
 	 * slowly off the screen, a clear lose.
 	 */
-	if (cnt == newcnt || vcnt - l == newcnt && insert_line && delete_line) {
+	if (cnt == newcnt || (vcnt - l == newcnt && insert_line && delete_line)) {
 		if (cnt > 1 && l + cnt > vcnt)
-			savenote++;
+			savenote = 1;
 		vdirty(l, newcnt);
 	} else {
 		/*
@@ -917,7 +923,7 @@ vreplace(int l, int cnt, int newcnt)
 			 * always notify.
 			 */
 			if (cnt > 1 && l + cnt > vcnt)
-				savenote++;
+				savenote = 1;
 			if (l + cnt >= vcnt)
 				cnt = vcnt - l;
 			else
@@ -938,7 +944,7 @@ vreplace(int l, int cnt, int newcnt)
 			 * when long lines are present).
 			 */
 			if (newcnt > 1 && l + newcnt > vcnt + 1)
-				savenote++;
+				savenote = 1;
 
 			/*
 			 * If there will be more lines than fit, then

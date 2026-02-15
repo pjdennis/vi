@@ -14,6 +14,11 @@
 #include "ex_temp.h"
 #include "ex_tty.h"
 
+static int setend(void);
+static void prall(void);
+static void propts(void);
+static void propt(struct option *op);
+
 /*
  * Set command.
  */
@@ -51,12 +56,11 @@ set()
 		no = 0;
 		if (cp[0] == 'n' && cp[1] == 'o') {
 			cp += 2;
-			no++;
+			no = 1;
 		}
 		/* Implement w300, w1200, and w9600 specially */
 		/* On modern terminals, always treat as w9600 */
 		if (eq(cp, "w300") || eq(cp, "w1200")) {
-dontset:
 			ignore(getchar());	/* = */
 			ignore(getnum());	/* value */
 			continue;
@@ -64,7 +68,7 @@ dontset:
 			cp = "window";
 		}
 		for (op = options; op < &options[NOPTS]; op++)
-			if (eq(op->oname, cp) || op->oabbrev && eq(op->oabbrev, cp))
+			if (eq(op->oname, cp) || (op->oabbrev && eq(op->oabbrev, cp)))
 				break;
 		if (op->oname == 0)
 			serror("%s: No such option@- 'set all' gives all option values", cp);
@@ -147,15 +151,15 @@ next:
 	eol();
 }
 
-int
-setend()
+static int
+setend(void)
 {
 
 	return (iswhite(peekchar()) || endcmd(peekchar()));
 }
 
-void
-prall()
+static void
+prall(void)
 {
 	register int incr = (NOPTS + 2) / 3;
 	register int rows = incr;
@@ -173,8 +177,8 @@ prall()
 	}
 }
 
-void
-propts()
+static void
+propts(void)
 {
 	register struct option *op;
 
@@ -201,7 +205,7 @@ propts()
 	flush();
 }
 
-void
+static void
 propt(struct option *op)
 {
 	register char *name;

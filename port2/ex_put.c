@@ -59,7 +59,7 @@ int (*setnumb(bool t))(int)
  * with normal print mode to be done by normchar.
  */
 int
-listchar(short c)
+listchar(int c)
 {
 
 	c &= (TRIM|QUOTE);
@@ -81,11 +81,12 @@ listchar(short c)
 	default:
 		if (c & QUOTE)
 			break;
-		if (c < ' ' && c != '\n' || c == DELETE)
+		if ((c < ' ' && c != '\n') || c == DELETE)
 			outchar('^'), c = ctlof(c);
 		break;
 	}
 	normchar(c);
+	return 0;
 }
 
 /*
@@ -93,7 +94,7 @@ listchar(short c)
  * and crocky hazeltines which don't have ~.
  */
 int
-normchar(short c)
+normchar(int c)
 {
 	register char *colp;
 
@@ -106,14 +107,14 @@ normchar(short c)
 			break;
 
 		case QUOTE:
-			return;
+			return 0;
 
 		default:
 			c &= TRIM;
 		}
-	else if (c < ' ' && c != '\n' && c != '\t' || c == DELETE)
+	else if ((c < ' ' && c != '\n' && c != '\t') || c == DELETE)
 		putchar('^'), c = ctlof(c);
-	else if (UPPERCASE)
+	else if (UPPERCASE) {
 		if (isupper(c)) {
 			outchar('\\');
 			c = tolower(c);
@@ -126,7 +127,9 @@ normchar(short c)
 					break;
 				}
 		}
+	}
 	outchar(c);
+	return 0;
 }
 
 /*
@@ -139,15 +142,17 @@ numbline(int i)
 	if (shudclob)
 		slobber(' ');
 	printf("%6d  ", i);
-	normline();
+	normline(0);
+	return 0;
 }
 
 /*
  * Normal line output, no numbering.
  */
 int
-normline()
+normline(int unused)
 {
+	(void)unused;
 	register char *cp;
 
 	if (shudclob)
@@ -158,6 +163,7 @@ normline()
 		putchar(*cp++);
 	if (!inopen)
 		putchar('\n' | QUOTE);
+	return 0;
 }
 
 /*
@@ -212,6 +218,7 @@ putchar(int c)
 {
 
 	(*Putchar)(c);
+	return 0;
 }
 
 /*
@@ -235,6 +242,7 @@ termchar(int c)
 		fgoto();
 		flush1();
 	}
+	return 0;
 }
 
 void
@@ -388,7 +396,7 @@ fgoto()
 				outcol = 0;
 		}
 	}
-	if (destline < outline && !(cursor_address && !holdcm || cursor_up || cursor_home))
+	if (destline < outline && !((cursor_address && !holdcm) || cursor_up || cursor_home))
 		destline = outline;
 	if (cursor_address && !holdcm)
 		if (plod(costCM) > 0)
@@ -430,6 +438,7 @@ plodput(int c)
 		plodcnt--;
 	else
 		putch(c);
+	return 0;
 }
 
 int
@@ -537,7 +546,7 @@ plod(int cnt)
 	 * If it will be cheaper, or if we can't back up, then send
 	 * a return preliminarily.
 	 */
-	if (j > i + 1 || outcol > destcol && !cursor_left) {
+	if (j > i + 1 || (outcol > destcol && !cursor_left)) {
 		/*
 		 * BUG: this doesn't take the (possibly long) length
 		 * of carriage_return into account.
@@ -846,7 +855,7 @@ pstart()
 	fgoto();
 	flusho();
 	pfast = 1;
-	normtty++;
+	normtty = 1;
 	tty = normf;
 	tty.c_oflag &= ~(ONLCR|TAB3);
 	tty.c_lflag &= ~ECHO;
@@ -883,7 +892,7 @@ ostart()
 		error("Open and visual must be used interactively");
 	*/
 	gTTY(2);
-	normtty++;
+	normtty = 1;
 	f = tty;
 	tty = normf;
 	tty.c_iflag &= ~ICRNL;
@@ -980,9 +989,9 @@ void
 normal(ttymode f)
 {
 
-	if (normtty > 0) {
+	if (normtty) {
 		setty(f);
-		normtty--;
+		normtty = 0;
 	}
 }
 
@@ -1002,8 +1011,9 @@ setty(ttymode f)
 		isnorm = 1;
 	tty = f;
 	sTTY(2);
-	if (!isnorm)
+	if (!isnorm) {
 		saveterm();
+	}
 	return (ot);
 }
 

@@ -1,5 +1,7 @@
 /* Copyright (c) 1981 Regents of the University of California */
 /* sccs id:	"@(#)ex_vis.h	1.3"	(9.1	2/9/83) */
+#ifndef EX_VIS_H
+#define EX_VIS_H
 /*
  * Open and visual mode definitions.
  */
@@ -134,15 +136,14 @@ extern	char	workcmd[5];	/* Temporary for lastcmd */
 #define	vputc(c)	putch(c)
 
 /*
- * Function types
+ * Function prototypes for visual subsystem are in ex.h.
+ * Only prototypes NOT in ex.h should be added here.
  */
-void	beep();
-int	qcount(int);
-void	vchange(int c);
-void	vdelete(int c);
-int	vgrabit();
-int	vinschar(int);
-void	vmove(int c);
-int	vputchar(int);
-void	vshift(int unused);
-void	vyankit(int c);
+
+/* obeep: ex.h declares beep() before the #define beep obeep macro,
+ * so the beep prototype in ex.h doesn't expand to obeep. We need
+ * an explicit obeep declaration for code that uses beep() after
+ * this header's macro takes effect. */
+void	obeep(void);
+
+#endif /* EX_VIS_H */

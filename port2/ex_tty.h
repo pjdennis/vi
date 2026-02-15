@@ -1,5 +1,7 @@
 /* Copyright (c) 1981 Regents of the University of California */
 /* sccs id:	"@(#)ex_tty.h	1.3"	(9.1	2/9/83) */
+#ifndef EX_TTY_H
+#define EX_TTY_H
 /*
  * Capabilities from termcap/terminfo
  */
@@ -29,7 +31,7 @@ typedef	struct termios ttymode;	/* Mode to contain tty flags */
 extern	ttymode	normf;		/* Restore tty flags to this (someday) */
 extern	bool	normtty;	/* Have to restore normal mode from normf */
 
-ttymode ostart(), setty(), unixex();
+/* Function prototypes for ostart, setty, unixex are in ex.h */
 
 extern	int	costCM;	/* # chars to output a typical cursor_address */
 extern	int	costSR;	/* likewise for scroll reverse */
@@ -58,3 +60,5 @@ extern	int	maphopcnt;	/* check for infinite mapping loops */
 extern	bool	anyabbrs;	/* true if abbr or unabbr has been done */
 extern	char	ttynbuf[20];	/* result of ttyname() */
 extern	int	ttymesg;	/* original mode of users tty */
+
+#endif /* EX_TTY_H */

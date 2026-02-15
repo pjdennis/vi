@@ -3,6 +3,10 @@
 #include "ex_tty.h"
 #include "ex_vis.h"
 
+int fastpeekkey(void);
+void setalarm(void);
+void trapalarm(int sig);
+
 /*
  * Input routines for open/visual.
  * We handle upper case only terminals in visual and reading from the
@@ -66,7 +70,6 @@ getbr()
 	char ch;
 	register int c, d;
 	register char *colp;
-	int cnt;
 	static char Peek2key;
 	extern short slevel, ttyindes;
 
@@ -92,7 +95,7 @@ getATTN:
 			return(*vmacp++);
 		/* End of a macro or set of nested macros */
 		vmacp = 0;
-		if (inopen == -1)	/* don't screw up undo for esc esc */
+		if ((int)inopen == -1)	/* don't screw up undo for esc esc */
 			vundkind = VMANY;
 		inopen = 1;	/* restore old setting now that macro done */
 		vch_mac = VC_NOTINMAC;
@@ -124,7 +127,7 @@ again:
 				d = toupper(c);
 			else {
 				colp = "({)}!|^~'~";
-				while (d = *colp++)
+				while ((d = *colp++))
 					if (d == c) {
 						d = *colp++;
 						break;
@@ -207,7 +210,7 @@ readecho(char c)
 		vclean();
 	else
 		vclrech(0);
-	splitw++;
+	splitw = 1;
 	vgoto(WECHO, 0);
 	putchar(c);
 	vclreol();
@@ -303,7 +306,7 @@ addto(char *buf, char *str)
 	if ((buf[0] & (QUOTE|TRIM)) == OVERBUF)
 		return;
 	if (strlen(buf) + strlen(str) + 1 >= VBSIZE) {
-		buf[0] = OVERBUF;
+		buf[0] = (char)OVERBUF;
 		return;
 	}
 	ignore(strcat(buf, str));
@@ -320,9 +323,9 @@ noteit(bool must)
 {
 	register int sdl = destline, sdc = destcol;
 
-	if (notecnt < 2 || !must && state == VISUAL)
+	if (notecnt < 2 || (!must && state == VISUAL))
 		return (0);
-	splitw++;
+	splitw = 1;
 	if (WBOT == WECHO)
 		vmoveitup(1, 1);
 	vigoto(WECHO, 0);
@@ -399,7 +402,7 @@ map(int c, struct maps *maps)
 	b[0] = c;
 	b[1] = 0;
 	for (d=0; maps[d].mapto; d++) {
-		if (p = maps[d].cap) {
+		if ((p = maps[d].cap)) {
 			for (q=b; *p; p++, q++) {
 				if (*q==0) {
 					/*
@@ -505,7 +508,6 @@ vgetcnt()
 int
 fastpeekkey()
 {
-	void trapalarm(int);
 	register int c;
 
 	/*
@@ -520,7 +522,7 @@ fastpeekkey()
 	 * nondeterminism.
 	 */
 	CATCH
-		if (value(TIMEOUT) && inopen >= 0) {
+		if (value(TIMEOUT) && (int)inopen >= 0) {
 			vi_signal(SIGALRM, trapalarm);
 			setalarm();
 		}
@@ -558,6 +560,7 @@ cancelalarm()
 
 void
 trapalarm(int sig) {
+	(void)sig;
 	sigset_t set;
 	alarm(0);
 	sigemptyset(&set);

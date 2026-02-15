@@ -1,5 +1,7 @@
 /* Copyright (c) 1981 Regents of the University of California */
 /* sccs id:	"@(#)ex_tune.h	1.4"	(9.2	3/17/83) */
+#ifndef EX_TUNE_H
+#define EX_TUNE_H
 /*
  * Definitions of editor parameters and limits
  */
@@ -64,3 +66,5 @@
  */
 #define	ATTN	(-2)
 #define	QUIT	('\\' & 037)
+
+#endif /* EX_TUNE_H */

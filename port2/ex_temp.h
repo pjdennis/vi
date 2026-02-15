@@ -1,5 +1,7 @@
 /* Copyright (c) 1981 Regents of the University of California */
 /* sccs id:	"@(#)ex_temp.h	1.3"	(9.1	2/9/83) */
+#ifndef EX_TEMP_H
+#define EX_TEMP_H
 /*
  * The editor uses a temporary file for files being edited.
  */
@@ -46,3 +48,5 @@ extern struct 	header H;
 #define	flines		H.Flines
 #define	savedfile	H.Savedfile
 #define	blocks		H.Blocks
+
+#endif /* EX_TEMP_H */

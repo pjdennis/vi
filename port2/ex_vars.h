@@ -10,6 +10,8 @@
 ********************************************************************************
 */
 	/*  sccs id   "@(#)ex_vars.h	1.3"  @(#)makeoptions	6.1 10/19/80  */
+#ifndef EX_VARS_H
+#define EX_VARS_H
 #define AUTOINDENT      0
 #define AUTOPRINT       1
 #define AUTOWRITE       2
@@ -54,3 +56,5 @@
 #define WRITEANY        41
 
 #define	NOPTS	42
+
+#endif /* EX_VARS_H */

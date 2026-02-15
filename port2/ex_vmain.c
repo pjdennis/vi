@@ -3,7 +3,8 @@
 #include "ex_tty.h"
 #include "ex_vis.h"
 
-int vzop(bool hadcnt, int cnt, int c);
+void vzop(bool vzop_hadcnt, int cnt, int c);
+void grabtag(void);
 
 /*
  * This is the main routine for visual.
@@ -18,7 +19,7 @@ int vzop(bool hadcnt, int cnt, int c);
 void
 vmain()
 {
-	register int c, cnt, i;
+	volatile int c, cnt, i;
 	char esave[TUBECOLS];
 	char *oglobp;
 	short d;
@@ -37,7 +38,7 @@ vmain()
 	if (initev) {
 		oglobp = globp;
 		globp = initev;
-		hadcnt = cnt = 0;
+		cnt = 0; hadcnt = 0;
 		i = tchng;
 		addr = dot;
 		goto doinit;
@@ -70,7 +71,7 @@ vmain()
 		Xhadcnt = hadcnt = 0;
 		Xcnt = cnt = 1;
 		splitw = 0;
-		if (i = holdupd) {
+		if ((i = holdupd)) {
 			if (state == VISUAL)
 				ignore(peekkey());
 			holdupd = 0;
@@ -111,7 +112,7 @@ looptop:
 			 * an 'empty' named buffer spec in the routine
 			 * kshift (see ex_temp.c).
 			 */
-			forbid (c == '0' || !isalpha(c) && !isdigit(c));
+			forbid (c == '0' || (!isalpha(c) && !isdigit(c)));
 			vreg = c;
 		}
 reread:
@@ -528,7 +529,7 @@ reread:
 			operate('$', 1);
 appnd:
 			c = 'a';
-			/* fall into ... */
+			/* FALLTHROUGH */
 
 		/*
 		 * a		Appends text after cursor.  Text can continue
@@ -549,7 +550,7 @@ appnd:
 		case 'I':
 			operate('^', 1);
 			c = 'i';
-			/* fall into ... */
+			/* FALLTHROUGH */
 
 		/*
 		 * R		Replace characters, one for one, by input
@@ -608,7 +609,7 @@ insrt:
 			beep();
 			if (initev || peekkey() != ATTN)
 				continue;
-			/* fall into... */
+			/* FALLTHROUGH */
 
 		/*
 		 * ^\		A quit always gets command mode.
@@ -622,9 +623,9 @@ insrt:
 			 */
 			if (inglobal)
 				onintr(0);
-			/* fall into... */
+			/* FALLTHROUGH */
 
-			/* fall into... */
+			/* FALLTHROUGH */
 
 		/*
 		 * Q		Is like q, but always gets to command mode
@@ -639,7 +640,7 @@ insrt:
 			 */
 			if (vmacp) {
 				vmacp = 0;
-				if (inopen == -1)	/* don't screw up undo for esc esc */
+				if ((int)inopen == -1)	/* don't screw up undo for esc esc */
 					vundkind = VMANY;
 				inopen = 1;	/* restore old setting now that macro done */
 			}
@@ -696,7 +697,7 @@ insrt:
 			vmacchng(1);
 			setLAST();
 			i = 0;
-			if (vreg && partreg(vreg) || !vreg && pkill[0]) {
+			if ((vreg && partreg(vreg)) || (!vreg && pkill[0])) {
 				/*
 				 * Restoring multiple lines which were partial
 				 * lines; will leave cursor in middle
@@ -972,7 +973,7 @@ fixup:
 			 * in open mode and . moved, then redraw.
 			 */
 			i = vcline + (dot - addr);
-			if (i < 0 || i >= vcnt && i >= -vcnt || state != VISUAL && dot != addr) {
+			if (i < 0 || (i >= vcnt && i >= -vcnt) || (state != VISUAL && dot != addr)) {
 				if (state == CRTOPEN)
 					vup1();
 				if (vcnt > 0)
@@ -1015,7 +1016,7 @@ fixup:
 			if (state == VISUAL) {
 				int sdc = destcol, sdl = destline;
 
-				splitw++;
+				splitw = 1;
 				vigoto(WECHO, 0);
 				for (i = 0; i < TUBECOLS - 1; i++) {
 					if (esave[i] == 0)
@@ -1120,7 +1121,7 @@ vsave()
 	char temp[LBSIZE];
 
 	CP(temp, linebuf);
-	if (FIXUNDO && vundkind == VCHNG || vundkind == VCAPU) {
+	if ((FIXUNDO && vundkind == VCHNG) || vundkind == VCAPU) {
 		/*
 		 * If the undo state is saved in the temporary buffer
 		 * vutmp, then we sync this into the temp file so that
@@ -1156,8 +1157,8 @@ vsave()
  * Do a z operation.
  * Code here is rather long, and very uninteresting.
  */
-int
-vzop(bool hadcnt, int cnt, int c)
+void
+vzop(bool vzop_hadcnt, int cnt, int c)
 {
 	register line *addr;
 
@@ -1185,7 +1186,7 @@ vzop(bool hadcnt, int cnt, int c)
 		vjumpto(dot, cursor, 0);
 		return;
 	}
-	if (hadcnt) {
+	if (vzop_hadcnt) {
 		addr = zero + cnt;
 		if (addr < one)
 			addr = one;
@@ -1221,7 +1222,7 @@ vzop(bool hadcnt, int cnt, int c)
 
 	case '+':
 		forbid (addr >= dol);
-		/* fall into ... */
+		/* FALLTHROUGH */
 
 	case CR:
 	case NL:

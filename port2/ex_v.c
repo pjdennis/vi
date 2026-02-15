@@ -4,6 +4,11 @@
 #include "ex_tty.h"
 #include "ex_vis.h"
 
+void ovbeg(void);
+void ovend(ttymode f);
+void setwind(void);
+void vok(char *atube);
+
 /*
  * Entry points to open and visual from command mode processor.
  * The open/visual code breaks down roughly as follows:
@@ -129,7 +134,7 @@ void
 ovend(ttymode f)
 {
 
-	splitw++;
+	splitw = 1;
 	vgoto(WECHO, 0);
 	vclreol();
 	vgoto(WECHO, 0);
@@ -282,17 +287,17 @@ setwind()
 	case ONEOPEN:
 		if (auto_right_margin)
 			WCOLS--;
-		/* fall into ... */
+		/* FALLTHROUGH */
 
 	case HARDOPEN:
 		basWTOP = WTOP = WBOT = WECHO = 0;
 		ZERO = 0;
-		holdcm++;
+		holdcm = 1;
 		break;
 
 	case CRTOPEN:
 		basWTOP = lines - 2;
-		/* fall into */
+		/* FALLTHROUGH */
 
 	case VISUAL:
 		ZERO = lines - TUBESIZE / WCOLS;
@@ -351,7 +356,7 @@ vok(char *atube)
 void
 vintr(int sig)
 {
-
+	(void)sig;
 	vi_signal(SIGINT, vintr);
 	if (vcatch)
 		onintr(0);

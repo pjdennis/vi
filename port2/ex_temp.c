@@ -14,10 +14,9 @@
 #include "ex_temp.h"
 #include "ex_vis.h"
 #include "ex_tty.h"
+#include <time.h>
 
-int cleanup(bool all);
-void blkio(short b, char *buf, int (*iofcn)());
-int partreg(char c);
+typedef ssize_t (*iofcn_t)();
 
 /*
  * Editor temporary file routines.
@@ -74,7 +73,7 @@ dumbness:
 	if (tfile < 0)
 		goto dumbness;
 	{
-		extern stilinc;		/* see below */
+		extern int stilinc;		/* see below */
 		stilinc = 0;
 	}
 	havetmp = 1;
@@ -91,7 +90,7 @@ cleanup(bool all)
 		putpad(exit_ca_mode);
 		flush();
 		resetterm();
-		normtty--;
+		normtty = 0;
 	}
 	if (havetmp)
 		unlink(tfname);
@@ -103,6 +102,7 @@ cleanup(bool all)
 	}
 	if (all == 1)
 		exit(0);
+	return 0;
 }
 
 void
@@ -115,7 +115,7 @@ getline(line tl)
 	bp = getblock(tl, READ);
 	nl = nleft;
 	tl &= ~OFFMSK;
-	while (*lp++ = *bp++)
+	while ((*lp++ = *bp++))
 		if (--nl == 0) {
 			bp = getblock(tl += INCRMT, READ);
 			nl = nleft;
@@ -136,7 +136,7 @@ putline()
 	bp = getblock(tl, WRITE);
 	nl = nleft;
 	tl &= ~OFFMSK;
-	while (*bp = *lp++) {
+	while ((*bp = *lp++)) {
 		if (*bp++ == '\n') {
 			*--bp = 0;
 			linebp = lp;
@@ -157,8 +157,6 @@ char *
 getblock(line atl, int iof)
 {
 	register int bno, off;
-        register char *p1, *p2;
-        register int n;
 
 	bno = (atl >> OFFBTS) & BLKMSK;
 	off = (atl << SHFT) & LBTMSK;
@@ -180,25 +178,25 @@ getblock(line atl, int iof)
 	if (iof == READ) {
 		if (hitin2 == 0) {
 			if (ichang2) {
-				blkio(iblock2, ibuff2, write);
+				blkio(iblock2, ibuff2, (iofcn_t)write);
 			}
 			ichang2 = 0;
 			iblock2 = bno;
-			blkio(bno, ibuff2, read);
+			blkio(bno, ibuff2, (iofcn_t)read);
 			hitin2 = 1;
 			return (ibuff2 + off);
 		}
 		hitin2 = 0;
 		if (ichanged) {
-			blkio(iblock, ibuff, write);
+			blkio(iblock, ibuff, (iofcn_t)write);
 		}
 		ichanged = 0;
 		iblock = bno;
-		blkio(bno, ibuff, read);
+		blkio(bno, ibuff, (iofcn_t)read);
 		return (ibuff + off);
 	}
 	if (oblock >= 0) {
-			blkio(oblock, obuff, write);
+			blkio(oblock, obuff, (iofcn_t)write);
 	}
 	oblock = bno;
 	return (obuff + off);
@@ -210,7 +208,7 @@ char	incorb[INCORB+1][BUFSIZ];
 int	stilinc;	/* up to here not written yet */
 
 void
-blkio(short b, char *buf, int (*iofcn)())
+blkio(short b, char *buf, iofcn_t iofcn)
 {
 
 	if (b < INCORB) {
@@ -260,8 +258,6 @@ synctmp()
 	register int cnt;
 	register line *a;
 	register int *bp;
-        register char *p1, *p2;
-        register int n;
 
 	if (stilinc)
 		return;
@@ -274,13 +270,13 @@ synctmp()
 	 * code in getblock above for iblock+iblock2 isn't needed.
 	 */
 	if (ichanged)
-		blkio(iblock, ibuff, write);
+		blkio(iblock, ibuff, (iofcn_t)write);
 	ichanged = 0;
 	if (ichang2)
-		blkio(iblock2, ibuff2, write);
+		blkio(iblock2, ibuff2, (iofcn_t)write);
 	ichang2 = 0;
 	if (oblock != -1)
-		blkio(oblock, obuff, write);
+		blkio(oblock, obuff, (iofcn_t)write);
 	time(&H.Time);
 	uid = getuid();
 	*zero = (line) H.Time;
@@ -358,7 +354,7 @@ short	rnext;
 char	*rbufcp;
 
 void
-regio(short b, int (*iofcn)())
+regio(short b, iofcn_t iofcn)
 {
 
 	if (rfile == -1) {
@@ -384,7 +380,7 @@ REGblk()
 {
 	register int i, j, m;
 
-	for (i = 0; i < sizeof rused / sizeof rused[0]; i++) {
+	for (i = 0; i < (int)(sizeof rused / sizeof rused[0]); i++) {
 		m = (rused[i] ^ 0177777) & 0177777;
 		if (i == 0)
 			m &= ~1;
@@ -398,6 +394,7 @@ REGblk()
 	}
 	error("Out of register space (ugh)");
 	/*NOTREACHED*/
+	return 0;
 }
 
 struct	strreg *
@@ -409,7 +406,7 @@ mapreg(int c)
 	return (isdigit(c) ? &strregs[('z'-'a'+1)+(c-'0')] : &strregs[c-'a']);
 }
 
-int	shread();
+ssize_t	shread();
 
 void
 KILLreg(int c)
@@ -423,13 +420,13 @@ KILLreg(int c)
 	sp->rg_flags = sp->rg_nleft = 0;
 	while (rblock != 0) {
 		rused[rblock / 16] &= ~(1 << (rblock % 16));
-		regio(rblock, shread);
+		regio(rblock, (iofcn_t)shread);
 		rblock = rbuf->rb_next;
 	}
 }
 
 /*VARARGS*/
-int
+ssize_t
 shread()
 {
 	struct front { short a; short b; };
@@ -456,7 +453,7 @@ putreg(int c)
 	rnext = mapreg(c)->rg_first;
 	if (rnext == 0) {
 		if (inopen) {
-			splitw++;
+			splitw = 1;
 			vclean();
 			vgoto(WECHO, 0);
 		}
@@ -465,7 +462,7 @@ putreg(int c)
 	}
 	if (inopen && partreg(c)) {
 		if (!FIXUNDO) {
-			splitw++; vclean(); vgoto(WECHO, 0); vreg = -1;
+			splitw = 1; vclean(); vgoto(WECHO, 0); vreg = -1;
 			error("Can't put partial line inside macro");
 		}
 		squish();
@@ -507,7 +504,7 @@ getREG()
 		if (rnleft == 0) {
 			if (rnext == 0)
 				return (EOF);
-			regio(rnext, read);
+			regio(rnext, (iofcn_t)read);
 			rnext = rbuf->rb_next;
 			rbufcp = rbuf->rb_text;
 			rnleft = sizeof rbuf->rb_text;
@@ -539,7 +536,7 @@ YANKreg(int c)
 	sp->rg_flags = inopen && cursor && wcursor;
 	rbuf = &YANKrbuf;
 	if (sp->rg_last) {
-		regio(sp->rg_last, read);
+		regio(sp->rg_last, (iofcn_t)read);
 		rnleft = sp->rg_nleft;
 		rbufcp = &rbuf->rb_text[sizeof rbuf->rb_text - rnleft];
 	} else {
@@ -606,7 +603,7 @@ rbflush()
 
 	if (rblock == 0)
 		return;
-	regio(rblock, write);
+	regio(rblock, (iofcn_t)write);
 	if (sp->rg_first == 0)
 		sp->rg_first = rblock;
 	sp->rg_last = rblock;

@@ -3,6 +3,17 @@
 #include "ex_tty.h"
 #include "ex_vis.h"
 
+static void vigotoCL(int x);
+static void vgotab(void);
+void vmaktop(int p, char *cp);
+static void vrigid(void);
+void vneedpos(int cnt);
+void vnpins(int dosync);
+void vishft(void);
+void viin(int c);
+void godm(void);
+void enddm(void);
+
 /*
  * Deal with the screen, clearing, cursor positioning, putting characters
  * into the screen image, and deleting characters.
@@ -105,7 +116,7 @@ vclrech(bool didphys)
 		return;
 	}
 	if (!didphys && (clr_eos || clr_eol)) {
-		splitw++;
+		splitw = 1;
 		/*
 		 * If display is retained below, then MUST use clr_eos or
 		 * clr_eol since we don't really know whats out there.
@@ -150,7 +161,7 @@ void
 fixech()
 {
 
-	splitw++;
+	splitw = 1;
 	if (state != VISUAL && state != CRTOPEN) {
 		vclean();
 		vcnt = 0;
@@ -259,7 +270,7 @@ vgotoCL(int x)
 /*
  * Invisible goto column x of current line.
  */
-void
+static void
 vigotoCL(int x)
 {
 
@@ -452,7 +463,7 @@ vgoto(int y, int x)
  * with a QUOTE.  We use QUOTE internally to represent a position
  * which is part of the expansion of a tab.
  */
-void
+static void
 vgotab()
 {
 	register int i = tabcol(destcol, value(TABSTOP)) - destcol;
@@ -692,7 +703,7 @@ vinschar(int c)
  * Rigidify the rest of the line after the first
  * group of following tabs, typing blanks over ``spaces''.
  */
-void
+static void __attribute__((unused))
 vrigid()
 {
 	register int col;
@@ -763,7 +774,6 @@ vnpins(int dosync)
 void
 vishft()
 {
-	int tshft = 0;
 	int j;
 	register int i;
 	register char *tp = vtube0;
@@ -839,7 +849,7 @@ viin(int c)
 	int oldhold = hold;
 
 	hold |= HOLDPUPD;
-	if (tabsize && (enter_insert_mode && exit_insert_mode) && inssiz - doomed > tabslack)
+	if (tabsize && (enter_insert_mode && exit_insert_mode) && inssiz - doomed > tabslack) {
 		/*
 		 * There is a tab out there which will be affected
 		 * by the insertion since there aren't enough doomed
@@ -878,6 +888,7 @@ viin(int c)
 				enddm();
 			}
 		}
+	}
 
 	/*
 	 * Now put out the characters of the actual insertion.
@@ -939,7 +950,7 @@ viin(int c)
 			tp = vtube0 + tabend + shft;
 			for (i = tabsize - (inssiz - doomed) + shft; i > 0; i--)
 				if ((*--tp & QUOTE) == 0)
-					*tp = ' ' | QUOTE;
+					*tp = (char)(' ' | QUOTE);
 		}
 	}
 
@@ -1083,7 +1094,7 @@ vputchar(int c)
 			 * A ``space''.
 			 */
 			if ((hold & HOLDPUPD) == 0)
-				*tp = QUOTE;
+				*tp = (char)QUOTE;
 			destcol++;
 			return 0;
 		}
@@ -1095,7 +1106,7 @@ vputchar(int c)
 			return 0;
 		}
 		c = ' ' | QUOTE;
-		/* fall into ... */
+		/* FALLTHROUGH */
 
 def:
 	default:

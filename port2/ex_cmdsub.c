@@ -16,12 +16,7 @@
 #include "ex_tty.h"
 #include "ex_vis.h"
 
-static void splitit();
-
-void delete(int hush);
-void pragged(bool kill);
-void plines(line *adr1, line *adr2, bool movedot);
-void undo(bool c);
+static void splitit(void);
 
 /*
  * Command mode subroutines implementing
@@ -117,7 +112,7 @@ pargs()
  * more commonly we are just moving lines to the undo save area.
  */
 void
-delete(int hush)
+delete(int dhush)
 {
 	register line *a1, *a2;
 
@@ -167,7 +162,7 @@ delete(int hush)
 			a1 = dol;
 		dot = a1;
 	}
-	if (!hush)
+	if (!dhush)
 		killed();
 }
 
@@ -192,7 +187,7 @@ squish()
 	register line *a1 = dol + 1, *a2 = unddol + 1, *a3 = truedol + 1;
 
 	if(FIXUNDO) {
-		if (inopen == -1)
+		if ((int)inopen == -1)
 			return;
 		if (a1 < a2 && a2 < a3)
 			do
@@ -232,7 +227,7 @@ join(int c)
 				}
 			}
 		}
-		while (*cp++ = *cp1++)
+		while ((*cp++ = *cp1++))
 			if (cp > &genbuf[LBSIZE-2])
 				error("Line overflow|Result line of join would be too long");
 		cp--;
@@ -247,7 +242,7 @@ join(int c)
 		vundkind = VMANY;
 }
 
-static 
+static int
 jnoop()
 {
 
@@ -260,6 +255,7 @@ jnoop()
  */
 int	getcopy();
 
+void
 move()
 {
 	register line *adt;
@@ -269,7 +265,7 @@ move()
 		setdot1();
 		markpr(addr2 == dot ? addr1 - 1 : addr2 + 1);
 	} else {
-		iscopy++;
+		iscopy = 1;
 		setdot();
 	}
 	nonzero();
@@ -281,6 +277,7 @@ move()
 	killed();
 }
 
+void
 move1(int cflag, line *addrt)
 {
 	register line *adt, *ad1, *ad2;
@@ -543,7 +540,7 @@ badtag:
 			 *  match is found even if the tag given is a proper
 			 *  prefix of the tag found.  i.e. "ab" matches "abcd"
 			 */
-			if ( *lp == 0 && (iswhite(*cp) || tl > 511 || tl > 0 && lp-lasttag >= tl) ) {
+			if ( *lp == 0 && (iswhite(*cp) || tl > 511 || (tl > 0 && lp-lasttag >= tl)) ) {
 				; /* Found it. */
 			}
 			else {
@@ -671,7 +668,7 @@ short	zweight;
 void
 zop(int hadpr)
 {
-	register int c, nlines, op;
+	register int c, nlines, zop_op;
 	bool excl;
 
 	zhadpr = hadpr;
@@ -679,27 +676,29 @@ zop(int hadpr)
 	znoclear = 0;
 	zweight = 0;
 	excl = exclam();
-	switch (c = op = getchar()) {
+	switch (c = zop_op = getchar()) {
 
 	case '^':
 		zweight = 1;
+		/* FALLTHROUGH */
 	case '-':
 	case '+':
-		while (peekchar() == op) {
+		while (peekchar() == zop_op) {
 			ignchar();
 			zweight++;
 		}
+		/* FALLTHROUGH */
 	case '=':
 	case '.':
 		c = getchar();
 		break;
 
 	case EOF:
-		znoclear++;
+		znoclear = 1;
 		break;
 
 	default:
-		op = 0;
+		zop_op = 0;
 		break;
 	}
 	if (isdigit(c)) {
@@ -712,34 +711,35 @@ zop(int hadpr)
 			nlines += c - '0';
 		}
 		if (nlines < lines)
-			znoclear++;
+			znoclear = 1;
 		value(WINDOW) = nlines;
-		if (op == '=')
+		if (zop_op == '=')
 			nlines += 2;
 	} else
-		nlines = op == EOF ? value(SCROLL) : excl ? lines - 1 : 2*value(SCROLL);
+		nlines = zop_op == EOF ? value(SCROLL) : excl ? lines - 1 : 2*value(SCROLL);
 	if (inopen || c != EOF) {
 		ungetchar(c);
 		donewline();
 	}
 	addr1 = addr2;
-	if (addr2 == 0 && dot < dol && op == 0)
+	if (addr2 == 0 && dot < dol && zop_op == 0)
 		addr1 = addr2 = dot+1;
 	setdot();
-	zop2(nlines, op);
+	zop2(nlines, zop_op);
 }
 
 void
-zop2(int nlines, int op)
+zop2(int nlines, int zop2_op)
 {
 	register line *split;
 
 	split = NULL;
-	switch (op) {
+	switch (zop2_op) {
 
 	case EOF:
 		if (addr2 == dol)
 			error("\nAt EOF");
+		/* FALLTHROUGH */
 	case '+':
 		if (addr2 == dol)
 			error("At EOF");
@@ -747,6 +747,7 @@ zop2(int nlines, int op)
 		if (addr2 > dol)
 			error("Hit BOTTOM");
 		addr2++;
+		/* FALLTHROUGH */
 	default:
 		addr1 = addr2;
 		addr2 += nlines-1;
@@ -758,13 +759,13 @@ zop2(int nlines, int op)
 		znoclear = 0;
 		nlines--;
 		nlines >>= 1;
-		if (op == '=')
+		if (zop2_op == '=')
 			nlines--;
 		addr1 = addr2 - nlines;
-		if (op == '=')
+		if (zop2_op == '=')
 			dot = split = addr2;
 		addr2 += nlines;
-		if (op == '.') {
+		if (zop2_op == '.') {
 			markDOT();
 			dot = addr2;
 		}
@@ -788,7 +789,7 @@ zop2(int nlines, int op)
 		dot = dol;
 	if (addr1 > addr2)
 		return;
-	if (op == EOF && zhadpr) {
+	if (zop2_op == EOF && zhadpr) {
 		getline(*addr1);
 		putchar('\r' | QUOTE);
 		shudclob = 1;
@@ -808,8 +809,8 @@ zop2(int nlines, int op)
 	plines(addr1, addr2, 0);
 }
 
-static 
-splitit()
+static void
+splitit(void)
 {
 	register int l;
 
@@ -1141,7 +1142,7 @@ addmac(char *src, char *dest, char *dname, struct maps *mp)
 		 * linefeed, and escape, he can screw himself. This is
 		 * so weird I don't bother to check for it.
 		 */
-		if (isalpha(src[0]) && src[1] || any(src[0],":"))
+		if ((isalpha(src[0]) && src[1]) || any(src[0],":"))
 			error("Too dangerous to map that");
 	}
 	else if (dest) {
@@ -1223,7 +1224,7 @@ cmdmac(char c)
 	oglobp = globp;
 	oinglobal = inglobal;
 	pk = peekc; peekc = 0;
-	if (inglobal < 2)
+	if ((int)inglobal < 2)
 		inglobal = 1;
 	regbuf(c, macbuf, sizeof(macbuf));
 	a1 = addr1; a2 = addr2;
@@ -1241,7 +1242,7 @@ char *
 vgetpass(char *prompt)
 {
 	register char *p;
-	register c;
+	register int c;
 	static char pbuf[9];
 	char *getpass();
 

@@ -15,12 +15,13 @@
 #include "ex_temp.h"
 #include "ex_tty.h"
 #include "ex_vis.h"
+#include <stdarg.h>
 
 extern bool	pflag, nflag;		/* mjm: extern; also in ex_cmds.c */
 extern int	poffset;		/* mjm: extern; also in ex_cmds.c */
 
 int tailprim(char *comm, int i, bool notinvis);
-int vcontin(bool ask);
+void vcontin(bool ask);
 
 /*
  * Subroutines for major command loop.
@@ -79,9 +80,14 @@ eol()
  */
 /*VARARGS2*/
 void
-error(char *str, long i)
+error(char *str, ...)
 {
+	va_list ap;
+	long i;
 
+	va_start(ap, str);
+	i = va_arg(ap, long);
+	va_end(ap);
 	error0();
 	merror(str, i);
 	if (writing) {
@@ -290,11 +296,11 @@ donewline()
 			break;
 
 		case 'l':
-			listf++;
+			listf = 1;
 			break;
 
 		case '#':
-			nflag++;
+			nflag = 1;
 			break;
 
 		case 'p':
@@ -318,7 +324,7 @@ serror("Extra chars|Extra characters at end of \"%s\" command", Command);
 			setflav();
 			return;
 		}
-		pflag++;
+		pflag = 1;
 	}
 }
 
@@ -352,7 +358,7 @@ quickly()
 		chng = 0;
 */
 		xchng = 0;
-		error("No write@since last change (:%s! overrides)", Command);
+		serror("No write@since last change (:%s! overrides)", Command);
 	}
 	return (0);
 }
@@ -477,12 +483,13 @@ tailprim(char *comm, int i, bool notinvis)
 	}
 ret:
 	*cp = 0;
+	return 0;
 }
 
 /*
  * Continue after a : command from open/visual.
  */
-int
+void
 vcontin(bool ask)
 {
 

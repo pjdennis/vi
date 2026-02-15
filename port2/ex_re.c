@@ -12,8 +12,17 @@
 /* Copyright (c) 1981 Regents of the University of California */
 #include "ex.h"
 #include "ex_re.h"
+#include <stdarg.h>
 
 int dosubcon(bool f, line *a);
+static void snote(int total, int nlines);
+static void comprhs(int seof);
+static int confirmed(line *a);
+static void dosub(void);
+static void ugo(int cnt, int with);
+static int fixcase(int c);
+static void cerror(char *s);
+static int cclass(char *set, int c, int af);
 
 /*
  * Global, substitute and regular expressions.
@@ -41,7 +50,7 @@ global(bool k)
 	 * strange sounding convention is historically derived from
 	 * everybody simulating a global command.
 	 */
-	if (inglobal==2)
+	if ((int)inglobal==2)
 		error("Global within global@not allowed");
 	markDOT();
 	setall();
@@ -82,7 +91,6 @@ global(bool k)
 	}
 brkwh:
 	ungetchar(c);
-out:
 	donewline();
 	*gp++ = c;
 	*gp++ = 0;
@@ -181,7 +189,7 @@ substitute(int c)
 			 */
 			hopcount = 0;
 			while (*loc2) {
-				if (++hopcount > sizeof linebuf)
+				if (++hopcount > (int)sizeof linebuf)
 					error("substitution loop");
 				if (dosubcon(1, addr) == 0)
 					break;
@@ -231,7 +239,7 @@ compsub(int ch)
 
 	case '~':
 		uselastre = 1;
-		/* fall into ... */
+		/* FALLTHROUGH */
 	case '&':
 	redo:
 		if (re.Expbuf[0] == 0)
@@ -269,7 +277,7 @@ compsub(int ch)
 	}
 }
 
-void
+static void
 comprhs(int seof)
 {
 	register char *rp, *orp;
@@ -315,6 +323,7 @@ magic:
 				ungetchar(c);
 				goto endrhs;
 			}
+			/* FALLTHROUGH */
 
 		case '~':
 		case '&':
@@ -358,7 +367,7 @@ dosubcon(bool f, line *a)
 	return (1);
 }
 
-int
+static int
 confirmed(line *a)
 {
 	register int c, ch;
@@ -397,7 +406,7 @@ getch()
 	return (c & TRIM);
 }
 
-void
+static void
 ugo(int cnt, int with)
 {
 
@@ -410,8 +419,8 @@ ugo(int cnt, int with)
 int	casecnt;
 bool	destuc;
 
-void
-dosub()
+static void
+dosub(void)
 {
 	register char *lp, *sp, *rp;
 	int c;
@@ -427,7 +436,7 @@ dosub()
 	 * extended or not if C&QUOTE is set.  Thus, on a VAX, c will
 	 * be < 0, but on a 3B, c will be >= 128.
 	 */
-	while (c = *rp++) {
+	while ((c = *rp++)) {
 		/* ^V <return> from vi to split lines */
 		if (c == '\r')
 			c = '\n';
@@ -482,13 +491,13 @@ ovflo:
 	}
 	lp = loc2;
 	loc2 = sp + (linebuf - genbuf);
-	while (*sp++ = *lp++)
+	while ((*sp++ = *lp++))
 		if (sp >= &genbuf[LBSIZE])
 			goto ovflo;
 	strcLIN(genbuf);
 }
 
-int
+static int
 fixcase(int c)
 {
 
@@ -516,7 +525,7 @@ place(char *sp, char *l1, char *l2)
 	return (sp);
 }
 
-void
+static void
 snote(int total, int nlines)
 {
 
@@ -575,7 +584,7 @@ error("No previous substitute re|No previous substitute regular expression");
 	circfl = 0;
 	if (c == '^') {
 		c = getchar();
-		circfl++;
+		circfl = 1;
 	}
 	ungetchar(c);
 	for (;;) {
@@ -715,9 +724,10 @@ cerror("Bad \\n|\\n in regular expression with n greater than the number of \\('
 				return (eof);
 			}
 cerror("Badly formed re|Missing closing delimiter for regular expression");
+			/* FALLTHROUGH */
 
 		case '$':
-			if (peekchar() == eof || peekchar() == EOF || oknl && peekchar() == '\n') {
+			if (peekchar() == eof || peekchar() == EOF || (oknl && peekchar() == '\n')) {
 				*ep++ = CDOL;
 				continue;
 			}
@@ -729,6 +739,7 @@ cerror("Badly formed re|Missing closing delimiter for regular expression");
 		case '[':
 			if (value(MAGIC))
 				goto magic;
+			/* FALLTHROUGH */
 defchar:
 		default:
 			*ep++ = CCHR;
@@ -738,7 +749,7 @@ defchar:
 	}
 }
 
-void
+static void
 cerror(char *s)
 {
 
@@ -750,18 +761,23 @@ int
 same(int a, int b)
 {
 
-	return (a == b || value(IGNORECASE) &&
-	   ((islower(a) && toupper(a) == b) || (islower(b) && toupper(b) == a)));
+	return (a == b || (value(IGNORECASE) &&
+	   ((islower(a) && toupper(a) == b) || (islower(b) && toupper(b) == a))));
 }
 
 char	*locs;
 
 int
-execute(int gf, line *addr)
+execute(int gf, ...)
 {
+	va_list ap;
+	line *addr;
 	register char *p1, *p2;
 	register int c;
 
+	va_start(ap, gf);
+	addr = va_arg(ap, line *);
+	va_end(ap);
 	if (gf) {
 		if (circfl)
 			return (0);
@@ -809,8 +825,6 @@ int
 advance(char *lp, char *ep)
 {
 	register char *curlp;
-	char *sp, *sp1;
-	int c;
 
 	for (;;) switch (*ep++) {
 
@@ -862,11 +876,11 @@ advance(char *lp, char *ep)
 		return (0);
 
 	case CBRA:
-		braslist[*ep++] = lp;
+		braslist[(unsigned char)*ep++] = lp;
 		continue;
 
 	case CKET:
-		braelist[*ep++] = lp;
+		braelist[(unsigned char)*ep++] = lp;
 		continue;
 
 	case CDOT|STAR:
@@ -917,7 +931,7 @@ star:
 	}
 }
 
-int
+static int
 cclass(char *set, int c, int af)
 {
 	register int n;

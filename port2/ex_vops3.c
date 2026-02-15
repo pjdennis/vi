@@ -22,8 +22,14 @@
 line	*llimit;
 void	(*lf)(int);
 
-int	lindent();
-int	endsent(bool pastatom);
+int endsent(bool pastatom);
+int endPS(void);
+int ltosolid(void);
+int ltosol1(char *parens);
+int lskipbal(char *parens);
+int lskipatom(void);
+int lskipa1(char *parens);
+int isa(char *cp);
 
 bool	wasend;
 
@@ -55,10 +61,10 @@ lfind(bool pastatom, int cnt, void (*f)(int), line *limit)
 	wdot = dot;
 	wcursor = cursor;
 
-	if (pastatom >= 2) {
+	if ((int)pastatom >= 2) {
 		while (cnt > 0 && word(f, cnt))
 			cnt--;
-		if (pastatom == 3)
+		if ((int)pastatom == 3)
 			eend(f);
 		if (dot == wdot) {
 			wdot = 0;
@@ -112,7 +118,7 @@ begin:
 			while (!endsent(pastatom))
 				if (!lnext())
 					goto ret;
-			if (!pastatom || wcursor == linebuf && endPS())
+			if (!pastatom || (wcursor == linebuf && endPS()))
 				if (--cnt <= 0)
 					break;
 			if (linebuf[0] == 0) {
@@ -148,7 +154,7 @@ begin:
 		 * If we are not at a section/paragraph division,
 		 * advance to next.
 		 */
-		if (wcursor == icurs && wdot == idot || wcursor != linebuf || !endPS())
+		if ((wcursor == icurs && wdot == idot) || wcursor != linebuf || !endPS())
 			ignore(lskipa1(""));
 	}
 	else {
@@ -157,7 +163,7 @@ begin:
 		 * Startup by skipping if at a ( going left or a ) going
 		 * right to keep from getting stuck immediately.
 		 */
-		if (dir < 0 && c == '(' || dir > 0 && c == ')') {
+		if ((dir < 0 && c == '(') || (dir > 0 && c == ')')) {
 			if (!lnext()) {
 				rc = -1;
 				goto ret;
@@ -173,7 +179,7 @@ begin:
 		 */
 		while (cnt > 0) {
 			c = *wcursor;
-			if (dir < 0 && c == ')' || dir > 0 && c == '(') {
+			if ((dir < 0 && c == ')') || (dir > 0 && c == '(')) {
 				if (!lskipbal("()"))
 					goto ret;
 				/*
@@ -186,7 +192,7 @@ begin:
 				if (!lnext() || !ltosolid())
 					goto ret;
 				--cnt;
-			} else if (dir < 0 && c == '(' || dir > 0 && c == ')')
+			} else if ((dir < 0 && c == '(') || (dir > 0 && c == ')'))
 				/* Found a higher level paren */
 				goto ret;
 			else {
@@ -208,6 +214,7 @@ ret:
 int
 endsent(bool pastatom)
 {
+	(void)pastatom;
 	register char *cp = wcursor;
 	register int c, d;
 
@@ -230,7 +237,7 @@ endsent(bool pastatom)
 		if ((d = *++cp) == 0)
 			return (1);
 	while (any(d, ")]'"));
-	if (*cp == 0 || *cp++ == ' ' && *cp == ' ')
+	if (*cp == 0 || (*cp++ == ' ' && *cp == ' '))
 		return (1);
 tryps:
 	if (cp[1] == 0)
@@ -282,7 +289,7 @@ again:
 	wdot = addr;
 	dir = -1;
 	llimit = one;
-	lf = (void (*)(int))lindent;
+	lf = (void (*)(int))(void (*)(void))lindent;
 	if (!lskipbal("()"))
 		i = 0;
 	else if (wcursor == linebuf)
@@ -469,7 +476,7 @@ lnext()
 		--wcursor;
 		if (wcursor >= linebuf)
 			return (1);
-		if (lf == (void (*)(int))lindent && linebuf[0] == '(')
+		if (lf == (void (*)(int))(void (*)(void))lindent && linebuf[0] == '(')
 			llimit = wdot;
 		if (wdot <= llimit) {
 			wcursor = linebuf;
@@ -496,7 +503,7 @@ lbrack(int c, void (*f)(int))
 		}
 		getline(*addr);
 		if (linebuf[0] == '{' ||
-		    value(LISP) && linebuf[0] == '(' ||
+		    (value(LISP) && linebuf[0] == '(') ||
 		    isa(svalue(SECTIONS))) {
 			if (c == ']' && f != vmove) {
 				addr--;

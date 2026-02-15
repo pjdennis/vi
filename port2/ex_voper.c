@@ -7,6 +7,7 @@
 #define	forbid(a)	if (a) goto errlab;
 
 int find(char c);
+int edge(void);
 int wordof(char which, char *wc);
 
 static void beep_op(int c) { (void)c; beep(); }
@@ -56,15 +57,15 @@ operate(int c, int cnt)
 	 */
 	case 's':
 		ungetkey(' ');
-		subop++;
-		/* fall into ... */
+		subop = 1;
+		/* FALLTHROUGH */
 
 	/*
 	 * c		Change operator.
 	 */
 	case 'c':
-		if (c == 'c' && workcmd[0] == 'C' || workcmd[0] == 'S')
-			subop++;
+		if ((c == 'c' && workcmd[0] == 'C') || workcmd[0] == 'S')
+			subop = 1;
 		moveop = vchange;
 		deleteop = beep_op;
 		break;
@@ -91,7 +92,7 @@ operate(int c, int cnt)
 	 */
 	case '=':
 		forbid(!value(LISP));
-		/* fall into ... */
+		/* FALLTHROUGH */
 
 	/*
 	 * >		Right shift operator.
@@ -146,7 +147,7 @@ nocount:
 	case 'b':
 	case 'B':
 		dir = -1;
-		/* fall into ... */
+		/* FALLTHROUGH */
 
 	/*
 	 * w		Forward a word.
@@ -181,7 +182,7 @@ ein:
 	 */
 	case '(':
 		dir = -1;
-		/* fall into... */
+		/* FALLTHROUGH */
 
 	/*
 	 * )		Forward an s-expression.
@@ -198,7 +199,7 @@ ein:
 	 */
 	case '{':
 		dir = -1;
-		/* fall into... */
+		/* FALLTHROUGH */
 
 	/*
 	 * }		Forward an s-expression, but don't stop on atoms.
@@ -236,7 +237,7 @@ ein:
 	 */
 	case '[':
 		dir = -1;
-		/* fall into ... */
+		/* FALLTHROUGH */
 
 	/*
 	 * ]		Forward to next defun, i.e. a ( in column 1.
@@ -265,7 +266,7 @@ ein:
 		i = lastFCHR;
 		if (vglobp == 0)
 			vglobp = "";
-		subop++;
+		subop = 1;
 		goto nocount;
 
 	/*
@@ -283,7 +284,7 @@ ein:
 		forbid (lastFKND == 0);
 		c = lastFKND;
 		i = lastFCHR;
-		subop++;
+		subop = 1;
 		goto nocount;
 
 	/*
@@ -293,7 +294,7 @@ ein:
 	case 'F':	/* inverted find */
 	case 'T':
 		dir = -1;
-		/* fall into ... */
+		/* FALLTHROUGH */
 
 	/*
 	 * f		Find single character following cursor in current line.
@@ -320,6 +321,7 @@ ein:
 
 		case 't':
 			wcursor--;
+			/* FALLTHROUGH */
 		case 'f':
 fixup:
 			if (moveop != vmove)
@@ -380,17 +382,17 @@ fixup:
 	case 'h':
 	case CTRL('h'):
 		dir = -1;
-		/* fall into ... */
+		/* FALLTHROUGH */
 
 	/*
 	 * space	Forward a character.
 	 */
 	case 'l':
 	case ' ':
-		forbid (margin() || opf == vmove && edge());
+		forbid (margin() || (opf == vmove && edge()));
 		while (cnt > 0 && !margin())
 			wcursor += dir, cnt--;
-		if (margin() && opf == vmove || wcursor < linebuf)
+		if ((margin() && opf == vmove) || wcursor < linebuf)
 			wcursor -= dir;
 		vmoving = 0;
 		break;
@@ -407,7 +409,7 @@ fixup:
 	 */
 	case 'X':
 		dir = -1;
-		/* fall into ... */
+		/* FALLTHROUGH */
 deleteit:
 	/*
 	 * x		Delete character at cursor, leaving cursor where it is.
@@ -433,7 +435,7 @@ errlab:
 			vmacp = 0;
 			return;
 		}
-		/* fall into ... */
+		/* FALLTHROUGH */
 
 	/*
 	 * _		Target for a line or group of lines.
@@ -668,7 +670,7 @@ slerr:
 			else {
 				vmoving = 0;
 				if (loc1) {
-					vmoving++;
+					vmoving = 1;
 					vmovcol = column(loc1);
 				}
 				getDOT();
@@ -713,7 +715,7 @@ find(char c)
  * to go after this.
  */
 int
-word(void (*op)(int), int cnt)
+word(void (*wordfn)(int), int cnt)
 {
 	register int which;
 	register char *iwc;
@@ -723,7 +725,7 @@ word(void (*op)(int), int cnt)
 		iwc = wcursor;
 		which = wordch(wcursor);
 		while (wordof(which, wcursor)) {
-			if (cnt == 1 && op != vmove && wcursor[1] == 0) {
+			if (cnt == 1 && wordfn != vmove && wcursor[1] == 0) {
 				wcursor++;
 				break;
 			}
@@ -733,13 +735,13 @@ word(void (*op)(int), int cnt)
 				break;
 		}
 		/* Unless last segment of a change skip blanks */
-		if (op != vchange || cnt > 1)
+		if (wordfn != vchange || cnt > 1)
 			while (!margin() && blank())
 				wcursor++;
 		else
 			if (wcursor == iwc && iwdot == wdot && *iwc)
 				wcursor++;
-		if (op == vmove && margin())
+		if (wordfn == vmove && margin())
 			wcursor--;
 	} else {
 		if (!lnext())
@@ -763,7 +765,7 @@ word(void (*op)(int), int cnt)
  * remaining after this.
  */
 void
-eend(void (*op)(int))
+eend(void (*eop)(int))
 {
 	register int which;
 
@@ -781,7 +783,7 @@ eend(void (*op)(int))
 		if (!lnext())
 			return;
 	}
-	if (op != vchange && op != vdelete && wcursor > linebuf)
+	if (eop != vchange && eop != vdelete && wcursor > linebuf)
 		wcursor--;
 }
 

@@ -5,7 +5,7 @@ CC = gcc
 CFLAGS = -std=c11 \
 	-DVMUNIX -DUSG -DTABS=8 -DSIGTSTP \
 	-fsigned-char \
-	-Wall -Wextra -Wpedantic -Wshadow \
+	-Wall -Wextra -Wpedantic -Wshadow -Werror \
 	-g
 
 SRCS = ex.c ex_addr.c ex_cmds.c ex_cmds2.c ex_cmdsub.c \

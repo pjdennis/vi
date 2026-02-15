@@ -51,13 +51,14 @@ again:
 	if (c == EOF)
 		return (c);
 	c &= TRIM;
-	if (!inopen && slevel==0)
+	if (!inopen && slevel==0) {
 		if (!globp && c == CTRL('d'))
 			setlastchar('\n');
 		else if (junk(c)) {
 			checkjunk(c);
 			goto again;
 		}
+	}
 	return (c);
 }
 
@@ -84,7 +85,6 @@ getach()
 {
 	register int c;
 	static char inputline[128];
-	struct stat statb;
 
 	c = peekc;
 	if (c != 0) {
@@ -99,8 +99,8 @@ getach()
 	}
 top:
 	if (input) {
-		if (c = *input++) {
-			if (c &= TRIM)
+		if ((c = *input++)) {
+			if ((c &= TRIM))
 				return (lastc = c);
 			goto top;
 		}
@@ -118,7 +118,7 @@ top:
 		inputline[c] = 0;
 		for (c--; c >= 0; c--)
 			if (inputline[c] == 0)
-				inputline[c] = QUOTE;
+				inputline[c] = (char)QUOTE;
 		input = inputline;
 		goto top;
 	}
@@ -273,6 +273,7 @@ checkjunk(char c)
 		write(2, cntrlhm, 13);
 		junkbs = 1;
 	}
+	return 0;
 }
 
 line *
@@ -283,4 +284,5 @@ setin(line *addr)
 		lastin = 0;
 	else
 		getline(*addr), lastin = smunch(0, linebuf);
+	return addr;
 }

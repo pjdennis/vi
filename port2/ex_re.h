@@ -1,5 +1,7 @@
 /* Copyright (c) 1981 Regents of the University of California */
 /* sccs id:	"@(#)ex_re.h	1.3"	(9.1	2/9/83) */
+#ifndef EX_RE_H
+#define EX_RE_H
 /*
  * Regular expression definitions.
  */
@@ -42,3 +44,5 @@ extern char	rhsbuf[RHSSIZE];	/* Rhs of last substitute */
 #define	CCHR	20
 #define	CBRC	24
 #define	CLET	25
+
+#endif /* EX_RE_H */

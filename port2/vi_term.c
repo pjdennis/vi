@@ -14,6 +14,9 @@
 
 #include "vi_term.h"
 
+/* From ex_subr.c - wrapper around sigaction() */
+extern void vi_signal(int sig, void (*handler)(int));
+
 /*
  * Terminal dimensions.
  */

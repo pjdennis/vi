@@ -3,11 +3,7 @@
 #include "ex_tty.h"
 #include "ex_vis.h"
 
-void vjumpto(line *addr, char *curs, char context);
-void vup(int cnt, int ind, bool scroll);
-void vdown(int cnt, int ind, bool scroll);
-void vcontext(line *addr, char where);
-void vreset(bool inecho);
+static int vcookit(int cnt);
 
 /*
  * Routines to adjust the window, showing specified lines
@@ -99,7 +95,6 @@ vup(int cnt, int ind, bool scroll)
 	if (state != VISUAL || (!insert_line && !scroll_reverse) || (!scroll && (cnt > tot || vfit(dot - cnt, cnt) > tot / 3 + 1))) {
 		if (ind > basWLINES / 2)
 			ind = basWLINES / 3;
-contxt:
 		vcontext(dot + ind - cnt, '.');
 		return;
 	}
@@ -142,7 +137,6 @@ vdown(int cnt, int ind, bool scroll)
 	if (!scroll) {
 		tot = WECHO - WTOP;
 		if (state != VISUAL || cnt - tot > 0 || vfit(dot, cnt) > tot / 3 + 1) {
-dcontxt:
 			vcontext(dot + cnt, '.');
 			return;
 		}
@@ -175,7 +169,7 @@ vcontext(line *addr, char where)
 	case '^':
 		addr = vback(addr, basWLINES - vdepth());
 		getline(*addr);
-		/* fall into ... */
+		/* FALLTHROUGH */
 
 	case '-':
 		top = vback(addr, basWLINES - vdepth());
@@ -347,7 +341,6 @@ vroll(int cnt)
 void
 vrollR(int cnt)
 {
-	register bool fried = 0;
 	int oldhold = hold;
 
 	if (WBOT == WECHO)
@@ -374,7 +367,7 @@ vrollR(int cnt)
  * BUG:		An interrupt during a scroll in this way
  *		dumps to command mode.
  */
-int
+static int __attribute__((unused))
 vcookit(int cnt)
 {
 
