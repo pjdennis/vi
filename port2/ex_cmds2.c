@@ -185,7 +185,8 @@ error1(char *str)
 		io = -1;
 	}
 	die = (getpid() != ppid);	/* Only children die */
-	inappend = inglobal = 0;
+	inglobal = 0;
+	inappend = 0;
 	globp = vglobp = vmacp = 0;
 	if (vcatch && !die) {
 		inopen = 1;

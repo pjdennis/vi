@@ -96,7 +96,7 @@ extern	bool	Xhadcnt;	/* Last command had explicit count? */
 extern	int	ZERO;
 extern	int	dir;		/* Direction for search (+1 or -1) */
 extern	int	doomed;		/* Disply chars right of cursor to be killed */
-extern	bool	gobblebl;	/* Wrapmargin space generated nl, eat a space */
+extern	int	gobblebl;	/* Wrapmargin space generated nl, eat a space */
 extern	bool	hadcnt;		/* (Almost) internal to vmain() */
 extern	bool	heldech;	/* We owe a clear of echo area */
 extern	bool	insmode;	/* Are in character insert mode */

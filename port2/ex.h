@@ -116,9 +116,9 @@ extern	bool	hush;		/* Command line option - was given, hush up! */
 extern	char	*globp;		/* (Untyped) input string to command mode */
 extern	bool	holdcm;		/* Don't cursor address */
 extern	bool	inappend;	/* in ex command append mode */
-extern	bool	inglobal;	/* Inside g//... or v//... */
+extern	int	inglobal;	/* Inside g//... or v//... */
 extern	char	*initev;	/* Initial : escape for visual */
-extern	bool	inopen;		/* Inside open or visual */
+extern	int	inopen;		/* Inside open or visual */
 extern	char	*input;		/* Current position in cmd line input buffer */
 extern	bool	intty;		/* Input is a tty */
 extern	int	io;		/* General i/o unit (auto-closed on error!) */
@@ -139,7 +139,7 @@ extern	int	oprompt;	/* Saved during source */
 extern	int	otchng;		/* Backup tchng to find changes in macros */
 extern	int	peekc;		/* Peek ahead character (cmd mode input) */
 extern	char	*pkill[2];	/* Trim for put with ragged (LISP) delete */
-extern	bool	pfast;		/* Have stty -nl'ed to go faster */
+extern	int	pfast;		/* Have stty -nl'ed to go faster */
 extern	int	pid;		/* Process id of child */
 extern	int	ppid;		/* Process id of parent (e.g. main ex proc) */
 extern	sigjmp_buf	resetlab;	/* For error throws to top level (cmd mode) */
@@ -163,7 +163,7 @@ extern	int	xchng;		/* Suppresses multiple "No writes" in !cmd */
 			 * FIXUNDO: do we want to mung undo vars?
 			 * Usually yes unless in a macro or global.
 			 */
-#define FIXUNDO		((int)inopen >= 0 && (inopen || !inglobal))
+#define FIXUNDO		(inopen >= 0 && (inopen || !inglobal))
 #define ckaw()		{if (chng && value(AUTOWRITE) && !value(READONLY)) wop(0);}
 #define	copy(a,b,c)	Copy((char *) (a), (char *) (b), (c))
 #define	eq(a, b)	((a) && (b) && strcmp(a, b) == 0)
@@ -626,7 +626,7 @@ void	takeout(char *BUF);
 int	ateopr(void);
 void	vappend(int ch, int cnt, int indent);
 void	back1(void);
-char	*vgetline(int cnt, char *gcursor, bool *aescaped, char commch);
+char	*vgetline(int cnt, char *gcursor, int *aescaped, char commch);
 void	vdoappend(char *lp);
 
 /*

@@ -187,7 +187,7 @@ squish()
 	register line *a1 = dol + 1, *a2 = unddol + 1, *a3 = truedol + 1;
 
 	if(FIXUNDO) {
-		if ((int)inopen == -1)
+		if (inopen == -1)
 			return;
 		if (a1 < a2 && a2 < a3)
 			do
@@ -1218,13 +1218,13 @@ cmdmac(char c)
 	line *ad, *a1, *a2;
 	char *oglobp;
 	short pk;
-	bool oinglobal;
+	int oinglobal;
 
 	lastmac = c;
 	oglobp = globp;
 	oinglobal = inglobal;
 	pk = peekc; peekc = 0;
-	if ((int)inglobal < 2)
+	if (inglobal < 2)
 		inglobal = 1;
 	regbuf(c, macbuf, sizeof(macbuf));
 	a1 = addr1; a2 = addr2;

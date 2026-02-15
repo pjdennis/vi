@@ -120,7 +120,7 @@ vappend(int ch, int cnt, int indent)
 {
 	register int i;
 	register char *gcursor;
-	bool escape;
+	int escape;
 	int repcnt, savedoomed;
 	int oldhold = hold;
 
@@ -288,7 +288,7 @@ vappend(int ch, int cnt, int indent)
 		} while (--cnt > 0);
 		endim();
 		vUA2 = cursor;
-		if ((int)escape != '\n')
+		if (escape != '\n')
 			CP(cursor, gcursor + 1);
 
 		/*
@@ -312,7 +312,7 @@ vappend(int ch, int cnt, int indent)
 		/*
 		 * All done unless we are continuing on to another line.
 		 */
-		if ((int)escape != '\n') {
+		if (escape != '\n') {
 			vshowmode("");
 			break;
 		}
@@ -425,7 +425,7 @@ back1()
  * involved, including the prompt for readline.
  */
 char *
-vgetline(int cnt, char *gcursor, bool *aescaped, char commch)
+vgetline(int cnt, char *gcursor, int *aescaped, char commch)
 {
 	register int c, ch;
 	register char *cp;

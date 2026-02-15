@@ -640,7 +640,7 @@ insrt:
 			 */
 			if (vmacp) {
 				vmacp = 0;
-				if ((int)inopen == -1)	/* don't screw up undo for esc esc */
+				if (inopen == -1)	/* don't screw up undo for esc esc */
 					vundkind = VMANY;
 				inopen = 1;	/* restore old setting now that macro done */
 			}

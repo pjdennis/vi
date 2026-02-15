@@ -95,7 +95,7 @@ getATTN:
 			return(*vmacp++);
 		/* End of a macro or set of nested macros */
 		vmacp = 0;
-		if ((int)inopen == -1)	/* don't screw up undo for esc esc */
+		if (inopen == -1)	/* don't screw up undo for esc esc */
 			vundkind = VMANY;
 		inopen = 1;	/* restore old setting now that macro done */
 		vch_mac = VC_NOTINMAC;
@@ -203,7 +203,7 @@ readecho(char c)
 {
 	register char *sc = cursor;
 	int (*OP)(int);
-	bool waste;
+	int waste;
 	register int OPeek;
 
 	if (WBOT == WECHO)
@@ -522,7 +522,7 @@ fastpeekkey()
 	 * nondeterminism.
 	 */
 	CATCH
-		if (value(TIMEOUT) && (int)inopen >= 0) {
+		if (value(TIMEOUT) && inopen >= 0) {
 			vi_signal(SIGALRM, trapalarm);
 			setalarm();
 		}

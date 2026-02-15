@@ -797,7 +797,7 @@ numberit:
 		case '=':
 			donewline();
 			setall();
-			if ((int)inglobal == 2)
+			if (inglobal == 2)
 				pofix();
 			printf("%d", lineno(addr2));
 			noonl();

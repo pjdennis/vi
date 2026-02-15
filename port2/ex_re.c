@@ -50,7 +50,7 @@ global(bool k)
 	 * strange sounding convention is historically derived from
 	 * everybody simulating a global command.
 	 */
-	if ((int)inglobal==2)
+	if (inglobal==2)
 		error("Global within global@not allowed");
 	markDOT();
 	setall();
