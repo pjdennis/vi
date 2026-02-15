@@ -3,6 +3,7 @@
 
 CC = gcc
 CFLAGS = -DVMUNIX -DUSG -DTABS=8 -DSIGTSTP \
+	-fsigned-char \
 	-Wno-implicit-function-declaration \
 	-Wno-implicit-int \
 	-Wno-return-type \
