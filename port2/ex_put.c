@@ -677,7 +677,7 @@ dontcr:
 			if (!inopen || vtube[outline]==NULL ||
 				(i=vtube[outline][outcol]) < ' ')
 				i = ' ';
-			if(i & QUOTE)	/* mjm: no sign extension on 3B */
+			if(i & QUOTE)
 				i = ' ';
 			if (insmode && cursor_right)
 				tputs(cursor_right, 0, plodput);
@@ -946,11 +946,7 @@ ttcharoff()
 {
 	tty.c_cc[VQUIT] = '\377';
 # ifdef VSTART
-	/*
-	 * The following is sample code if USG ever lets people change
-	 * their start/stop chars.  As long as they can't we can't get
-	 * into trouble so we just leave them alone.
-	 */
+	/* Leave start/stop chars alone if they're the defaults */
 	if (tty.c_cc[VSTART] != CTRL('q'))
 		tty.c_cc[VSTART] = '\377';
 	if (tty.c_cc[VSTOP] != CTRL('s'))
@@ -1032,7 +1028,7 @@ void
 sTTY(int i)
 {
 
-	/* USG 3 very simple: just set everything */
+	/* Set all terminal attributes at once */
 	tcsetattr(i, TCSADRAIN, &tty);
 }
 

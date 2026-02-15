@@ -745,9 +745,7 @@ onhup(int sig)
 {
 	(void)sig;
 
-	/*
-	 * USG tty driver can send multiple HUP's!!
-	 */
+	/* Guard against multiple signals */
 	vi_signal(SIGINT, SIG_IGN);
 	vi_signal(SIGHUP, SIG_IGN);
 	if (chng == 0) {
@@ -772,9 +770,7 @@ oncore(int sig)
 {
 	static int timescalled = 0;
 
-	/*
-	 * USG tty driver can send multiple HUP's!!
-	 */
+	/* Guard against multiple signals */
 	vi_signal(SIGINT, SIG_IGN);
 	vi_signal(SIGHUP, SIG_IGN);
 	vi_signal(sig, SIG_DFL);	/* Insure that we don't catch it again */

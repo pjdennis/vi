@@ -431,11 +431,7 @@ dosub(void)
 	while (lp < loc1)
 		*sp++ = *lp++;
 	casecnt = 0;
-	/*
-	 * Caution: depending on the hardware, c will be either sign
-	 * extended or not if C&QUOTE is set.  Thus, on a VAX, c will
-	 * be < 0, but on a 3B, c will be >= 128.
-	 */
+	/* Note: with -fsigned-char, c&QUOTE will be sign-extended */
 	while ((c = *rp++)) {
 		/* ^V <return> from vi to split lines */
 		if (c == '\r')

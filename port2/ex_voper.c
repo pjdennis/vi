@@ -469,8 +469,7 @@ errlab:
 		break;
 
 	/*
-	 * ^P		To previous line same column.  Ridiculous on the
-	 *		console of the VAX since it puts console in LSI mode.
+	 * ^P		To previous line same column.
 	 */
 	case 'k':
 	case CTRL('p'):

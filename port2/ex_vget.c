@@ -514,10 +514,9 @@ fastpeekkey()
 	 * If we are in a macro we do too, but since it's already
 	 * buffered internally it will return immediately.
 	 * In other cases we force this to die in 1 second.
-	 * This is pretty reliable (VMUNIX rounds it to .5 - 1.5 secs,
-	 * but UNIX truncates it to 0 - 1 secs) but due to system delays
-	 * there are times when arrow keys or very fast typing get counted
-	 * as separate.  notimeout is provided for people who dislike such
+	 * This is pretty reliable but due to system delays there are
+	 * times when arrow keys or very fast typing get counted as
+	 * separate.  notimeout is provided for people who dislike such
 	 * nondeterminism.
 	 */
 	CATCH
@@ -530,7 +529,6 @@ fastpeekkey()
 	ONERR
 		c = 0;
 	ENDCATCH
-	/* Should have an alternative method based on select for 4.2BSD */
 	return(c);
 }
 

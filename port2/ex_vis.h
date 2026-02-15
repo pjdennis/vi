@@ -9,10 +9,12 @@
 extern	int	bastate;
 extern	int	state;
 
-#define	VISUAL		0
-#define	CRTOPEN		1
-#define	ONEOPEN		2
-#define	HARDOPEN	3
+enum {
+	VISUAL		= 0,
+	CRTOPEN,
+	ONEOPEN,
+	HARDOPEN
+};
 
 extern	int	basWTOP;
 extern	int	basWLINES;
@@ -49,20 +51,24 @@ extern	char	*cursor;
 extern	char	*wcursor;
 extern	line	*wdot;
 
-#define	VNONE	0
-#define	VCHNG	1
-#define	VMANY	2
-#define	VCAPU	3
-#define	VMCHNG	4
-#define	VMANYINS 5
+enum {
+	VNONE		= 0,
+	VCHNG,
+	VMANY,
+	VCAPU,
+	VMCHNG,
+	VMANYINS
+};
 
 extern	int	vundkind;	/* Which kind of undo - from above */
 extern	char	*vutmp;		/* Prev line image when "VCHNG" */
 
-#define VC_NOTINMAC	0	/* Not in a macro */
-#define VC_NOCHANGE	1	/* In a macro, no changes so far */
-#define VC_ONECHANGE	2	/* In a macro, one change so far */
-#define VC_MANYCHANGE	3	/* In a macro, at least 2 changes so far */
+enum {
+	VC_NOTINMAC	= 0,	/* Not in a macro */
+	VC_NOCHANGE,		/* In a macro, no changes so far */
+	VC_ONECHANGE,		/* In a macro, one change so far */
+	VC_MANYCHANGE		/* In a macro, at least 2 changes so far */
+};
 
 extern	int	vch_mac;	/* Change state - one of the above */
 
