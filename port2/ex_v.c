@@ -331,11 +331,11 @@ vok(char *atube)
 	vtube0 = atube;
 	vclrbyte(atube, WCOLS * (WECHO - ZERO + 1));
 	for (i = 0; i < ZERO; i++)
-		vtube[i] = (char *) 0;
+		vtube[i] = NULL;
 	for (; i <= WECHO; i++)
 		vtube[i] = atube, atube += WCOLS;
 	for (; i < TUBELINES; i++)
-		vtube[i] = (char *) 0;
+		vtube[i] = NULL;
 	vutmp = atube;
 	vundkind = VNONE;
 	vUNDdot = 0;

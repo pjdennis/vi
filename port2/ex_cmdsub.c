@@ -269,7 +269,7 @@ move()
 		setdot();
 	}
 	nonzero();
-	adt = address((char*)0);
+	adt = address(NULL);
 	if (adt == 0)
 		serror("%s where?|%s requires a trailing address", Command);
 	donewline();

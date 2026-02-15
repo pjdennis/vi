@@ -188,7 +188,7 @@ ein:
 	 * )		Forward an s-expression.
 	 */
 	case ')':
-		forbid(lfind(0, cnt, opf, (line *) 0) < 0);
+		forbid(lfind(0, cnt, opf, NOLINE) < 0);
 		markDOT();
 		break;
 
@@ -207,7 +207,7 @@ ein:
 	 *		set of {}'s.
 	 */
 	case '}':
-		forbid(lfind(1, cnt, opf, (line *) 0) < 0);
+		forbid(lfind(1, cnt, opf, NOLINE) < 0);
 		markDOT();
 		break;
 
@@ -217,7 +217,7 @@ ein:
 	 */
 	case '%':
 		vsave();
-		i = lmatchp((line *) 0);
+		i = lmatchp(NOLINE);
 		getDOT();
 		forbid(!i);
 		if (opf != vmove)

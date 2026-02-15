@@ -183,7 +183,7 @@ unixex(char *opt, char *up, int newstdin, int mode)
 		vi_signal(SIGQUIT, oldquit);
 		if (ruptible)
 			vi_signal(SIGINT, SIG_DFL);
-		execl(svalue(SHELL), "sh", opt, up, (char *) 0);
+		execl(svalue(SHELL), "sh", opt, up, (char *)NULL);
 		printf("No %s!\n", svalue(SHELL));
 		error(NOSTR);
 	}
@@ -296,7 +296,7 @@ recover()
 		close(1);
 		dup(pvec[1]);
 	        close(pvec[1]);
-		execl(EXRECOVER, "exrecover", svalue(DIRECTORY), file, (char *) 0);
+		execl(EXRECOVER, "exrecover", svalue(DIRECTORY), file, (char *)NULL);
 		close(1);
 		dup(2);
 		error(" No recovery routine");

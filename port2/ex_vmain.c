@@ -978,7 +978,7 @@ fixup:
 					vup1();
 				if (vcnt > 0)
 					vcnt = 0;
-				vjumpto(dot, (char *) 0, '.');
+				vjumpto(dot, NULL, '.');
 			} else {
 				/*
 				 * Current line IS on screen.

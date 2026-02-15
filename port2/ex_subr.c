@@ -65,7 +65,7 @@ column(char *cp)
 
 	if (cp == 0)
 		cp = &linebuf[LBSIZE - 2];
-	return (qcolumn(cp, (char *) 0));
+	return (qcolumn(cp, NULL));
 }
 
 /*
@@ -853,7 +853,7 @@ preserve()
 	if (pid == 0) {
 		close(0);
 		dup(tfile);
-		execl(EXPRESERVE, "expreserve", (char *) 0);
+		execl(EXPRESERVE, "expreserve", (char *)NULL);
 		exit(1);
 	}
 	waitfor();

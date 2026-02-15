@@ -370,7 +370,7 @@ lsmatch(char *cp)
 	else {
 		strcLIN(sp);
 		strcpy(scurs, genbuf);
-		if (!lmatchp((line *) 0))
+		if (!lmatchp(NOLINE))
 			beep();
 	}
 	strcLIN(sp);

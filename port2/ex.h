@@ -231,8 +231,8 @@ extern	line	*undadot;	/* If we saved all lines, dot reverts here */
 /*
  * Function type definitions
  */
-#define	NOSTR	(char *) 0
-#define	NOLINE	(line *) 0
+#define	NOSTR	((char *)NULL)
+#define	NOLINE	((line *)NULL)
 
 extern	int	(*Outchar)(int);
 extern	int	(*Pline)(int);

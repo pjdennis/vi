@@ -563,7 +563,7 @@ quit:
 				putpad(exit_ca_mode);
 				flush();
 				resetterm();
-				unixwt(1, unixex("-i", (char *) 0, 0, 0));
+				unixwt(1, unixex("-i", NULL, 0, 0));
 				vcontin(0);
 				continue;
 
