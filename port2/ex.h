@@ -9,6 +9,7 @@
  * November 1979
  */
 
+#define _DEFAULT_SOURCE
 #define getline __posix_getline
 #include <sys/types.h>
 #include <ctype.h>
@@ -142,7 +143,7 @@ extern	char	*pkill[2];	/* Trim for put with ragged (LISP) delete */
 extern	bool	pfast;		/* Have stty -nl'ed to go faster */
 extern	int	pid;		/* Process id of child */
 extern	int	ppid;		/* Process id of parent (e.g. main ex proc) */
-extern	jmp_buf	resetlab;	/* For error throws to top level (cmd mode) */
+extern	sigjmp_buf	resetlab;	/* For error throws to top level (cmd mode) */
 extern	int	rpid;		/* Pid returned from wait() */
 extern	bool	ruptible;	/* Interruptible is normal state */
 extern	bool	seenprompt;	/* 1 if have gotten user input */
@@ -151,7 +152,7 @@ extern	int	status;		/* Status returned from wait() */
 extern	int	tchng;		/* If nonzero, then [Modified] */
 extern	int	tfile;		/* Temporary file unit */
 extern	bool	vcatch;		/* Want to catch an error (open/visual) */
-extern	jmp_buf	vreslab;	/* For error throws to a visual catch */
+extern	sigjmp_buf	vreslab;	/* For error throws to a visual catch */
 extern	bool	writing;	/* 1 if in middle of a file write */
 extern	int	xchng;		/* Suppresses multiple "No writes" in !cmd */
 
@@ -167,18 +168,18 @@ extern	int	xchng;		/* Suppresses multiple "No writes" in !cmd */
 #define ckaw()		{if (chng && value(AUTOWRITE) && !value(READONLY)) wop(0);}
 #define	copy(a,b,c)	Copy((char *) (a), (char *) (b), (c))
 #define	eq(a, b)	((a) && (b) && strcmp(a, b) == 0)
-#define	getexit(a)	copy(a, resetlab, sizeof (jmp_buf))
+#define	getexit(a)	copy(a, resetlab, sizeof (sigjmp_buf))
 #define	lastchar()	lastc
 #define	outchar(c)	(*Outchar)(c)
 #define	pastwh()	(ignore(skipwh()))
 #define	pline(no)	(*Pline)(no)
-#define	reset()		longjmp(resetlab,1)
-#define	resexit(a)	copy(resetlab, a, sizeof (jmp_buf))
-#define	setexit()	setjmp(resetlab)
+#define	reset()		siglongjmp(resetlab,1)
+#define	resexit(a)	copy(resetlab, a, sizeof (sigjmp_buf))
+#define	setexit()	sigsetjmp(resetlab, 1)
 #define	setlastchar(c)	lastc = c
 #define	ungetchar(c)	peekc = c
 
-#define	CATCH		vcatch = 1; if (setjmp(vreslab) == 0) {
+#define	CATCH		vcatch = 1; if (sigsetjmp(vreslab, 1) == 0) {
 #define	ONERR		} else { vcatch = 0;
 #define	ENDCATCH	} vcatch = 0;
 
@@ -267,6 +268,7 @@ extern	void	(*oldquit)(int);
 void	onhup(int);
 void	onintr(int);
 void	onsusp(int);
+void	vi_signal(int sig, void (*handler)(int));
 int	putch();
 void	shift();
 int	termchar(int);

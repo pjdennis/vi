@@ -263,7 +263,7 @@ undvis()
 {
 
 	if (ruptible)
-		signal(SIGINT, onintr);
+		vi_signal(SIGINT, onintr);
 	squish();
 	pkill[0] = pkill[1] = 0;
 	unddol = truedol;
@@ -344,7 +344,7 @@ vok(char *atube)
 	vUNDdot = 0;
 	OCOLUMNS = columns;
 	inopen = 1;
-	signal(SIGINT, vintr);
+	vi_signal(SIGINT, vintr);
 	vmoving = 0;
 	splitw = 0;
 	doomed = 0;
@@ -359,7 +359,7 @@ void
 vintr(int sig)
 {
 
-	signal(SIGINT, vintr);
+	vi_signal(SIGINT, vintr);
 	if (vcatch)
 		onintr(0);
 	ungetkey(ATTN);

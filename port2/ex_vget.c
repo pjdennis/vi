@@ -539,7 +539,7 @@ fastpeekkey()
 	 */
 	CATCH
 		if (value(TIMEOUT) && inopen >= 0) {
-			signal(SIGALRM, trapalarm);
+			vi_signal(SIGALRM, trapalarm);
 			setalarm();
 		}
 		c = peekkey();
@@ -581,5 +581,5 @@ trapalarm(int sig) {
 	sigemptyset(&set);
 	sigaddset(&set, SIGALRM);
 	sigprocmask(SIG_UNBLOCK, &set, NULL);
-	longjmp(vreslab,1);
+	siglongjmp(vreslab,1);
 }

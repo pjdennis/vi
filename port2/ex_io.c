@@ -728,12 +728,12 @@ short ttyindes;
 void
 source(char *fil, bool okfail)
 {
-	jmp_buf osetexit;
+	sigjmp_buf osetexit;
 	register int saveinp, ointty, oerrno;
 	char *saveglobp;
 	int savepeekc;
 
-	signal(SIGINT, SIG_IGN);
+	vi_signal(SIGINT, SIG_IGN);
 	saveinp = dup(0);
 	savepeekc = peekc;
 	saveglobp = globp;

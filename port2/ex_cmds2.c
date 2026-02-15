@@ -187,7 +187,7 @@ error1(char *str)
 		if (str)
 			noonl();
 		fixol();
-		longjmp(vreslab,1);
+		siglongjmp(vreslab,1);
 	}
 	if (str && !vcatch)
 		putNFL();

@@ -124,20 +124,37 @@ int main(int ac, char *av[])
 	/*
 	 * Initialize interrupt handling.
 	 */
-	oldhup = signal(SIGHUP, SIG_IGN);
-	if (oldhup == SIG_DFL)
-		signal(SIGHUP, onhup);
-	oldquit = signal(SIGQUIT, SIG_IGN);
-	ruptible = signal(SIGINT, SIG_IGN) == SIG_DFL;
-	if (signal(SIGTERM, SIG_IGN) == SIG_DFL)
-		signal(SIGTERM, onhup);
-	signal(SIGILL, oncore);
-	signal(SIGTRAP, oncore);
-	signal(SIGIOT, oncore);
-	signal(SIGFPE, oncore);
-	signal(SIGBUS, oncore);
-	signal(SIGSEGV, oncore);
-	signal(SIGPIPE, oncore);
+	{
+		struct sigaction sa, osa;
+		sa.sa_flags = 0;
+		sigemptyset(&sa.sa_mask);
+
+		sa.sa_handler = SIG_IGN;
+		sigaction(SIGHUP, &sa, &osa);
+		oldhup = osa.sa_handler;
+		if (oldhup == SIG_DFL)
+			vi_signal(SIGHUP, onhup);
+
+		sa.sa_handler = SIG_IGN;
+		sigaction(SIGQUIT, &sa, &osa);
+		oldquit = osa.sa_handler;
+
+		sa.sa_handler = SIG_IGN;
+		sigaction(SIGINT, &sa, &osa);
+		ruptible = osa.sa_handler == SIG_DFL;
+
+		sa.sa_handler = SIG_IGN;
+		sigaction(SIGTERM, &sa, &osa);
+		if (osa.sa_handler == SIG_DFL)
+			vi_signal(SIGTERM, onhup);
+	}
+	vi_signal(SIGILL, oncore);
+	vi_signal(SIGTRAP, oncore);
+	vi_signal(SIGIOT, oncore);
+	vi_signal(SIGFPE, oncore);
+	vi_signal(SIGBUS, oncore);
+	vi_signal(SIGSEGV, oncore);
+	vi_signal(SIGPIPE, oncore);
 
 	/*
 	 * Initialize end of core pointers.
@@ -209,8 +226,15 @@ int main(int ac, char *av[])
 		ac--, av++;
 	}
 
-	if (!hush && signal(SIGTSTP, SIG_IGN) == SIG_DFL)
-		signal(SIGTSTP, onsusp), dosusp++;
+	{
+		struct sigaction sa, osa;
+		sa.sa_handler = SIG_IGN;
+		sigemptyset(&sa.sa_mask);
+		sa.sa_flags = 0;
+		sigaction(SIGTSTP, &sa, &osa);
+		if (!hush && osa.sa_handler == SIG_DFL)
+			vi_signal(SIGTSTP, onsusp), dosusp++;
+	}
 
 	if (ac && av[0][0] == '+') {
 		firstpat = &av[0][1];

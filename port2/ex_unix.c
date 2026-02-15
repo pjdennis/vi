@@ -138,9 +138,9 @@ unixex(char *opt, char *up, int newstdin, int mode)
 	int pvec[2];
 	ttymode f;
 
-	signal(SIGINT, SIG_IGN);
+	vi_signal(SIGINT, SIG_IGN);
 	if (dosusp)
-		signal(SIGTSTP, SIG_DFL);
+		vi_signal(SIGTSTP, SIG_DFL);
 	if (inopen)
 		f = setty(normf);
 	if ((mode & 1) && pipe(pvec) < 0) {
@@ -178,10 +178,10 @@ unixex(char *opt, char *up, int newstdin, int mode)
 			close(io);
 		if (tfile)
 			close(tfile);
-		signal(SIGHUP, oldhup);
-		signal(SIGQUIT, oldquit);
+		vi_signal(SIGHUP, oldhup);
+		vi_signal(SIGQUIT, oldquit);
 		if (ruptible)
-			signal(SIGINT, SIG_DFL);
+			vi_signal(SIGINT, SIG_DFL);
 		execl(svalue(SHELL), "sh", opt, up, (char *) 0);
 		printf("No %s!\n", svalue(SHELL));
 		error(NOSTR);
@@ -205,7 +205,7 @@ unixwt(bool c, ttymode f)
 
 	waitfor();
 	if (dosusp)
-		signal(SIGTSTP, onsusp);
+		vi_signal(SIGTSTP, onsusp);
 	if (inopen)
 		setty(f);
 	setrupt();
@@ -232,7 +232,7 @@ filter(int mode)
 
 	mode++;
 	if (mode & 2) {
-		signal(SIGINT, SIG_IGN);
+		vi_signal(SIGINT, SIG_IGN);
 		if (pipe(pvec) < 0)
 			error("Can't make pipe");
 		pid = fork();

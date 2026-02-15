@@ -748,8 +748,8 @@ onhup(int sig)
 	/*
 	 * USG tty driver can send multiple HUP's!!
 	 */
-	signal(SIGINT, SIG_IGN);
-	signal(SIGHUP, SIG_IGN);
+	vi_signal(SIGINT, SIG_IGN);
+	vi_signal(SIGHUP, SIG_IGN);
 	if (chng == 0) {
 		cleanup(1);
 		exit(0);
@@ -775,9 +775,9 @@ oncore(int sig)
 	/*
 	 * USG tty driver can send multiple HUP's!!
 	 */
-	signal(SIGINT, SIG_IGN);
-	signal(SIGHUP, SIG_IGN);
-	signal(sig, SIG_DFL);	/* Insure that we don't catch it again */
+	vi_signal(SIGINT, SIG_IGN);
+	vi_signal(SIGHUP, SIG_IGN);
+	vi_signal(sig, SIG_DFL);	/* Insure that we don't catch it again */
 	if (timescalled++ == 0 && chng && setexit() == 0) {
 		if (inopen)
 			vsave();
@@ -804,7 +804,7 @@ oncore(int sig)
 void
 onintr(int sig)
 {
-	signal(SIGINT, inopen ? vintr : onintr);
+	vi_signal(SIGINT, inopen ? vintr : onintr);
 	cancelalarm();
 	draino();
 	if (!inopen) {
@@ -824,9 +824,9 @@ setrupt()
 {
 
 	if (ruptible) {
-		signal(SIGINT, inopen ? vintr : onintr);
+		vi_signal(SIGINT, inopen ? vintr : onintr);
 		if (dosusp)
-			signal(SIGTSTP, onsusp);
+			vi_signal(SIGTSTP, onsusp);
 	}
 }
 
@@ -869,15 +869,29 @@ onsusp(int sig)
 	savenormtty = normtty;
 	normtty = 0;
 
-	signal(SIGTSTP, SIG_DFL);
+	vi_signal(SIGTSTP, SIG_DFL);
 	kill(0, SIGTSTP);
 
 	/* the pc stops here */
 
-	signal(SIGTSTP, onsusp);
+	vi_signal(SIGTSTP, onsusp);
 	normtty = savenormtty;
 	vcontin(0);
 	setty(f);
 	if (!inopen)
 		error(0);
+}
+
+/*
+ * Wrapper around sigaction() to replace signal().
+ * Uses reliable signal semantics with no SA_RESTART.
+ */
+void
+vi_signal(int sig, void (*handler)(int))
+{
+	struct sigaction sa;
+	sa.sa_handler = handler;
+	sigemptyset(&sa.sa_mask);
+	sa.sa_flags = 0;
+	sigaction(sig, &sa, NULL);
 }

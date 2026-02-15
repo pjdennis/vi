@@ -184,7 +184,7 @@ vi_setupterm(char *type, int fd, int *errret)
 	}
 
 	/* Install SIGWINCH handler */
-	signal(SIGWINCH, sigwinch_handler);
+	vi_signal(SIGWINCH, sigwinch_handler);
 
 	cur_term = 1;
 	if (errret)

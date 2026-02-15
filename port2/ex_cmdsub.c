@@ -123,10 +123,13 @@ delete(bool hush)
 
 	nonzero();
 	if(FIXUNDO) {
-		register int (*dsavint)();
+		struct sigaction sa, dsavint;
 
 		change();
-		dsavint = signal(SIGINT, SIG_IGN);
+		sa.sa_handler = SIG_IGN;
+		sigemptyset(&sa.sa_mask);
+		sa.sa_flags = 0;
+		sigaction(SIGINT, &sa, &dsavint);
 		undkind = UNDCHANGE;
 		a1 = addr1;
 		squish();
@@ -142,7 +145,7 @@ delete(bool hush)
 			a1 = dol;
 		dot = a1;
 		pkill[0] = pkill[1] = 0;
-		signal(SIGINT, dsavint);
+		sigaction(SIGINT, &dsavint, NULL);
 	} else {
 		register line *a3;
 		register int i;
