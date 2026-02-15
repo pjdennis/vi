@@ -661,6 +661,18 @@ cancelalarm()
 }
 
 trapalarm() {
+	sigset_t set;				/* PORT_NOTE: added */
 	alarm(0);
+	/*
+	 * PORT_NOTE: On original BSD, longjmp restored the signal mask
+	 * saved by setjmp. On modern Linux, setjmp/longjmp do not
+	 * save/restore the signal mask. The kernel blocks SIGALRM
+	 * during this handler, and longjmp would leave it blocked
+	 * permanently, breaking all subsequent alarm timeouts.
+	 * Unblock SIGALRM before longjmp to restore BSD behavior.
+	 */
+	sigemptyset(&set);			/* PORT_NOTE: added */
+	sigaddset(&set, SIGALRM);		/* PORT_NOTE: added */
+	sigprocmask(SIG_UNBLOCK, &set, NULL);	/* PORT_NOTE: added */
 	longjmp(vreslab,1);
 }
