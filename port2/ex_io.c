@@ -355,35 +355,15 @@ rop(int c)
 		lseek(io, 0l, 0);
 		if (i != sizeof(magic))
 			break;
-		switch (magic) {
-
-		case 0405:	/* data overlay on exec */
-		case 0407:	/* unshared */
-		case 0410:	/* shared text */
-		case 0411:	/* separate I/D */
-		case 0413:	/* VM/Unix demand paged */
-		case 0430:	/* PDP-11 Overlay shared */
-		case 0431:	/* PDP-11 Overlay sep I/D */
+		/* ELF magic: "\x7fE" as little-endian short */
+		if (magic == 0x457f)
 			error(" Executable");
-
-		/*
-		 * We do not forbid the editing of portable archives
-		 * because it is reasonable to edit them, especially
-		 * if they are archives of text files.  This is
-		 * especially useful if you archive source files together
-		 * and copy them to another system with ~%take, since
-		 * the files sometimes show up munged and must be fixed.
-		 */
-		case 0177545:
-		case 0177555:
+		/* ar archive magic: "!<" as little-endian short */
+		if (magic == 0x3c21)
 			error(" Archive");
-
-		default:
-			/* Everybody else has an 8 bit byte */
-			if (magic & 0100200)
-				error(" Non-ascii file");
-			break;
-		}
+		/* Check for binary content (high bits set) */
+		if (magic & 0100200)
+			error(" Non-ascii file");
 	}
 	if (c != 'r') {
 		if (value(READONLY) && denied) {

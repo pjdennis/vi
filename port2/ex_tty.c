@@ -30,9 +30,6 @@ gettmode()
 	GT = 1;
 	if (tcgetattr(2, &tty) < 0)
 		return;
-	if (ospeed != cfgetospeed(&tty))	/* mjm */
-		value(SLOWOPEN) = cfgetospeed(&tty) < B1200;
-	ospeed = cfgetospeed(&tty);
 	normf = tty;
 #ifdef IUCLC
 	UPPERCASE = (tty.c_iflag & IUCLC) != 0;
@@ -40,14 +37,11 @@ gettmode()
 	UPPERCASE = 0;
 #endif
 #ifdef TABDLY
-	if ((tty.c_oflag & TABDLY) == TAB3 || teleray_glitch)
+	if ((tty.c_oflag & TABDLY) == TAB3)
 		GT = 0;
 #else
 #ifdef XTABS
-	if ((tty.c_oflag & XTABS) == XTABS || teleray_glitch)
-		GT = 0;
-#else
-	if (teleray_glitch)
+	if ((tty.c_oflag & XTABS) == XTABS)
 		GT = 0;
 #endif
 #endif
@@ -81,12 +75,6 @@ setterm(char *type)
 	if (lines > TUBELINES)
 		lines = TUBELINES;
 	l = lines;
-	if (ospeed < B1200)
-		l = 9;	/* including the message line at the bottom */
-	else if (ospeed < B2400)
-		l = 17;
-	if (l > lines)
-		l = lines;
 	/*
 	 * Initialize keypad arrow keys.
 	 */
@@ -129,7 +117,7 @@ setterm(char *type)
 	if (defwind)
 		value(WINDOW) = defwind;
 	value(SCROLL) = options[SCROLL].odefault =
-		hard_copy ? 11 : (value(WINDOW) / 2);
+		value(WINDOW) / 2;
 	if (columns <= 4)
 		columns = 1000;
 	if (tparm(cursor_address, 2, 2)[0] == 'O')	/* OOPS */
@@ -150,8 +138,6 @@ setterm(char *type)
 	gettmode();
 	value(REDRAW) = insert_line && delete_line;
 	value(OPTIMIZE) = !cursor_address && !tab;
-	if (ospeed == B1200 && !value(REDRAW))
-		value(SLOWOPEN) = 1;	/* see also gettmode above */
 	if (unknown)
 		serror("%s: Unknown terminal type", type);
 }

@@ -94,17 +94,9 @@ char *newline         = "\r\n";
 /* Boolean capabilities */
 int auto_right_margin   = 1;    /* xterm wraps at right margin */
 int eat_newline_glitch  = 1;    /* xterm eats newline after wrap */
-int tilde_glitch        = 0;
-int teleray_glitch      = 0;
-int hard_copy           = 0;
-int over_strike         = 0;
 int memory_above        = 0;
 int memory_below        = 0;
-int insert_null_glitch  = 0;
-int erase_overstrike    = 0;
-int transparent_underline = 0;
 int generic_type         = 0;
-int beehive_glitch       = 0;
 int move_insert_mode     = 1;  /* modern terminals support cursor movement in insert mode */
 int ceol_standout_glitch = 0;
 

@@ -27,7 +27,6 @@
 #include <sys/wait.h>
 #include <sys/ioctl.h>
 
-typedef struct termios SGTTY;
 #define bcopy(from, to, n) memmove((to), (from), (n))
 #define VFORK fork
 
@@ -136,7 +135,6 @@ extern	int	notecnt;	/* Count for notify (to visual from cmd) */
 extern	bool	numberf;	/* Command should run in number mode */
 extern	char	obuf[BUFSIZ];	/* Buffer for tty output */
 extern	int	oprompt;	/* Saved during source */
-extern	int	ospeed;		/* Output speed (from gtty) */
 extern	int	otchng;		/* Backup tchng to find changes in macros */
 extern	int	peekc;		/* Peek ahead character (cmd mode input) */
 extern	char	*pkill[2];	/* Trim for put with ragged (LISP) delete */
@@ -251,15 +249,15 @@ char	*vgetline(int cnt, char *gcursor, bool *aescaped, char commch);
 char	*vinit();
 char	*vpastwh();
 char	*vskipwh();
-void	put();
-void	putreg(char c);
-void	YANKreg();
-int	delete(bool hush);
-void	filter();
+void	put(int unused);
+void	putreg(int c);
+void	YANKreg(int c);
+void	delete(int hush);
+void	filter(int mode);
 int	getfile();
 int	getsub();
 int	gettty();
-void	join();
+void	join(int c);
 int	listchar(short c);
 int	normchar(short c);
 int	normline();
@@ -269,14 +267,14 @@ void	onhup(int);
 void	onintr(int);
 void	onsusp(int);
 void	vi_signal(int sig, void (*handler)(int));
-int	putch();
+int	putch(int);
 void	shift();
 int	termchar(int);
-void	vfilter();
+void	vfilter(int c);
 void	vintr(int);
-int	vputch();
-void	vshftop();
-void	yank();
+int	vputch(int);
+void	vshftop(int c);
+void	yank(int unused);
 
 #	define	ignore(a)	a
 #	define	ignorf(a)	a

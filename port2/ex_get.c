@@ -177,11 +177,9 @@ gettty()
 				if (ch == CTRL('d')) {
 					if (c == '0')
 						lastin = 0;
-					if (!over_strike) {
-						putchar('\b' | QUOTE);
-						putchar(' ' | QUOTE);
-						putchar('\b' | QUOTE);
-					}
+					putchar('\b' | QUOTE);
+					putchar(' ' | QUOTE);
+					putchar('\b' | QUOTE);
 					gotab(offset);
 					hadup = 1;
 					c = getchar();

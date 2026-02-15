@@ -16,7 +16,7 @@
 #include "ex_tty.h"
 
 int cleanup(bool all);
-int blkio(short b, char *buf, int (*iofcn)());
+void blkio(short b, char *buf, int (*iofcn)());
 int partreg(char c);
 
 /*
@@ -105,6 +105,7 @@ cleanup(bool all)
 		exit(0);
 }
 
+void
 getline(line tl)
 {
 	register char *bp, *lp;
@@ -208,6 +209,7 @@ char	incorb[INCORB+1][BUFSIZ];
 #define	pagrnd(a)	((char *)(((uintptr_t)(a))&~(BUFSIZ-1)))
 int	stilinc;	/* up to here not written yet */
 
+void
 blkio(short b, char *buf, int (*iofcn)())
 {
 
@@ -257,7 +259,7 @@ synctmp()
 {
 	register int cnt;
 	register line *a;
-	register short *bp;
+	register int *bp;
         register char *p1, *p2;
         register int n;
 
@@ -355,6 +357,7 @@ short	rblock;
 short	rnext;
 char	*rbufcp;
 
+void
 regio(short b, int (*iofcn)())
 {
 
@@ -439,7 +442,7 @@ shread()
 int	getREG();
 
 void
-putreg(char c)
+putreg(int c)
 {
 	register line *odot = dot;
 	register line *odol = dol;
@@ -486,6 +489,7 @@ partreg(char c)
 	return (mapreg(c)->rg_flags);
 }
 
+void
 notpart(int c)
 {
 

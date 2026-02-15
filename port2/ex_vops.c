@@ -254,8 +254,9 @@ vnoapp()
  * Move is simple, except for moving onto new lines in hardcopy open mode.
  */
 void
-vmove()
+vmove(int c)
 {
+	(void)c;
 	register int cnt;
 
 	if (wdot) {
@@ -322,8 +323,8 @@ vmove()
  * by vchange (although vchange may pass it back if it degenerates
  * to a full line range delete.)
  */
-int
-vdelete(char c)
+void
+vdelete(int c)
 {
 	register char *cp;
 	register int i;
@@ -382,8 +383,8 @@ vdelete(char c)
  * Across lines with both wcursor and wdot given, we delete
  * and sync then append (but one operation for undo).
  */
-int
-vchange(char c)
+void
+vchange(int c)
 {
 	register char *cp;
 	register int i, ind, cnt;
@@ -579,7 +580,7 @@ smallchange:
 		wcursor = cursor;
 		cursor = linebuf;
 		vgoto(outline, value(NUMBER) << 3);
-		vmove();
+		vmove(0);
 */
 		doomed = 0;
 	}
@@ -661,8 +662,9 @@ voOpen(int c, int cnt)
 char	vshnam[2] = { 'x', 0 };
 
 void
-vshftop()
+vshftop(int c)
 {
+	(void)c;
 	register line *addr;
 	register int cnt;
 
@@ -685,8 +687,9 @@ vshftop()
  * Filter portions of the buffer through unix commands.
  */
 void
-vfilter()
+vfilter(int c)
 {
+	(void)c;
 	register line *addr;
 	register int cnt;
 	char *oglobp;
@@ -816,9 +819,9 @@ xdw()
  * Routine for vremote to call to implement shifts.
  */
 void
-vshift()
+vshift(int unused)
 {
-
+	(void)unused;
 	shift(op, 1);
 }
 
@@ -867,8 +870,9 @@ vrep(int cnt)
  * in the routine xdw().
  */
 void
-vyankit()
+vyankit(int c)
 {
+	(void)c;
 	register int cnt;
 
 	if (wdot) {

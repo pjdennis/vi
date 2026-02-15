@@ -44,7 +44,7 @@ vclrlin(int l, line *tp)
 
 	vigoto(l, 0);
 	if ((hold & HOLDAT) == 0)
-		putchar(tp > dol ? ((UPPERCASE || tilde_glitch) ? '^' : '~') : '@');
+		putchar(tp > dol ? (UPPERCASE ? '^' : '~') : '@');
 	if (state == HARDOPEN)
 		sethard();
 	vclreol();
@@ -68,7 +68,7 @@ vclreol()
 	i = WCOLS - destcol;
 	tp = vtube[destline] + destcol;
 	if (clr_eol) {
-		if (insert_null_glitch && *tp || !ateopr()) {
+		if (!ateopr()) {
 			vcsync();
 			vputp(clr_eol, 1);
 		}
@@ -130,23 +130,8 @@ vclrech(bool didphys)
 			else
 				vputp(clr_eos, 1);
 		} else {
-			if (teleray_glitch) {
-				/* This code basically handles the t1061
-				 * where positioning at (0, 0) won't work
-				 * because the terminal won't let you put
-				 * the cursor on it's magic cookie.
-				 *
-				 * Should probably be ceol_standout_glitch
-				 * above, or even a
-				 * new glitch, but right now t1061 is the
-				 * only terminal with teleray_glitch.
-				 */
-				vgoto(WECHO, 0);
-				vputp(delete_line, 1);
-			} else {
-				vigoto(WECHO, 0);
-				vclreol();
-			}
+			vigoto(WECHO, 0);
+			vclreol();
 		}
 		splitw = 0;
 		didphys = 1;
@@ -366,7 +351,7 @@ vgoto(int y, int x)
 				if (*tp == 0)
 					*tp = ' ';
 				c = *tp++ & TRIM;
-				vputc(c && (!over_strike || erase_overstrike) ? c : ' '), outcol++;
+				vputc(c ? c : ' '), outcol++;
 			} else {
 				vputp(cursor_left, 0);
 				outcol--;
@@ -535,7 +520,7 @@ vmaktop(int p, char *cp)
  * for tabs) and code assumes this in several place
  * to make life simpler.
  */
-void
+int
 vinschar(int c)
 {
 	register int i;
@@ -550,12 +535,12 @@ vinschar(int c)
 		 */
 		if (c == '\t') {
 			vgotab();
-			return;
+			return 0;
 		}
 		vputchar(c);
 		if (DEPTH(vcline) * WCOLS + !value(REDRAW) >
 		    (destline - LINE(vcline)) * WCOLS + destcol)
-			return;
+			return 0;
 		/*
 		 * The next line is about to be clobbered
 		 * make space for another segment of this line
@@ -568,14 +553,14 @@ vinschar(int c)
 		} else {
 			c = LINE(vcline) + DEPTH(vcline);
 			if (c < LINE(vcline + 1) || c > WBOT)
-				return;
+				return 0;
 			i = destcol;
 			vinslin(c, 1, vcline);
 			DEPTH(vcline)++;
 			vigoto(c, i);
 			vprepins();
 		}
-		return;
+		return 0;
 	}
 	/*
 	 * Compute the number of positions in the line image of the
@@ -630,7 +615,7 @@ vinschar(int c)
 		do
 			vputchar(c);
 		while (--inssiz);
-		return;
+		return 0;
 	}
 
 	/*
@@ -662,8 +647,7 @@ vinschar(int c)
 	/*
 	 * For HP's and DM's, e.g. tabslack has no meaning.
 	 */
-	if (!insert_null_glitch)
-		tabslack = 0;
+	tabslack = 0;
 
 	/*
 	 * The real work begins.
@@ -682,8 +666,6 @@ vinschar(int c)
 		 * implied by the insertion.
 		 */
 		if (inssiz >= doomed + tabcol(tabstart, value(TABSTOP)) - tabstart) {
-			if (insert_null_glitch)
-				vrigid();
 			vneedpos(value(TABSTOP));
 			vishft();
 		}
@@ -703,6 +685,7 @@ vinschar(int c)
 	destline = LINE(vcline);
 	destcol = inscol + inssiz;
 	vcsync();
+	return 0;
 }
 
 /*
@@ -737,13 +720,13 @@ vneedpos(int cnt)
 	register int d = DEPTH(vcline);
 	register int rmdr = d * WCOLS - linend;
 
-	if (cnt <= rmdr - insert_null_glitch)
+	if (cnt <= rmdr)
 		return;
 	endim();
 	vnpins(1);
 }
 
-int
+void
 vnpins(int dosync)
 {
 	register int d = DEPTH(vcline);
@@ -798,28 +781,6 @@ vishft()
 		up = tp + tabend;
 		for (i = tabend; i < linend; i++)
 			vputchar(*up++);
-	} else if (insert_null_glitch) {
-		/*
-		 * CONCEPT-like terminals do most of the work for us,
-		 * we don't have to muck with simulation of multi-line
-		 * insert mode.  Some of the shifting may come for free
-		 * also if the tabs don't have enough slack to take up
-		 * all the inserted characters.
-		 */
-		i = shft;
-		slakused = inssiz - doomed;
-		if (slakused > tabslack) {
-			i -= slakused - tabslack;
-			slakused -= tabslack;
-		}
-		if (i > 0 && tabend != linend) {
-			tshft = i;
-			vgotoCL(tabend);
-			goim();
-			do
-				vputchar(' ' | QUOTE);
-			while (--i);
-		}
 	} else {
 		/*
 		 * HP and Datamedia type terminals have to have multi-line
@@ -862,12 +823,6 @@ vishft()
 		do
 			*--up = *--tp;
 		while (--i);
-	if (insert_null_glitch && tshft) {
-		i = tshft;
-		do
-			*--up = ' ' | QUOTE;
-		while (--i);
-	}
 	hold = oldhold;
 }
 
@@ -958,41 +913,24 @@ viin(int c)
 		for (i = tabsize - (inssiz - doomed) + shft; i > 0; i--)
 			vputchar(' ' | QUOTE);
 	} else {
-		if (!insert_null_glitch) {
-			/*
-			 * On terminals without multi-line
-			 * insert in the hardware, we must go fix the segments
-			 * between the inserted text and the following
-			 * tabs, if they are on different lines.
-			 *
-			 * Aaargh.
-			 */
-			tp = vtube0;
-			for (j = (inscol + inssiz - 1) / WCOLS + 1;
-			    j <= (tabstart + inssiz - doomed - 1) / WCOLS; j++) {
-				vgotoCL(j * WCOLS);
-				i = inssiz - doomed;
-				up = tp + j * WCOLS - i;
-				goim();
-				do
-					vputchar(*up++);
-				while (--i && *up);
-			}
-		} else {
-			/*
-			 * On terminals with multi line inserts,
-			 * life is simpler, just reflect eating of
-			 * the slack.
-			 */
-			tp = vtube0 + tabend;
-			for (i = tabsize - (inssiz - doomed); i >= 0; i--) {
-				if ((*--tp & (QUOTE|TRIM)) == QUOTE) {
-					--tabslack;
-					if (tabslack >= slakused)
-						continue;
-				}
-				*tp = ' ' | QUOTE;
-			}
+		/*
+		 * On terminals without multi-line
+		 * insert in the hardware, we must go fix the segments
+		 * between the inserted text and the following
+		 * tabs, if they are on different lines.
+		 *
+		 * Aaargh.
+		 */
+		tp = vtube0;
+		for (j = (inscol + inssiz - 1) / WCOLS + 1;
+		    j <= (tabstart + inssiz - doomed - 1) / WCOLS; j++) {
+			vgotoCL(j * WCOLS);
+			i = inssiz - doomed;
+			up = tp + j * WCOLS - i;
+			goim();
+			do
+				vputchar(*up++);
+			while (--i && *up);
 		}
 		/*
 		 * Blank out the shifted positions to be tab positions.
@@ -1112,7 +1050,7 @@ vputchar(int c)
 
 	case '\t':
 		vgotab();
-		return;
+		return 0;
 
 	case ' ':
 		/*
@@ -1124,10 +1062,10 @@ vputchar(int c)
 		 * in all cases, that nothing has ever been displayed
 		 * at this position.  Ugh.
 		 */
-		if (!insmode && !insert_null_glitch && (state != HARDOPEN || over_strike) && (*tp&TRIM) == 0) {
+		if (!insmode && state != HARDOPEN && (*tp&TRIM) == 0) {
 			*tp = ' ';
 			destcol++;
-			return;
+			return 0;
 		}
 		goto def;
 
@@ -1147,14 +1085,14 @@ vputchar(int c)
 			if ((hold & HOLDPUPD) == 0)
 				*tp = QUOTE;
 			destcol++;
-			return;
+			return 0;
 		}
 		/*
 		 * A ``space'' ontop of a part of a tab.
 		 */
 		if (*tp & QUOTE) {
 			destcol++;
-			return;
+			return 0;
 		}
 		c = ' ' | QUOTE;
 		/* fall into ... */
@@ -1167,11 +1105,11 @@ def:
 		 * are the same, provided we are not in insert mode
 		 * and if we are in hardopen, that the terminal has overstrike.
 		 */
-		if (d == (c & TRIM) && !insmode && (state != HARDOPEN || over_strike)) {
+		if (d == (c & TRIM) && !insmode && state != HARDOPEN) {
 			if ((hold & HOLDPUPD) == 0)
 				*tp = c;
 			destcol++;
-			return;
+			return 0;
 		}
 		/*
 		 * Backwards looking optimization.
@@ -1204,14 +1142,8 @@ def:
 		 * output), and remembering, in hardcopy mode,
 		 * that we have overstruct something.
 		 */
-		if (!insmode && d && d != ' ' && d != (c & TRIM)) {
-			if (erase_overstrike && (over_strike || transparent_underline && (c == '_' || d == '_'))) {
-				vputc(' ');
-				outcol++, destcol++;
-				back1();
-			} else
-				rubble = 1;
-		}
+		if (!insmode && d && d != ' ' && d != (c & TRIM))
+			rubble = 1;
 
 		/*
 		 * Unless we are just bashing characters around for
@@ -1251,6 +1183,7 @@ def:
 			vputc('\n');
 		}
 	}
+	return 0;
 }
 
 /*
@@ -1267,47 +1200,26 @@ physdc(int stcol, int endcol)
 
 	if (!delete_character || nc <= 0)
 		return;
-	if (insert_null_glitch) {
-		/*
-		 * CONCEPT-100 like terminal.
-		 * If there are any ``spaces'' in the material to be
-		 * deleted, then this is too hard, just retype.
-		 */
-		vprepins();
-		up = vtube0 + stcol;
-		i = nc;
-		do
-			if ((*up++ & (QUOTE|TRIM)) == QUOTE)
-				return;
-		while (--i);
-		i = 2 * nc;
-		do
-			if (*up == 0 || (*up++ & QUOTE) == QUOTE)
-				return;
-		while (--i);
-		vgotoCL(stcol);
-	} else {
-		/*
-		 * HP like delete mode.
-		 * Compute how much text we are moving over by deleting.
-		 * If it appears to be faster to just retype
-		 * the line, do nothing and that will be done later.
-		 * We are assuming 2 output characters per deleted
-		 * characters and that clear to end of line is available.
-		 */
-		i = stcol / WCOLS;
-		if (i != endcol / WCOLS)
-			return;
-		i += LINE(vcline);
-		stcol %= WCOLS;
-		endcol %= WCOLS;
-		up = vtube[i]; tp = up + endcol; tpe = up + WCOLS;
-		while (tp < tpe && *tp)
-			tp++;
-		if (tp - (up + stcol) < 2 * nc)
-			return;
-		vgoto(i, stcol);
-	}
+	/*
+	 * HP like delete mode.
+	 * Compute how much text we are moving over by deleting.
+	 * If it appears to be faster to just retype
+	 * the line, do nothing and that will be done later.
+	 * We are assuming 2 output characters per deleted
+	 * characters and that clear to end of line is available.
+	 */
+	i = stcol / WCOLS;
+	if (i != endcol / WCOLS)
+		return;
+	i += LINE(vcline);
+	stcol %= WCOLS;
+	endcol %= WCOLS;
+	up = vtube[i]; tp = up + endcol; tpe = up + WCOLS;
+	while (tp < tpe && *tp)
+		tp++;
+	if (tp - (up + stcol) < 2 * nc)
+		return;
+	vgoto(i, stcol);
 
 	/*
 	 * Go into delete mode and do the actual delete.
@@ -1320,33 +1232,21 @@ physdc(int stcol, int endcol)
 
 	/*
 	 * Straighten up.
-	 * With CONCEPT like terminals, characters are pulled left
-	 * from first following null.  HP like terminals shift rest of
-	 * this (single physical) line rigidly.
+	 * HP like terminals shift rest of this (single physical)
+	 * line rigidly.
 	 */
-	if (insert_null_glitch) {
-		up = vtube0 + stcol;
-		tp = vtube0 + endcol;
-		while (i = *tp++) {
-			if ((i & (QUOTE|TRIM)) == QUOTE)
-				break;
-			*up++ = i;
-		}
-		do
-			*up++ = i;
-		while (--nc);
-	} else {
-		copy(up + stcol, up + endcol, WCOLS - endcol);
-		vclrbyte(tpe - nc, nc);
-	}
+	copy(up + stcol, up + endcol, WCOLS - endcol);
+	vclrbyte(tpe - nc, nc);
 }
 
 
 /*
  * Put a character with possible tracing.
  */
+int
 vputch(int c)
 {
 
 	vputc(c);
+	return 0;
 }

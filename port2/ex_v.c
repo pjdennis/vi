@@ -76,9 +76,7 @@ oop()
 	 * else if can move cursor up off current line can use CRTOPEN (~~vi1)
 	 * otherwise (ugh) have to use ONEOPEN (like adm3)
 	 */
-	if (over_strike && !erase_overstrike)
-		bastate = HARDOPEN;
-	else if (cursor_address || cursor_up)
+	if (cursor_address || cursor_up)
 		bastate = CRTOPEN;
 	else
 		bastate = ONEOPEN;
@@ -169,11 +167,6 @@ toopen:
 			return;
 		}
 		error("Visual needs addressible cursor or upline capability");
-	}
-	if (over_strike && !erase_overstrike) {
-		if (initev)
-			goto toopen;
-		error("Can't use visual on a terminal which overstrikes");
 	}
 	if (!clear_screen) {
 		if (initev)

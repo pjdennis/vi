@@ -150,8 +150,6 @@ vreopen(int p, int lineno, int l)
 	 * in case stuff is left from before.
 	 */
 	if (vp->vliny + d > destline) {
-		if (insert_null_glitch && destcol == WCOLS)
-			vigoto(vp->vliny + d - 1, 0);
 		vclreol();
 	}
 	return (d);

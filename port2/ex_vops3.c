@@ -20,7 +20,7 @@
  * The code here is very hard to understand.
  */
 line	*llimit;
-int	(*lf)();
+void	(*lf)(int);
 
 int	lindent();
 int	endsent(bool pastatom);
@@ -35,7 +35,7 @@ bool	wasend;
  * rather than a sentence.
  */
 int
-lfind(bool pastatom, int cnt, int (*f)(), line *limit)
+lfind(bool pastatom, int cnt, void (*f)(int), line *limit)
 {
 	register int c;
 	register int rc = 0;
@@ -282,7 +282,7 @@ again:
 	wdot = addr;
 	dir = -1;
 	llimit = one;
-	lf = lindent;
+	lf = (void (*)(int))lindent;
 	if (!lskipbal("()"))
 		i = 0;
 	else if (wcursor == linebuf)
@@ -469,7 +469,7 @@ lnext()
 		--wcursor;
 		if (wcursor >= linebuf)
 			return (1);
-		if (lf == lindent && linebuf[0] == '(')
+		if (lf == (void (*)(int))lindent && linebuf[0] == '(')
 			llimit = wdot;
 		if (wdot <= llimit) {
 			wcursor = linebuf;
@@ -483,7 +483,7 @@ lnext()
 }
 
 int
-lbrack(int c, int (*f)())
+lbrack(int c, void (*f)(int))
 {
 	register line *addr;
 

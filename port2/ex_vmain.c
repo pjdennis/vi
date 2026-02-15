@@ -1095,7 +1095,7 @@ prepapp()
  * and addr2 surrounding cnt lines starting at dot.
  */
 void
-vremote(int cnt, int (*f)(), int arg)
+vremote(int cnt, void (*f)(int), int arg)
 {
 	register int oing = inglobal;
 

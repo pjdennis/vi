@@ -12,8 +12,8 @@
 
 static int width, sign, fill;
 
-char *_p_dconv();
-void _p_emit(char *s, char *send);
+static char *_p_dconv(long value, char *buffer);
+static void _p_emit(char *s, char *send);
 
 void
 printf(char *fmt, ...)
@@ -206,7 +206,7 @@ printf(char *fmt, ...)
 /* _p_dconv converts the unsigned long integer "value" to
  * printable decimal and places it in "buffer", right-justified.
  */
-char *
+static char *
 _p_dconv(long value, char *buffer)
 {
 	register char *bp;
@@ -261,7 +261,7 @@ _p_dconv(long value, char *buffer)
 /*
  * This program sends string "s" to putchar.
  */
-void
+static void
 _p_emit(char *s, char *send)
 {
 	char cfill;

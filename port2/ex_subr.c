@@ -490,9 +490,10 @@ qcount(int c)
 
 	if (c == '\t') {
 		vcntcol += value(TABSTOP) - vcntcol % value(TABSTOP);
-		return;
+		return 0;
 	}
 	vcntcol++;
+	return 0;
 }
 
 void

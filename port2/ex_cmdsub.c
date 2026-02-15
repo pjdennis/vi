@@ -18,7 +18,7 @@
 
 static void splitit();
 
-int delete(bool hush);
+void delete(int hush);
 void pragged(bool kill);
 void plines(line *adr1, line *adr2, bool movedot);
 void undo(bool c);
@@ -116,8 +116,8 @@ pargs()
  * Delete lines; two cases are if we are really deleting,
  * more commonly we are just moving lines to the undo save area.
  */
-int
-delete(bool hush)
+void
+delete(int hush)
 {
 	register line *a1, *a2;
 
@@ -358,8 +358,9 @@ getput()
 }
 
 void
-put()
+put(int unused)
 {
+	(void)unused;
 	register int cnt;
 
 	if (!FIXUNDO)
@@ -643,9 +644,9 @@ badtags:
  * they had been deleted.
  */
 void
-yank()
+yank(int unused)
 {
-
+	(void)unused;
 	if (!FIXUNDO)
 		error("Can't yank inside global/macro");
 	save12();

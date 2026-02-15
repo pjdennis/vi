@@ -92,8 +92,6 @@ vup(int cnt, int ind, bool scroll)
 		return;
 	}
 	cnt -= vcline, dot -= vcline, vcline = 0;
-	if (hold & HOLDWIG)
-		goto contxt;
 	if (state == VISUAL && !insert_line && !scroll_reverse &&
 	    cnt <= WTOP - ZERO && vfit(dot - cnt, cnt) <= WTOP - ZERO)
 		goto okr;
@@ -141,8 +139,6 @@ vdown(int cnt, int ind, bool scroll)
 		return;
 	}
 	cnt -= i, dot += i, vcline += i;
-	if (hold & HOLDWIG)
-		goto dcontxt;
 	if (!scroll) {
 		tot = WECHO - WTOP;
 		if (state != VISUAL || cnt - tot > 0 || vfit(dot, cnt) > tot / 3 + 1) {
@@ -382,7 +378,7 @@ int
 vcookit(int cnt)
 {
 
-	return (cnt > 1 && (ospeed < B1200 && !initev || cnt > lines * 2));
+	return (cnt > 1 && cnt > lines * 2);
 }
 
 /*
@@ -393,7 +389,7 @@ vdepth()
 {
 	register int d;
 
-	d = (column(NOSTR) + WCOLS - 1 + (Putchar == listchar) + insert_null_glitch) / WCOLS;
+	d = (column(NOSTR) + WCOLS - 1 + (Putchar == listchar)) / WCOLS;
 	return (d == 0 ? 1 : d);
 }
 
@@ -411,5 +407,5 @@ vnline(char *curs)
 	else
 		wcursor = vskipwh(linebuf);
 	cursor = linebuf;
-	vmove();
+	vmove(0);
 }

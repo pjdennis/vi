@@ -26,7 +26,6 @@ set()
 	register struct option *op;
 	register int c;
 	bool no;
-	extern int ospeed;
 
 	setnoaddr();
 	if (skipend()) {
@@ -55,21 +54,13 @@ set()
 			no++;
 		}
 		/* Implement w300, w1200, and w9600 specially */
-		if (eq(cp, "w300")) {
-			if (ospeed >= B1200) {
+		/* On modern terminals, always treat as w9600 */
+		if (eq(cp, "w300") || eq(cp, "w1200")) {
 dontset:
-				ignore(getchar());	/* = */
-				ignore(getnum());	/* value */
-				continue;
-			}
-			cp = "window";
-		} else if (eq(cp, "w1200")) {
-			if (ospeed < B1200 || ospeed >= B2400)
-				goto dontset;
-			cp = "window";
+			ignore(getchar());	/* = */
+			ignore(getnum());	/* value */
+			continue;
 		} else if (eq(cp, "w9600")) {
-			if (ospeed < B2400)
-				goto dontset;
 			cp = "window";
 		}
 		for (op = options; op < &options[NOPTS]; op++)

@@ -417,7 +417,7 @@ casek:
 				if (c)
 					putreg(c);
 				else
-					put();
+					put(0);
 				continue;
 
 			case 'r':
@@ -718,7 +718,7 @@ wq:
 			if (c)
 				YANKreg(c);
 			else
-				yank();
+				yank(0);
 			continue;
 
 /* z */

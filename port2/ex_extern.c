@@ -53,7 +53,6 @@ int	notecnt;
 bool	numberf;
 char	obuf[BUFSIZ];
 int	oprompt;
-int	ospeed;
 int	otchng;
 int	peekc;
 char	*pkill[2];

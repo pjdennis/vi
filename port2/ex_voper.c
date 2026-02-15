@@ -9,6 +9,8 @@
 int find(char c);
 int wordof(char which, char *wc);
 
+static void beep_op(int c) { (void)c; beep(); }
+
 char	vscandir[2] =	{ '/', 0 };
 
 /*
@@ -25,8 +27,8 @@ void
 operate(int c, int cnt)
 {
 	register int i;
-	int (*moveop)(int), (*deleteop)(int);
-	int (*opf)(int);
+	void (*moveop)(int), (*deleteop)(int);
+	void (*opf)(int);
 	bool subop = 0;
 	char *oglobp, *ocurs;
 	register line *addr;
@@ -46,7 +48,7 @@ operate(int c, int cnt)
 	 */
 	case 'd':
 		moveop = vdelete;
-		deleteop = beep;
+		deleteop = beep_op;
 		break;
 
 	/*
@@ -64,7 +66,7 @@ operate(int c, int cnt)
 		if (c == 'c' && workcmd[0] == 'C' || workcmd[0] == 'S')
 			subop++;
 		moveop = vchange;
-		deleteop = beep;
+		deleteop = beep_op;
 		break;
 
 	/*
@@ -72,7 +74,7 @@ operate(int c, int cnt)
 	 */
 	case '!':
 		moveop = vfilter;
-		deleteop = beep;
+		deleteop = beep_op;
 		break;
 
 	/*
@@ -81,7 +83,7 @@ operate(int c, int cnt)
 	 */
 	case 'y':
 		moveop = vyankit;
-		deleteop = beep;
+		deleteop = beep_op;
 		break;
 
 	/*
@@ -98,7 +100,7 @@ operate(int c, int cnt)
 	case '<':
 	case '>':
 		moveop = vshftop;
-		deleteop = beep;
+		deleteop = beep_op;
 		break;
 
 	/*
@@ -251,8 +253,6 @@ ein:
 		getDOT();
 		forbid(!i);
 		markDOT();
-		if (ospeed > B300)
-			hold |= HOLDWIG;
 		break;
 
 	/*
@@ -572,8 +572,6 @@ errlab:
 				wcursor = 0;
 			getDOT();
 		}
-		if (ospeed > B300)
-			hold |= HOLDWIG;
 		break;
 
 	/*
@@ -715,7 +713,7 @@ find(char c)
  * to go after this.
  */
 int
-word(int (*op)(int), int cnt)
+word(void (*op)(int), int cnt)
 {
 	register int which;
 	register char *iwc;
@@ -765,7 +763,7 @@ word(int (*op)(int), int cnt)
  * remaining after this.
  */
 void
-eend(int (*op)(int))
+eend(void (*op)(int))
 {
 	register int which;
 

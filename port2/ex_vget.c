@@ -105,24 +105,6 @@ again:
 		error("Input read error");
 	}
 	c = ch & TRIM;
-	if (beehive_glitch && slevel==0 && c == ESCAPE) {
-		if (read(0, &Peek2key, 1) != 1)
-			goto getATTN;
-		Peek2key &= TRIM;
-		switch (Peek2key) {
-		case 'C':	/* SPOW mode sometimes sends \EC for space */
-			c = ' ';
-			Peek2key = 0;
-			break;
-		case 'q':	/* f2 -> ^C */
-			c = CTRL('c');
-			Peek2key = 0;
-			break;
-		case 'p':	/* f1 -> esc */
-			Peek2key = 0;
-			break;
-		}
-	}
 
 	/*
 	 * The algorithm here is that of the UNIX kernel.

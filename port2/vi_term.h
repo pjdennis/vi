@@ -101,17 +101,9 @@ extern char *newline;            /* nw - newline (behaves like CRLF) */
 /* Boolean capabilities (0 or 1) */
 extern int auto_right_margin;     /* am */
 extern int eat_newline_glitch;    /* xn */
-extern int tilde_glitch;         /* hz */
-extern int teleray_glitch;       /* xt */
-extern int hard_copy;            /* hc */
-extern int over_strike;          /* os */
 extern int memory_above;         /* da */
 extern int memory_below;         /* db */
-extern int insert_null_glitch;    /* in */
-extern int erase_overstrike;     /* eo */
-extern int transparent_underline; /* ul */
 extern int generic_type;         /* gn */
-extern int beehive_glitch;       /* xb */
 extern int move_insert_mode;     /* mir */
 extern int ceol_standout_glitch; /* xhp */
 

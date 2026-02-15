@@ -98,10 +98,6 @@ normchar(short c)
 	register char *colp;
 
 	c &= (TRIM|QUOTE);
-	if (c == '~' && tilde_glitch) {
-		normchar('\\');
-		c = '^';
-	}
 	if (c & QUOTE)
 		switch (c) {
 
@@ -115,7 +111,7 @@ normchar(short c)
 		default:
 			c &= TRIM;
 		}
-	else if (c < ' ' && (c != '\b' || !over_strike) && c != '\n' && c != '\t' || c == DELETE)
+	else if (c < ' ' && c != '\n' && c != '\t' || c == DELETE)
 		putchar('^'), c = ctlof(c);
 	else if (UPPERCASE)
 		if (isupper(c)) {
@@ -188,8 +184,6 @@ slobber(int c)
 	case 0:
 		break;
 	}
-	if (over_strike)
-		return;
 	flush();
 	putch(' ');
 	tputs(cursor_left, 0, putch);
@@ -783,6 +777,7 @@ putch(int c)
 	*obp++ = c & 0177;
 	if (obp >= &obuf[sizeof obuf])
 		flusho();
+	return 0;
 }
 
 /*

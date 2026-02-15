@@ -134,7 +134,7 @@ vappend(int ch, int cnt, int indent)
 		i = *gcursor;
 		*gcursor = ' ';
 		wcursor = gcursor;
-		vmove();
+		vmove(0);
 		*gcursor = i;
 	}
 	vaifirst = indent == 0;
@@ -392,7 +392,7 @@ vappend(int ch, int cnt, int indent)
 		back1();
 	doomed = 0;
 	wcursor = cursor;
-	vmove();
+	vmove(0);
 }
 
 /*

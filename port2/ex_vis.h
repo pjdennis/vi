@@ -79,7 +79,6 @@ extern	int	holdupd;	/* Hold off update when echo line is too long */
 #define	HOLDQIK		8
 #define	HOLDPUPD	16
 #define	HOLDECH		32
-#define HOLDWIG		64
 
 /*
  * Miscellaneous variables
@@ -139,11 +138,11 @@ extern	char	workcmd[5];	/* Temporary for lastcmd */
  */
 void	beep();
 int	qcount(int);
-int	vchange(char c);
-int	vdelete(char c);
+void	vchange(int c);
+void	vdelete(int c);
 int	vgrabit();
-void	vinschar(int);
-void	vmove();
+int	vinschar(int);
+void	vmove(int c);
 int	vputchar(int);
-void	vshift();
-void	vyankit();
+void	vshift(int unused);
+void	vyankit(int c);
