@@ -1,5 +1,7 @@
 /* Copyright (c) 1981 Regents of the University of California */
 /* sccs id:	"@(#)e.h	1.1"		(9.3	3/17/83) */
+#ifndef EX_H
+#define EX_H
 
 /*
  * Ex version 3 (see exact version in ex_cmds.c, search for /Version/)
@@ -73,10 +75,14 @@ extern	 struct	option options[NOPTS + 1];
 #include <stdio.h>
 #undef putchar
 #undef getchar
+#undef printf
 #undef NULL
 #define	NULL	0
 #undef	EOF
 #define	EOF	-1
+
+void	ex_printf(char *fmt, ...);
+#define	printf	ex_printf
 
 #undef getline
 
@@ -713,3 +719,5 @@ void	vnline(char *curs);
 #	define	ignorf(a)	a
 
 #include "vi_mem.h"
+
+#endif /* EX_H */

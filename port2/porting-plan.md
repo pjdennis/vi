@@ -16,8 +16,8 @@ Status legend: [ ] pending, [x] done
 - [x] 7. Fix old-style function pointer typedef `iofcn_t` (empty parameter list)
 - [x] 8. Replace `short` with `int` where appropriate (~20 instances)
 - [x] 9. Replace `(char *) 0` and `(line *) 0` with NULL/NOSTR/NOLINE
-- [ ] 10. Add include guard to ex.h
-- [ ] 11. Resolve printf.c GCC pragma / naming conflict
+- [x] 10. Add include guard to ex.h
+- [x] 11. Resolve printf.c GCC pragma / naming conflict
 
 ## Lower Priority — Deeper old-style patterns
 

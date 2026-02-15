@@ -1,10 +1,10 @@
 #include <stdarg.h>
 
-#pragma GCC diagnostic ignored "-Wbuiltin-declaration-mismatch"
-
 /*
  * This version of printf is compatible with the Version 7 C
- * printf. It prints through putchar.
+ * printf. It prints through the editor's putchar, not stdout.
+ * Renamed from printf to ex_printf to avoid shadowing the
+ * standard library function.
  */
 extern int putchar(int);
 
@@ -20,7 +20,7 @@ static char *_p_dconv(long value, char *buffer);
 static void _p_emit(char *s, char *send);
 
 void
-printf(char *fmt, ...)
+ex_printf(char *fmt, ...)
 {
 	va_list ap;
 	char fcode;
