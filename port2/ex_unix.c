@@ -27,7 +27,7 @@ void
 unix0(bool warn)
 {
 	char *up, *fp;
-	short c;
+	int c;
 	char printub, puxb[UXBSIZE + sizeof (int)];
 
 	printub = 0;

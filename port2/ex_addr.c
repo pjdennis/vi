@@ -144,7 +144,7 @@ address(char *inputline)
 {
 	line *addr;
 	int offset, c;
-	short lastsign;
+	int lastsign;
 
 	bigmove = 0;
 	lastsign = 0;

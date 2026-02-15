@@ -35,7 +35,7 @@ operate(int c, int cnt)
 	line *addr;
 	line *odot;
 	static char lastFKND, lastFCHR;
-	short d;
+	int d;
 
 	moveop = vmove, deleteop = vdelete;
 	wcursor = cursor;

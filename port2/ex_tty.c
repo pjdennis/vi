@@ -24,7 +24,7 @@ static char *freespace;
  * and calculation of flags at entry or after
  * a shell escape which may change them.
  */
-static short GT;
+static int GT;
 
 void
 gettmode()

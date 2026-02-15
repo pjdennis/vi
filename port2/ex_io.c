@@ -33,7 +33,7 @@ static int samei(struct stat *sp, char *cp);
 int	altdot;
 int	oldadot;
 bool	wasalt;
-short	isalt;
+int	isalt;
 
 long	cntch;			/* Count of characters on unit io */
 int	cntln;			/* Count of lines " */
@@ -610,7 +610,7 @@ char *nextip;
 int
 getfile()
 {
-	short c;
+	int c;
 	char *lp, *fp;
 
 	lp = linebuf;
@@ -713,8 +713,8 @@ wrerror(void)
  * Source command, handles nested sources.
  * Traps errors since it mungs unit 0 during the source.
  */
-short slevel;
-short ttyindes;
+int slevel;
+int ttyindes;
 
 void
 source(char *fil, bool okfail)

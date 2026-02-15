@@ -29,7 +29,7 @@ char	tfname[40];
 char	rfname[40];
 int	havetmp;
 int	tfile = -1;
-short	rfile = -1;
+int	rfile = -1;
 int	stilinc;	/* up to here not written yet */
 
 void

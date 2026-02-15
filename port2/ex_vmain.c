@@ -22,7 +22,7 @@ vmain()
 	volatile int c, cnt, i;
 	char esave[TUBECOLS];
 	char *oglobp;
-	short d;
+	int d;
 	line *addr;
 	int ind, nlput;
 	int shouldpo = 0;

@@ -469,7 +469,7 @@ plural(long i)
 }
 
 int	qcount(int c);
-short	vcntcol;
+int	vcntcol;
 
 int
 qcolumn(char *lim, char *gp)

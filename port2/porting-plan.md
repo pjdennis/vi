@@ -14,7 +14,7 @@ Status legend: [ ] pending, [x] done
 
 - [x] 6. Move extern declarations from .c files into headers
 - [x] 7. Fix old-style function pointer typedef `iofcn_t` (empty parameter list)
-- [ ] 8. Replace `short` with `int` where appropriate (~20 instances)
+- [x] 8. Replace `short` with `int` where appropriate (~20 instances)
 - [ ] 9. Replace `(char *) 0` with NULL (~15 instances)
 - [ ] 10. Add include guard to ex.h
 - [ ] 11. Resolve printf.c GCC pragma / naming conflict

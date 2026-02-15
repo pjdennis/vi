@@ -52,7 +52,7 @@ peekbr()
 	return (Peekkey == 0);
 }
 
-short	precbksl;
+int	precbksl;
 
 /*
  * Get a keystroke, including a ^@.

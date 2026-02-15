@@ -693,7 +693,7 @@ vfilter(int c)
 	line *addr;
 	int cnt;
 	char *oglobp;
-	short d;
+	int d;
 
 	if ((cnt = xdw()) < 0)
 		return;

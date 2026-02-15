@@ -135,7 +135,7 @@ top:
  * Input routine for insert/append/change in command mode.
  * Most work here is in handling autoindent.
  */
-static	short	lastin;
+static	int	lastin;
 
 int
 gettty()

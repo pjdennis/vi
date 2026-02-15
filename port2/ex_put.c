@@ -262,7 +262,7 @@ void
 flush1()
 {
 	char *lp;
-	short c;
+	int c;
 
 	*linp = 0;
 	lp = linb;

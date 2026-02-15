@@ -662,7 +662,7 @@ yank(int unused)
  */
 bool	zhadpr;
 bool	znoclear;
-short	zweight;
+int	zweight;
 
 void
 zop(int hadpr)
@@ -1216,7 +1216,7 @@ cmdmac(char c)
 	char macbuf[BUFSIZ];
 	line *ad, *a1, *a2;
 	char *oglobp;
-	short pk;
+	int pk;
 	int oinglobal;
 
 	lastmac = c;
