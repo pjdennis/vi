@@ -69,7 +69,7 @@ vupdown(int cnt, char *curs)
 void
 vup(int cnt, int ind, bool scroll)
 {
-	register int i, tot;
+	int i, tot;
 
 	if (dot == one) {
 		beep();
@@ -114,7 +114,7 @@ okr:
 void
 vdown(int cnt, int ind, bool scroll)
 {
-	register int i, tot;
+	int i, tot;
 
 	if (dot == dol) {
 		beep();
@@ -159,7 +159,7 @@ vdown(int cnt, int ind, bool scroll)
 void
 vcontext(line *addr, char where)
 {
-	register line *top;
+	line *top;
 
 	getline(*addr);
 	if (state != VISUAL)
@@ -220,8 +220,8 @@ vclean()
 void
 vshow(line *addr, line *top)
 {
-	register int cnt = addr - dot;
-	register int i = vcline + cnt;
+	int cnt = addr - dot;
+	int i = vcline + cnt;
 	int oldhold = hold;
 
 	if (state != HARDOPEN && state != ONEOPEN && i >= 0 && i < vcnt) {
@@ -277,7 +277,7 @@ vreset(bool inecho)
 line *
 vback(line *tp, int cnt)
 {
-	register int d;
+	int d;
 
 	if (cnt > 0)
 		for (; tp > one; tp--) {
@@ -296,7 +296,7 @@ vback(line *tp, int cnt)
 int
 vfit(line *tp, int cnt)
 {
-	register int j;
+	int j;
 
 	j = 0;
 	while (cnt > 0) {
@@ -380,7 +380,7 @@ vcookit(int cnt)
 int
 vdepth()
 {
-	register int d;
+	int d;
 
 	d = (column(NOSTR) + WCOLS - 1 + (Putchar == listchar)) / WCOLS;
 	return (d == 0 ? 1 : d);

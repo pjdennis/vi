@@ -43,8 +43,8 @@ gettmode()
 void
 setterm(char *type)
 {
-	register int unknown, i;
-	register int l;
+	int unknown, i;
+	int l;
 	int errret;
 	extern char termtype[];
 

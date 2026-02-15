@@ -346,7 +346,7 @@ reread:
 
 
 		/*
-		 * m		Mark position in mark register given
+		 * m		Mark position in mark given
 		 *		by following letter.  Return is
 		 *		accomplished via ' or `; former
 		 *		to beginning of line where mark
@@ -684,7 +684,7 @@ insrt:
 			}
 
 			/*
-			 * If a register wasn't specified, then make
+			 * If a wasn't specified, then make
 			 * sure there is something to put back.
 			 */
 			forbid (!vreg && unddol == dol);
@@ -1063,7 +1063,7 @@ fonfon:
 void
 grabtag()
 {
-	register char *cp, *dp;
+	char *cp, *dp;
 
 	cp = vpastwh(cursor);
 	if (*cp) {
@@ -1098,7 +1098,7 @@ prepapp()
 void
 vremote(int cnt, void (*f)(int), int arg)
 {
-	register int oing = inglobal;
+	int oing = inglobal;
 
 	addr1 = dot;
 	addr2 = dot + cnt - 1;
@@ -1160,7 +1160,7 @@ vsave()
 void
 vzop(bool vzop_hadcnt, int cnt, int c)
 {
-	register line *addr;
+	line *addr;
 
 	if (state != VISUAL) {
 		/*

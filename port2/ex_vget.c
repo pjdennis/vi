@@ -31,7 +31,7 @@ ungetkey(int c)
 int
 getkey()
 {
-	register int c;		/* mjm: char --> int */
+	int c;		/* mjm: char --> int */
 
 	do {
 		c = getbr();
@@ -68,8 +68,8 @@ int
 getbr()
 {
 	char ch;
-	register int c, d;
-	register char *colp;
+	int c, d;
+	char *colp;
 	static char Peek2key;
 	extern short slevel, ttyindes;
 
@@ -162,7 +162,7 @@ again:
 int
 getesc()
 {
-	register int c;
+	int c;
 
 	c = getkey();
 	switch (c) {
@@ -201,10 +201,10 @@ peekkey()
 int
 readecho(char c)
 {
-	register char *sc = cursor;
+	char *sc = cursor;
 	int (*OP)(int);
 	int waste;
-	register int OPeek;
+	int OPeek;
 
 	if (WBOT == WECHO)
 		vclean();
@@ -289,8 +289,8 @@ setDEL()
 void
 setBUF(char *BUF)
 {
-	register int c;
-	register char *wp = wcursor;
+	int c;
+	char *wp = wcursor;
 
 	c = *wp;
 	*wp = 0;
@@ -321,7 +321,7 @@ addto(char *buf, char *str)
 int
 noteit(bool must)
 {
-	register int sdl = destline, sdc = destcol;
+	int sdl = destline, sdc = destcol;
 
 	if (notecnt < 2 || (!must && state == VISUAL))
 		return (0);
@@ -373,8 +373,8 @@ beep()
 int
 map(int c, struct maps *maps)
 {
-	register int d;
-	register char *p, *q;
+	int d;
+	char *p, *q;
 	char b[10];	/* Assumption: no keypad sends string longer than 10 */
 
 	/*
@@ -484,7 +484,7 @@ macpush(char *st, int canundo)
 int
 vgetcnt()
 {
-	register int c, cnt;
+	int c, cnt;
 
 	cnt = 0;
 	for (;;) {
@@ -508,7 +508,7 @@ vgetcnt()
 int
 fastpeekkey()
 {
-	register int c;
+	int c;
 
 	/*
 	 * If the user has set notimeout, we wait forever for a key.

@@ -27,7 +27,7 @@ printf(char *fmt, ...)
 	int prec;
 	int length,mask1,nbits,n;
 	long int mask2, num;
-	register char *bptr;
+	char *bptr;
 	char *ptr;
 	char buf[134];
 
@@ -213,8 +213,8 @@ printf(char *fmt, ...)
 static char *
 _p_dconv(long value, char *buffer)
 {
-	register char *bp;
-	register int svalue;
+	char *bp;
+	int svalue;
 	int n;
 	long lval;
 
@@ -269,7 +269,7 @@ static void
 _p_emit(char *s, char *send)
 {
 	char cfill;
-	register int alen;
+	int alen;
 	int npad;
 
 	alen = send - s;

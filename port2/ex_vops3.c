@@ -43,8 +43,8 @@ bool	wasend;
 int
 lfind(int pastatom, int cnt, void (*f)(int), line *limit)
 {
-	register int c;
-	register int rc = 0;
+	int c;
+	int rc = 0;
 	char save[LBSIZE];
 
 	/*
@@ -215,8 +215,8 @@ int
 endsent(bool pastatom)
 {
 	(void)pastatom;
-	register char *cp = wcursor;
-	register int c, d;
+	char *cp = wcursor;
+	int c, d;
 
 	/*
 	 * If this is the beginning of a line, then
@@ -261,14 +261,14 @@ endPS()
 int
 lindent(line *addr)
 {
-	register int i;
+	int i;
 	char *swcurs = wcursor;
 	line *swdot = wdot;
 
 again:
 	if (addr > one) {
-		register char *cp;
-		register int cnt = 0;
+		char *cp;
+		int cnt = 0;
 
 		addr--;
 		getline(*addr);
@@ -295,7 +295,7 @@ again:
 	else if (wcursor == linebuf)
 		i = 2;
 	else {
-		register char *wp = wcursor;
+		char *wp = wcursor;
 
 		dir = 1;
 		llimit = wdot;
@@ -316,8 +316,8 @@ again:
 int
 lmatchp(line *addr)
 {
-	register int i;
-	register char *parens, *cp;
+	int i;
+	char *parens, *cp;
 
 	for (cp = cursor; !any(*cp, "({[)}]");)
 		if (*cp++ == 0)
@@ -345,8 +345,8 @@ void
 lsmatch(char *cp)
 {
 	char save[LBSIZE];
-	register char *sp = save;
-	register char *scurs = cursor;
+	char *sp = save;
+	char *scurs = cursor;
 
 	wcursor = cp;
 	strcpy(sp, linebuf);
@@ -354,9 +354,9 @@ lsmatch(char *cp)
 	strcpy(cursor, genbuf);
 	cursor = strend(linebuf) - 1;
 	if (lmatchp(dot - vcline)) {
-		register int i = insmode;
-		register int c = outcol;
-		register int l = outline;
+		int i = insmode;
+		int c = outcol;
+		int l = outline;
 
 		if (!move_insert_mode)
 			endim();
@@ -389,7 +389,7 @@ ltosolid()
 int
 ltosol1(char *parens)
 {
-	register char *cp;
+	char *cp;
 
 	if (*parens && !*wcursor && !lnext())
 		return (0);
@@ -408,8 +408,8 @@ ltosol1(char *parens)
 int
 lskipbal(char *parens)
 {
-	register int level = dir;
-	register int c;
+	int level = dir;
+	int c;
 
 	do {
 		if (!lnext()) {
@@ -435,7 +435,7 @@ lskipatom()
 int
 lskipa1(char *parens)
 {
-	register int c;
+	int c;
 
 	for (;;) {
 		if (dir < 0 && wcursor == linebuf) {
@@ -492,7 +492,7 @@ lnext()
 int
 lbrack(int c, void (*f)(int))
 {
-	register line *addr;
+	line *addr;
 
 	addr = dot;
 	for (;;) {

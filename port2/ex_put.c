@@ -96,7 +96,7 @@ listchar(int c)
 int
 normchar(int c)
 {
-	register char *colp;
+	char *colp;
 
 	c &= (TRIM|QUOTE);
 	if (c & QUOTE)
@@ -153,7 +153,7 @@ int
 normline(int unused)
 {
 	(void)unused;
-	register char *cp;
+	char *cp;
 
 	if (shudclob)
 		slobber(linebuf[0]);
@@ -261,8 +261,8 @@ flush()
 void
 flush1()
 {
-	register char *lp;
-	register short c;
+	char *lp;
+	short c;
 
 	*linp = 0;
 	lp = linb;
@@ -338,7 +338,7 @@ flush2()
 void
 fgoto()
 {
-	register int l, c;
+	int l, c;
 
 	if (destcol > columns - 1) {
 		destline += destcol / columns;
@@ -444,8 +444,8 @@ plodput(int c)
 int
 plod(int cnt)
 {
-	register int i, j, k;
-	register int soutcol, soutline;
+	int i, j, k;
+	int soutcol, soutline;
 
 	plodcnt = plodflg = cnt;
 	soutcol = outcol;
@@ -916,7 +916,7 @@ tostart()
 	putpad(keypad_xmit);
 	if (!value(MESG)) {
 		if (ttynbuf[0] == 0) {
-			register char *tn;
+			char *tn;
 			if ((tn=ttyname(2)) == NULL &&
 			    (tn=ttyname(1)) == NULL &&
 			    (tn=ttyname(0)) == NULL)

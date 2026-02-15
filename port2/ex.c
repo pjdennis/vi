@@ -77,8 +77,8 @@
  */
 int main(int ac, char *av[])
 {
-	register char *cp;
-	register int c;
+	char *cp;
+	int c;
 	bool recov = 0;
 	bool ivis;
 	bool itag = 0;
@@ -370,7 +370,7 @@ int main(int ac, char *av[])
 void
 init()
 {
-	register int i;
+	int i;
 
 	fileinit();
 	dot = zero = truedol = unddol = dol = fendcore;
@@ -389,7 +389,7 @@ init()
 char *
 tailpath(char *p)
 {
-	register char *r;
+	char *r;
 
 	for (r=p; *p; p++)
 		if (*p == '/')

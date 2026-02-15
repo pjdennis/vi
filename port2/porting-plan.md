@@ -4,7 +4,7 @@ Status legend: [ ] pending, [x] done
 
 ## High Priority — Mechanical, safe bulk changes
 
-- [ ] 1. Remove all `register` keywords (~312 instances, 26 files)
+- [x] 1. Remove all `register` keywords (~312 instances, 26 files)
 - [ ] 2. Remove dead Makefile `-D` flags (VMUNIX, USG, SIGTSTP)
 - [ ] 3. Remove dead code with `__attribute__((unused))` (vrigid, vcookit)
 - [ ] 4. Remove `index`/`rindex` compatibility shim in ex_io.c, use strchr/strrchr directly

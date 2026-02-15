@@ -36,7 +36,7 @@ static	int jnoop();
 int
 append(int (*f)(), line *a)
 {
-	register line *a1, *a2, *rdot;
+	line *a1, *a2, *rdot;
 	int nline;
 
 	nline = 0;
@@ -91,8 +91,8 @@ appendnone()
 void
 pargs()
 {
-	register char **av = argv0, *as = args0;
-	register int ac;
+	char **av = argv0, *as = args0;
+	int ac;
 
 	for (ac = 0; ac < argc0; ac++) {
 		if (ac != 0)
@@ -114,7 +114,7 @@ pargs()
 void
 delete(int dhush)
 {
-	register line *a1, *a2;
+	line *a1, *a2;
 
 	nonzero();
 	if(FIXUNDO) {
@@ -142,8 +142,8 @@ delete(int dhush)
 		pkill[0] = pkill[1] = 0;
 		sigaction(SIGINT, &dsavint, NULL);
 	} else {
-		register line *a3;
-		register int i;
+		line *a3;
+		int i;
 
 		change();
 		a1 = addr1;
@@ -184,7 +184,7 @@ deletenone()
 void
 squish()
 {
-	register line *a1 = dol + 1, *a2 = unddol + 1, *a3 = truedol + 1;
+	line *a1 = dol + 1, *a2 = unddol + 1, *a3 = truedol + 1;
 
 	if(FIXUNDO) {
 		if (inopen == -1)
@@ -208,8 +208,8 @@ static	int jnoop();
 void
 join(int c)
 {
-	register line *a1;
-	register char *cp, *cp1;
+	line *a1;
+	char *cp, *cp1;
 
 	cp = genbuf;
 	*cp = 0;
@@ -258,7 +258,7 @@ int	getcopy();
 void
 move()
 {
-	register line *adt;
+	line *adt;
 	bool iscopy = 0;
 
 	if (Command[0] == 'm') {
@@ -280,7 +280,7 @@ move()
 void
 move1(int cflag, line *addrt)
 {
-	register line *adt, *ad1, *ad2;
+	line *adt, *ad1, *ad2;
 	int nlines;
 
 	adt = addrt;
@@ -358,7 +358,7 @@ void
 put(int unused)
 {
 	(void)unused;
-	register int cnt;
+	int cnt;
 
 	if (!FIXUNDO)
 		error("Cannot put inside global/macro");
@@ -384,7 +384,7 @@ void
 pragged(bool kill)
 {
 	extern char *cursor;
-	register char *gp = &genbuf[cursor - linebuf];
+	char *gp = &genbuf[cursor - linebuf];
 
 	/*
 	 * This kind of stuff is TECO's forte.
@@ -420,10 +420,10 @@ pragged(bool kill)
 void
 shift(int c, int cnt)
 {
-	register line *addr;
-	register char *cp;
+	line *addr;
+	char *cp;
 	char *dp;
-	register int i;
+	int i;
 
 	if(FIXUNDO)
 		save12(), undkind = UNDCHANGE;
@@ -474,7 +474,7 @@ tagfind(bool quick)
 	char cmdbuf[BUFSIZ];
 	char filebuf[FNSIZE];
 	char tagfbuf[128];
-	register int c, d;
+	int c, d;
 	bool samef = 1;
 	int tfcount = 0;
 	int omagic, tl;
@@ -483,7 +483,7 @@ tagfind(bool quick)
 	omagic = value(MAGIC);
 	tl = value(TAGLENGTH);
 	if (!skipend()) {
-		register char *lp = lasttag;
+		char *lp = lasttag;
 
 		while (!iswhite(peekchar()) && !endcmd(peekchar()))
 			if (lp < &lasttag[sizeof lasttag - 2])
@@ -525,8 +525,8 @@ badtag:
 		tfcount++;
 		while (getfile() == 0) {
 			/* loop for each tags file entry */
-			register char *cp = linebuf;
-			register char *lp = lasttag;
+			char *cp = linebuf;
+			char *lp = lasttag;
 			char *oglobp;
 
 			while (*cp && *lp == *cp)
@@ -668,7 +668,7 @@ short	zweight;
 void
 zop(int hadpr)
 {
-	register int c, nlines, zop_op;
+	int c, nlines, zop_op;
 	bool excl;
 
 	zhadpr = hadpr;
@@ -731,7 +731,7 @@ zop(int hadpr)
 void
 zop2(int nlines, int zop2_op)
 {
-	register line *split;
+	line *split;
 
 	split = NULL;
 	switch (zop2_op) {
@@ -812,7 +812,7 @@ zop2(int nlines, int zop2_op)
 static void
 splitit(void)
 {
-	register int l;
+	int l;
 
 	for (l = columns > 80 ? 40 : columns / 2; l > 0; l--)
 		putchar('-');
@@ -822,7 +822,7 @@ splitit(void)
 void
 plines(line *adr1, line *adr2, bool movedot)
 {
-	register line *addr;
+	line *addr;
 
 	pofix();
 	for (addr = adr1; addr <= adr2; addr++) {
@@ -865,8 +865,8 @@ pofix()
 void
 undo(bool c)
 {
-	register int i;
-	register line *jp, *kp;
+	int i;
+	line *jp, *kp;
 	line *dolp1, *newdol, *newadot;
 
 	if (inglobal && inopen <= 0)
@@ -990,7 +990,7 @@ undo(bool c)
 void
 somechange()
 {
-	register line *ip, *jp;
+	line *ip, *jp;
 
 	switch (undkind) {
 
@@ -1029,8 +1029,8 @@ void
 mapcmd(int un, int ab)
 {
 	char lhs[100], rhs[100];	/* max sizes resp. */
-	register char *p;
-	register int c;		/* mjm: char --> int */
+	char *p;
+	int c;		/* mjm: char --> int */
 	char *dname;
 	struct maps *mp;	/* the map structure we are working on */
 
@@ -1123,7 +1123,7 @@ mapcmd(int un, int ab)
 void
 addmac(char *src, char *dest, char *dname, struct maps *mp)
 {
-	register int slot, zer;
+	int slot, zer;
 
 	if (dest && mp==arrows) {
 		/* Make sure user doesn't screw himself */
@@ -1241,8 +1241,8 @@ cmdmac(char c)
 char *
 vgetpass(char *prompt)
 {
-	register char *p;
-	register int c;
+	char *p;
+	int c;
 	static char pbuf[9];
 	char *getpass();
 

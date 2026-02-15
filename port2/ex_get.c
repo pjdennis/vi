@@ -32,7 +32,7 @@ ignchar()
 int
 getchar()
 {
-	register int c;
+	int c;
 
 	do
 		c = getcd();
@@ -43,7 +43,7 @@ getchar()
 int
 getcd()
 {
-	register int c;
+	int c;
 	extern short slevel;
 
 again:
@@ -83,7 +83,7 @@ int verbose;
 int
 getach()
 {
-	register int c;
+	int c;
 	static char inputline[128];
 
 	c = peekc;
@@ -141,8 +141,8 @@ static	short	lastin;
 int
 gettty()
 {
-	register int c = 0;
-	register char *cp = genbuf;
+	int c = 0;
+	char *cp = genbuf;
 	char hadup = 0;
 	int numbline();
 	extern int (*Pline)(int);
@@ -242,7 +242,7 @@ gettty()
 int
 smunch(int col, char *ocp)
 {
-	register char *cp;
+	char *cp;
 
 	cp = ocp;
 	for (;;)

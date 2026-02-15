@@ -67,7 +67,7 @@ setdot1()
 void
 setcount()
 {
-	register int cnt;
+	int cnt;
 
 	pastwh();
 	if (!isdigit(peekchar())) {
@@ -91,7 +91,7 @@ setcount()
 int
 getnum()
 {
-	register int cnt;
+	int cnt;
 
 	for (cnt = 0; isdigit(peekcd());)
 		cnt = cnt * 10 + getchar() - '0';
@@ -142,8 +142,8 @@ setnoaddr()
 line *
 address(char *inputline)
 {
-	register line *addr;
-	register int offset, c;
+	line *addr;
+	int offset, c;
 	short lastsign;
 
 	bigmove = 0;

@@ -61,9 +61,9 @@ vUndo()
 void
 vundo(bool show)
 {
-	register int cnt;
-	register line *addr;
-	register char *cp;
+	int cnt;
+	line *addr;
+	char *cp;
 	char temp[LBSIZE];
 	bool savenote;
 	int (*OO)(int);
@@ -257,7 +257,7 @@ void
 vmove(int c)
 {
 	(void)c;
-	register int cnt;
+	int cnt;
 
 	if (wdot) {
 		if (wdot < one || wdot > dol) {
@@ -290,9 +290,9 @@ vmove(int c)
 	 * if we let it get more out of sync since column() won't work right.
 	 */
 	if (state == HARDOPEN) {
-		register char *cp;
+		char *cp;
 		if (rubble) {
-			register int lc;
+			int lc;
 			int oldhold = hold;
 
 			sethard();
@@ -306,7 +306,7 @@ vmove(int c)
 		} else if (wcursor > cursor) {
 			vfixcurs();
 			for (cp = cursor; *cp && cp < wcursor;) {
-				register int lc = *cp++ & TRIM;
+				int lc = *cp++ & TRIM;
 
 				putchar(lc ? lc : ' ');
 			}
@@ -326,8 +326,8 @@ vmove(int c)
 void
 vdelete(int c)
 {
-	register char *cp;
-	register int i;
+	char *cp;
+	int i;
 
 	if (wdot) {
 		if (wcursor) {
@@ -386,8 +386,8 @@ vdelete(int c)
 void
 vchange(int c)
 {
-	register char *cp;
-	register int i, ind, cnt;
+	char *cp;
+	int i, ind, cnt;
 	line *addr;
 
 	if (wdot) {
@@ -601,7 +601,7 @@ smallchange:
 void
 voOpen(int c, int cnt)
 {
-	register int ind = 0, i;
+	int ind = 0, i;
 	int oldhold = hold;
 
 	if (value(SLOWOPEN) || (value(REDRAW) && insert_line && delete_line))
@@ -665,8 +665,8 @@ void
 vshftop(int c)
 {
 	(void)c;
-	register line *addr;
-	register int cnt;
+	line *addr;
+	int cnt;
 
 	if ((cnt = xdw()) < 0)
 		return;
@@ -690,8 +690,8 @@ void
 vfilter(int c)
 {
 	(void)c;
-	register line *addr;
-	register int cnt;
+	line *addr;
+	int cnt;
 	char *oglobp;
 	short d;
 
@@ -749,10 +749,10 @@ vfilter(int c)
 int
 xdw()
 {
-	register char *cp;
-	register int cnt;
+	char *cp;
+	int cnt;
 /*
-	register int notp = 0;
+	int notp = 0;
  */
 
 	if (wdot == NOLINE || wdot < one || wdot > dol) {
@@ -762,7 +762,7 @@ xdw()
 	vsave();
 	setLAST();
 	if (dot > wdot) {
-		register line *addr;
+		line *addr;
 
 		vcline -= dot - wdot;
 		addr = dot; dot = wdot; wdot = addr;
@@ -832,7 +832,7 @@ vshift(int unused)
 void
 vrep(int cnt)
 {
-	register int i, c;
+	int i, c;
 
 	if (cnt > (int)strlen(cursor)) {
 		beep();
@@ -873,7 +873,7 @@ void
 vyankit(int c)
 {
 	(void)c;
-	register int cnt;
+	int cnt;
 
 	if (wdot) {
 		if ((cnt = xdw()) < 0)

@@ -67,8 +67,8 @@ vclrlin(int l, line *tp)
 void
 vclreol()
 {
-	register int i, j;
-	register char *tp;
+	int i, j;
+	char *tp;
 
 	if (destcol == WCOLS)
 		return;
@@ -223,7 +223,7 @@ vfixcurs()
 void
 vsetcurs(char *nc)
 {
-	register int col;
+	int col;
 
 	col = column(nc);
 	if (linebuf[0])
@@ -326,8 +326,8 @@ vshowmode(char *msg)
 void
 vgoto(int y, int x)
 {
-	register char *tp;
-	register int c;
+	char *tp;
+	int c;
 
 	/*
 	 * Fold the possibly too large value of x.
@@ -466,7 +466,7 @@ vgoto(int y, int x)
 static void
 vgotab()
 {
-	register int i = tabcol(destcol, value(TABSTOP)) - destcol;
+	int i = tabcol(destcol, value(TABSTOP)) - destcol;
 
 	do
 		(*Outchar)(QUOTE);
@@ -495,8 +495,8 @@ int	slakused;		/* This much of tabslack will be used up */
 void
 vprepins()
 {
-	register int i;
-	register char *cp = vtube0;
+	int i;
+	char *cp = vtube0;
 
 	for (i = 0; i < DEPTH(vcline); i++) {
 		vmaktop(LINE(vcline) + i, cp);
@@ -507,7 +507,7 @@ vprepins()
 void
 vmaktop(int p, char *cp)
 {
-	register int i;
+	int i;
 	char temp[TUBECOLS];
 
 	if (p < 0 || vtube[p] == cp)
@@ -534,8 +534,8 @@ vmaktop(int p, char *cp)
 int
 vinschar(int c)
 {
-	register int i;
-	register char *tp;
+	int i;
+	char *tp;
 
 	if ((!enter_insert_mode || !exit_insert_mode) && ((hold & HOLDQIK) || !value(REDRAW) || value(SLOWOPEN))) {
 		/*
@@ -706,8 +706,8 @@ vinschar(int c)
 static void __attribute__((unused))
 vrigid()
 {
-	register int col;
-	register char *tp = vtube0 + tabend;
+	int col;
+	char *tp = vtube0 + tabend;
 
 	for (col = tabend; col < linend; col++)
 		if ((*tp++ & TRIM) == 0) {
@@ -728,8 +728,8 @@ vrigid()
 void
 vneedpos(int cnt)
 {
-	register int d = DEPTH(vcline);
-	register int rmdr = d * WCOLS - linend;
+	int d = DEPTH(vcline);
+	int rmdr = d * WCOLS - linend;
 
 	if (cnt <= rmdr)
 		return;
@@ -740,8 +740,8 @@ vneedpos(int cnt)
 void
 vnpins(int dosync)
 {
-	register int d = DEPTH(vcline);
-	register int e;
+	int d = DEPTH(vcline);
+	int e;
 
 	e = LINE(vcline) + DEPTH(vcline);
 	if (e < LINE(vcline + 1)) {
@@ -775,9 +775,9 @@ void
 vishft()
 {
 	int j;
-	register int i;
-	register char *tp = vtube0;
-	register char *up;
+	int i;
+	char *tp = vtube0;
+	char *up;
 	int oldhold = hold;
 
 	shft = value(TABSTOP);
@@ -842,9 +842,9 @@ vishft()
 void
 viin(int c)
 {
-	register char *tp, *up;
-	register int i, j;
-	register bool noim = 0;
+	char *tp, *up;
+	int i, j;
+	bool noim = 0;
 	int remdoom;
 	int oldhold = hold;
 
@@ -1043,8 +1043,8 @@ endim()
 int
 vputchar(int c)
 {
-	register char *tp;
-	register int d;
+	char *tp;
+	int d;
 
 	c &= (QUOTE|TRIM);
 	/* Fix problem of >79 chars on echo line. */
@@ -1204,10 +1204,10 @@ def:
 void
 physdc(int stcol, int endcol)
 {
-	register char *tp, *up;
+	char *tp, *up;
 	char *tpe;
-	register int i;
-	register int nc = endcol - stcol;
+	int i;
+	int nc = endcol - stcol;
 
 	if (!delete_character || nc <= 0)
 		return;

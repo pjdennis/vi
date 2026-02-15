@@ -23,7 +23,7 @@
 int
 any(int c, char *s)
 {
-	register int x;
+	int x;
 
 	while ((x = *s++))
 		if (x == c)
@@ -34,7 +34,7 @@ any(int c, char *s)
 int
 backtab(int i)
 {
-	register int j;
+	int j;
 
 	j = i % value(SHIFTWIDTH);
 	if (j == 0)
@@ -75,7 +75,7 @@ column(char *cp)
 void
 comment()
 {
-	register int c;
+	int c;
 
 	do {
 		c = getchar();
@@ -132,8 +132,8 @@ dingdong()
 int
 fixindent(int indent)
 {
-	register int i;
-	register char *cp;
+	int i;
+	char *cp;
 
 	i = whitecnt(genbuf);
 	cp = vpastwh(genbuf);
@@ -148,7 +148,7 @@ fixindent(int indent)
 void
 filioerr(char *cp)
 {
-	register int oerrno = errno;
+	int oerrno = errno;
 
 	lprintf("\"%s\"", cp);
 	errno = oerrno;
@@ -158,7 +158,7 @@ filioerr(char *cp)
 char *
 genindent(int indent)
 {
-	register char *cp;
+	char *cp;
 
 	for (cp = genbuf; indent >= value(TABSTOP); indent -= value(TABSTOP))
 		*cp++ = '\t';
@@ -177,7 +177,7 @@ getDOT()
 line *
 getmark(int c)
 {
-	register line *addr;
+	line *addr;
 
 	for (addr = one; addr <= dol; addr++)
 		if (names[c - 'a'] == (*addr &~ 01)) {
@@ -189,7 +189,7 @@ getmark(int c)
 int
 getn(char *cp)
 {
-	register int i = 0;
+	int i = 0;
 
 	while (isdigit(*cp))
 		i = i * 10 + *cp++ - '0';
@@ -201,7 +201,7 @@ getn(char *cp)
 void
 ignnEOF()
 {
-	register int c = getchar();
+	int c = getchar();
 
 	if (c == EOF)
 		ungetchar(c);
@@ -323,7 +323,7 @@ markreg(int c)
 char *
 mesg(char *str)
 {
-	register char *cp;
+	char *cp;
 
 	str = strcpy(genbuf, str);
 	for (cp = str; *cp; cp++)
@@ -351,7 +351,7 @@ merror(char *seekpt, ...)
 {
 	va_list ap;
 	long i = 0;
-	register char *cp = linebuf;
+	char *cp = linebuf;
 
 	if (seekpt == 0)
 		return;
@@ -422,7 +422,7 @@ netchHAD(int cnt)
 void
 netchange(int i)
 {
-	register char *cp;
+	char *cp;
 
 	if (i > 0)
 		notesgn = cp = "more ";
@@ -449,8 +449,8 @@ putmark(line *addr)
 void
 putmk1(line *addr, int n)
 {
-	register line *markp;
-	register int oldglobmk;
+	line *markp;
+	int oldglobmk;
 
 	oldglobmk = *addr & 1;
 	*addr &= ~1;
@@ -474,7 +474,7 @@ short	vcntcol;
 int
 qcolumn(char *lim, char *gp)
 {
-	register int x;
+	int x;
 	int (*OO)(int);
 
 	OO = Outchar;
@@ -507,7 +507,7 @@ qcount(int c)
 void
 reverse(line *a1, line *a2)
 {
-	register line t;
+	line t;
 
 	for (;;) {
 		t = *--a2;
@@ -521,7 +521,7 @@ reverse(line *a1, line *a2)
 void
 save(line *a1, line *a2)
 {
-	register int more;
+	int more;
 
 	if (!FIXUNDO)
 		return;
@@ -577,7 +577,7 @@ vi_sync()
 int
 skipwh()
 {
-	register int wh;
+	int wh;
 
 	wh = 0;
 	while (iswhite(peekchar())) {
@@ -632,7 +632,7 @@ strcLIN(char *dp)
 void
 syserror(int danger)
 {
-	register int e = errno;
+	int e = errno;
 
 	dirtcnt = 0;
 	putchar(' ');
@@ -663,7 +663,7 @@ tabcol(int col, int ts)
 char *
 vfindcol(int i)
 {
-	register char *cp;
+	char *cp;
 	int (*OO)(int) = Outchar;
 
 	Outchar = qcount;
@@ -698,7 +698,7 @@ vpastwh(char *cp)
 int
 whitecnt(char *cp)
 {
-	register int i;
+	int i;
 
 	i = 0;
 	for (;;)

@@ -34,8 +34,8 @@ short	rfile = -1;
 void
 fileinit()
 {
-	register char *p;
-	register int i, j;
+	char *p;
+	int i, j;
 	struct stat stbuf;
 
 	if (tline == INCRMT * (HBLKS+2))
@@ -108,8 +108,8 @@ cleanup(bool all)
 void
 getline(line tl)
 {
-	register char *bp, *lp;
-	register int nl;
+	char *bp, *lp;
+	int nl;
 
 	lp = linebuf;
 	bp = getblock(tl, READ);
@@ -125,8 +125,8 @@ getline(line tl)
 int
 putline()
 {
-	register char *bp, *lp;
-	register int nl;
+	char *bp, *lp;
+	int nl;
 	line tl;
 
 	dirtcnt++;
@@ -156,7 +156,7 @@ putline()
 char *
 getblock(line atl, int iof)
 {
-	register int bno, off;
+	int bno, off;
 
 	bno = (atl >> OFFBTS) & BLKMSK;
 	off = (atl << SHFT) & LBTMSK;
@@ -255,9 +255,9 @@ tflush()
 void
 synctmp()
 {
-	register int cnt;
-	register line *a;
-	register int *bp;
+	int cnt;
+	line *a;
+	int *bp;
 
 	if (stilinc)
 		return;
@@ -322,14 +322,14 @@ TSYNC()
 /*
  * Named buffer routines.
  * These are implemented differently than the main buffer.
- * Each named buffer has a chain of blocks in the register file.
+ * Each named buffer has a chain of blocks in the file.
  * Each block contains roughly 508 chars of text,
  * and a previous and next block number.  We also have information
  * about which blocks came from deletes of multiple partial lines,
  * e.g. deleting a sentence or a LISP object.
  *
  * We maintain a free map for the temp file.  To free the blocks
- * in a register we must read the blocks to find how they are chained
+ * in a we must read the blocks to find how they are chained
  * together.
  *
  * BUG:		The default savind of deleted lines in numbered
@@ -378,7 +378,7 @@ oops:
 int
 REGblk()
 {
-	register int i, j, m;
+	int i, j, m;
 
 	for (i = 0; i < (int)(sizeof rused / sizeof rused[0]); i++) {
 		m = (rused[i] ^ 0177777) & 0177777;
@@ -392,7 +392,7 @@ REGblk()
 			return (i * 16 + j);
 		}
 	}
-	error("Out of register space (ugh)");
+	error("Out of space (ugh)");
 	/*NOTREACHED*/
 	return 0;
 }
@@ -411,7 +411,7 @@ ssize_t	shread();
 void
 KILLreg(int c)
 {
-	register struct strreg *sp;
+	struct strreg *sp;
 
 	rbuf = &KILLrbuf;
 	sp = mapreg(c);
@@ -441,9 +441,9 @@ int	getREG();
 void
 putreg(int c)
 {
-	register line *odot = dot;
-	register line *odol = dol;
-	register int cnt;
+	line *odot = dot;
+	line *odol = dol;
+	int cnt;
 
 	deletenone();
 	appendnone();
@@ -458,7 +458,7 @@ putreg(int c)
 			vgoto(WECHO, 0);
 		}
 		vreg = -1;
-		error("Nothing in register %c", c);
+		error("Nothing in %c", c);
 	}
 	if (inopen && partreg(c)) {
 		if (!FIXUNDO) {
@@ -497,8 +497,8 @@ notpart(int c)
 int
 getREG()
 {
-	register char *lp = linebuf;
-	register int c;
+	char *lp = linebuf;
+	int c;
 
 	for (;;) {
 		if (rnleft == 0) {
@@ -524,8 +524,8 @@ getREG()
 void
 YANKreg(int c)
 {
-	register line *addr;
-	register struct strreg *sp;
+	line *addr;
+	struct strreg *sp;
 	char savelb[LBSIZE];
 
 	if (isdigit(c))
@@ -562,7 +562,7 @@ YANKreg(int c)
 void
 kshift()
 {
-	register int i;
+	int i;
 
 	KILLreg('9');
 	for (i = '8'; i >= '0'; i--)
@@ -572,9 +572,9 @@ kshift()
 void
 YANKline()
 {
-	register char *lp = linebuf;
-	register struct rbuf *rp = rbuf;
-	register int c;
+	char *lp = linebuf;
+	struct rbuf *rp = rbuf;
+	int c;
 
 	do {
 		c = *lp++;
@@ -599,7 +599,7 @@ YANKline()
 void
 rbflush()
 {
-	register struct strreg *sp = strp;
+	struct strreg *sp = strp;
 
 	if (rblock == 0)
 		return;
@@ -614,7 +614,7 @@ rbflush()
 void
 regbuf(char c, char *buf, int buflen)
 {
-	register char *p, *lp;
+	char *p, *lp;
 
 	rbuf = &regrbuf;
 	rnleft = 0;
@@ -622,7 +622,7 @@ regbuf(char c, char *buf, int buflen)
 	rnext = mapreg(c)->rg_first;
 	if (rnext==0) {
 		*buf = 0;
-		error("Nothing in register %c",c);
+		error("Nothing in %c",c);
 	}
 	p = buf;
 	while (getREG()==0) {

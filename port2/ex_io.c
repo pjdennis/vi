@@ -48,8 +48,8 @@ long	cntodd;			/* Count of non-ascii characters " */
 void
 filename(int comm)
 {
-	register int c = comm, d;
-	register int i;
+	int c = comm, d;
+	int i;
 
 	d = getchar();
 	if (endcmd(d)) {
@@ -126,8 +126,8 @@ filename(int comm)
 int
 getargs()
 {
-	register int c;
-	register char *cp, *fp;
+	int c;
+	char *cp, *fp;
 	static char fpatbuf[32];	/* hence limit on :next +/pat */
 
 	pastwh();
@@ -200,15 +200,15 @@ void
 glob(struct glob *gp)
 {
 	int pvec[2];
-	register char **gargv = gp->argv;
-	register char *cp = gp->argspac;
-	register int c;
+	char **gargv = gp->argv;
+	char *cp = gp->argspac;
+	int c;
 	char ch;
 	int gnleft = NCARGS;
 
 	gp->argc0 = 0;
 	if (gscan() == 0) {
-		register char *v = genbuf + 5;		/* strlen("echo ") */
+		char *v = genbuf + 5;		/* strlen("echo ") */
 
 		for (;;) {
 			while (isspace(*v))
@@ -280,7 +280,7 @@ glob(struct glob *gp)
 static int
 gscan(void)
 {
-	register char *cp;
+	char *cp;
 
 	for (cp = genbuf; *cp; cp++)
 		if (any(*cp, "~{[*?$`'\"\\"))
@@ -295,7 +295,7 @@ struct glob G;
 void
 getone()
 {
-	register char *str;
+	char *str;
 
 	if (getargs() == 0)
 		error("Missing filename");
@@ -315,7 +315,7 @@ getone()
 void
 rop(int c)
 {
-	register int i;
+	int i;
 	struct stat stbuf;
 	short magic;
 	static int ovro;	/* old value(READONLY) */
@@ -424,7 +424,7 @@ rop3(int c)
 		edited = 1;
 	if (c == 'e') {
 		if (wasalt || firstpat) {
-			register line *addr = zero + oldadot;
+			line *addr = zero + oldadot;
 
 			if (addr > dol)
 				addr = dol;
@@ -483,7 +483,7 @@ samei(struct stat *sp, char *cp)
 int
 wop(bool dofname)
 {
-	register int c, exclam, nonexist;
+	int c, exclam, nonexist;
 	line *saddr1, *saddr2;
 	struct stat stbuf;
 
@@ -610,8 +610,8 @@ char *nextip;
 int
 getfile()
 {
-	register short c;
-	register char *lp, *fp;
+	short c;
+	char *lp, *fp;
 
 	lp = linebuf;
 	fp = nextip;
@@ -659,8 +659,8 @@ putfile(int isfilter)
 {
 	(void)isfilter;
 	line *a1;
-	register char *fp, *lp;
-	register int nib;
+	char *fp, *lp;
+	int nib;
 
 	a1 = addr1;
 	clrstats();
@@ -720,7 +720,7 @@ void
 source(char *fil, bool okfail)
 {
 	sigjmp_buf osetexit;
-	register int saveinp, ointty, oerrno;
+	int saveinp, ointty, oerrno;
 	char *saveglobp;
 	int savepeekc;
 

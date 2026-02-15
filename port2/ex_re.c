@@ -32,9 +32,9 @@ static int cclass(char *set, int c, int af);
 void
 global(bool k)
 {
-	register char *gp;
-	register int c;
-	register line *a1;
+	char *gp;
+	int c;
+	line *a1;
 	char globuf[GBSIZE], *Cwas;
 	int nlines = lineDOL();
 	int oinglobal = inglobal;
@@ -142,7 +142,7 @@ brkwh:
 void
 gdelete()
 {
-	register line *a1, *a2, *a3;
+	line *a1, *a2, *a3;
 
 	a3 = dol;
 	/* find first marked line. can skip all before it */
@@ -169,8 +169,8 @@ int	scount, slines, stotal;
 int
 substitute(int c)
 {
-	register line *addr;
-	register int n;
+	line *addr;
+	int n;
 	int gsubf, hopcount;
 
 	gsubf = compsub(c);
@@ -213,7 +213,7 @@ substitute(int c)
 int
 compsub(int ch)
 {
-	register int seof, c, uselastre;
+	int seof, c, uselastre;
 	static int gsubf;
 
 	if (!value(EDCOMPATIBLE))
@@ -280,8 +280,8 @@ compsub(int ch)
 static void
 comprhs(int seof)
 {
-	register char *rp, *orp;
-	register int c;
+	char *rp, *orp;
+	int c;
 	char orhsbuf[RHSSIZE];
 
 	rp = rhsbuf;
@@ -345,7 +345,7 @@ endrhs:
 int
 getsub()
 {
-	register char *p;
+	char *p;
 
 	if ((p = linebp) == 0)
 		return (EOF);
@@ -370,7 +370,7 @@ dosubcon(bool f, line *a)
 static int
 confirmed(line *a)
 {
-	register int c, ch;
+	int c, ch;
 
 	if (cflag == 0)
 		return (1);
@@ -422,7 +422,7 @@ bool	destuc;
 static void
 dosub(void)
 {
-	register char *lp, *sp, *rp;
+	char *lp, *sp, *rp;
 	int c;
 
 	lp = linebuf;
@@ -541,8 +541,8 @@ snote(int total, int nlines)
 int
 compile(int eof, int oknl)
 {
-	register int c;
-	register char *ep;
+	int c;
+	char *ep;
 	char *lastep;
 	char bracket[NBRA], *bracketp, *rhsp;
 	int cclcnt;
@@ -772,8 +772,8 @@ execute(int gf, ...)
 {
 	va_list ap;
 	line *addr;
-	register char *p1, *p2;
-	register int c;
+	char *p1, *p2;
+	int c;
 
 	if (gf) {
 		if (circfl)
@@ -824,7 +824,7 @@ execute(int gf, ...)
 int
 advance(char *lp, char *ep)
 {
-	register char *curlp;
+	char *curlp;
 
 	for (;;) switch (*ep++) {
 
@@ -934,7 +934,7 @@ star:
 static int
 cclass(char *set, int c, int af)
 {
-	register int n;
+	int n;
 
 	if (c == 0)
 		return (0);

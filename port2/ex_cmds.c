@@ -30,9 +30,9 @@ int	poffset;
 void
 commands(bool noprompt, bool exitoneof)
 {
-	register line *addr;
-	register int c;
-	register int lchng;
+	line *addr;
+	int c;
+	int lchng;
 	int given;
 	int seensemi;
 	int cnt;
@@ -203,7 +203,7 @@ notinvis:
 			case 'h':
 				ignchar();
 				if (peekchar() == 'd') {
-					register char *p;
+					char *p;
 					tail2of("chdir");
 changdir:
 					if (savedfile[0] == '/' || !value(WARN))

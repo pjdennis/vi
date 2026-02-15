@@ -37,7 +37,7 @@ bleep(int i, char *cp)
 int
 vdcMID()
 {
-	register char *cp;
+	char *cp;
 
 	squish();
 	setLAST();
@@ -57,7 +57,7 @@ vdcMID()
 void
 takeout(char *BUF)
 {
-	register char *cp;
+	char *cp;
 
 	if (wcursor < linebuf)
 		wcursor = linebuf;
@@ -82,8 +82,8 @@ takeout(char *BUF)
 int
 ateopr()
 {
-	register int i, c;
-	register char *cp = vtube[destline] + destcol;
+	int i, c;
+	char *cp = vtube[destline] + destcol;
 
 	for (i = WCOLS - destcol; i > 0; i--) {
 		c = *cp++;
@@ -118,8 +118,8 @@ char	*ogcursor;
 void
 vappend(int ch, int cnt, int indent)
 {
-	register int i;
-	register char *gcursor;
+	int i;
+	char *gcursor;
 	int escape;
 	int repcnt, savedoomed;
 	int oldhold = hold;
@@ -299,7 +299,7 @@ vappend(int ch, int cnt, int indent)
 			DEPTH(vcline) = 0;
 			savedoomed = doomed;
 			if (doomed > 0) {
-				register int cind = cindent();
+				int cind = cindent();
 
 				physdc(cind, cind + doomed);
 				doomed = 0;
@@ -427,8 +427,8 @@ back1()
 char *
 vgetline(int cnt, char *gcursor, int *aescaped, char commch)
 {
-	register int c, ch;
-	register char *cp;
+	int c, ch;
+	char *cp;
 	int x, y, iwhite, backsl=0;
 	char *iglobp;
 	char cstr[2];
@@ -837,7 +837,7 @@ char	*vsplitpt;
 void
 vdoappend(char *lp)
 {
-	register int oing = inglobal;
+	int oing = inglobal;
 
 	vsplitpt = lp;
 	inglobal = 1;
@@ -867,7 +867,7 @@ vgetsplit()
 int
 vmaxrep(char ch, int cnt)
 {
-	register int len, replen;
+	int len, replen;
 
 	if (cnt > LBSIZE - 2)
 		cnt = LBSIZE - 2;

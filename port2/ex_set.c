@@ -27,9 +27,9 @@ char	optname[ONMSZ];
 void
 set()
 {
-	register char *cp;
-	register struct option *op;
-	register int c;
+	char *cp;
+	struct option *op;
+	int c;
 	bool no;
 
 	setnoaddr();
@@ -161,9 +161,9 @@ setend(void)
 static void
 prall(void)
 {
-	register int incr = (NOPTS + 2) / 3;
-	register int rows = incr;
-	register struct option *op = options;
+	int incr = (NOPTS + 2) / 3;
+	int rows = incr;
+	struct option *op = options;
 
 	for (; rows; rows--, op++) {
 		propt(op);
@@ -180,7 +180,7 @@ prall(void)
 static void
 propts(void)
 {
-	register struct option *op;
+	struct option *op;
 
 	for (op = options; op < &options[NOPTS]; op++) {
 		if (op == &options[TTYTYPE])
@@ -208,7 +208,7 @@ propts(void)
 static void
 propt(struct option *op)
 {
-	register char *name;
+	char *name;
 
 	name = op->oname;
 

@@ -33,8 +33,8 @@ void vcontin(bool ask);
 int
 cmdreg()
 {
-	register int c = 0;
-	register int wh = skipwh();
+	int c = 0;
+	int wh = skipwh();
 
 	if (wh && isalpha(peekchar()))
 		c = getchar();
@@ -282,7 +282,7 @@ next()
 void
 donewline()
 {
-	register int c;
+	int c;
 
 	resetflav();
 	for (;;) {
@@ -458,8 +458,8 @@ char	tcommand[20];
 int
 tailprim(char *comm, int i, bool notinvis)
 {
-	register char *cp;
-	register int c;
+	char *cp;
+	int c;
 
 	Command = comm;
 	for (cp = tcommand; i > 0; i--)

@@ -29,8 +29,8 @@ void vcloseup(int l, int cnt);
 void
 vopen(line *tp, int p)
 {
-	register int cnt;
-	register struct vlinfo *vp, *vpc;
+	int cnt;
+	struct vlinfo *vp, *vpc;
 
 	if (state != VISUAL) {
 		if (vcnt) {
@@ -88,8 +88,8 @@ vopen(line *tp, int p)
 int
 vreopen(int p, int lineno, int l)
 {
-	register int d;
-	register struct vlinfo *vp = &vlinfo[l];
+	int d;
+	struct vlinfo *vp = &vlinfo[l];
 
 	d = vp->vdepth;
 	if (d == 0 || (vp->vflags & VDIRT))
@@ -173,9 +173,9 @@ vreopen(int p, int lineno, int l)
 int
 vglitchup(int l, int o)
 {
-	register struct vlinfo *vp = &vlinfo[l];
-	register int need;
-	register int p = vp->vliny;
+	struct vlinfo *vp = &vlinfo[l];
+	int need;
+	int p = vp->vliny;
 	int oldhold, oldheldech;
 	bool glitched = 0;
 
@@ -214,7 +214,7 @@ vglitchup(int l, int o)
 void
 vinslin(int p, int cnt, int l)
 {
-	register int i;
+	int i;
 	bool could = 1;
 
 	if (p + cnt > WBOT && clr_eos) {
@@ -290,8 +290,8 @@ vinslin(int p, int cnt, int l)
 void
 vopenup(int cnt, bool could, int l)
 {
-	register struct vlinfo *vc = &vlinfo[l + 1];
-	register struct vlinfo *ve = &vlinfo[vcnt];
+	struct vlinfo *vc = &vlinfo[l + 1];
+	struct vlinfo *ve = &vlinfo[vcnt];
 
 	if (could)
 		/*
@@ -312,7 +312,7 @@ vopenup(int cnt, bool could, int l)
 		 */
 		vc->vliny += cnt, vc->vflags |= VDIRT;
 		while (vc < ve) {
-			register int i = vc->vliny + vc->vdepth;
+			int i = vc->vliny + vc->vdepth;
 
 			vc++;
 			if (i <= vc->vliny)
@@ -331,7 +331,7 @@ void
 vadjAL(int p, int cnt)
 {
 	char *tlines[TUBELINES];
-	register int from, to;
+	int from, to;
 
 	copy(tlines, vtube, sizeof vtube);	/*SASSIGN*/
 	for (from = p, to = p + cnt; to <= WECHO; from++, to++)
@@ -354,8 +354,8 @@ vadjAL(int p, int cnt)
 void
 vrollup(int dl)
 {
-	register int cnt;
-	register int dc = destcol;
+	int cnt;
+	int dc = destcol;
 
 	cnt = dl - (splitw ? WECHO : WBOT);
 	if (splitw && (state == VISUAL || state == CRTOPEN))
@@ -412,7 +412,7 @@ vmoveitup(int cnt, bool doclr)
 void
 vscroll(int cnt)
 {
-	register int from, to;
+	int from, to;
 	char *tlines[TUBELINES];
 
 	if (cnt < 0 || cnt > TUBELINES)
@@ -436,7 +436,7 @@ vscroll(int cnt)
 void
 vscrap()
 {
-	register int i, j;
+	int i, j;
 
 	if (splitw)
 		return;
@@ -491,7 +491,7 @@ vrepaint(char *curs)
 	 * Deal with a totally useless display.
 	 */
 	if (vcnt == 0 || vcline < 0 || vcline > vcnt || (holdupd && state != VISUAL)) {
-		register line *odol = dol;
+		line *odol = dol;
 
 		vcnt = 0;
 		if (holdupd) {
@@ -539,7 +539,7 @@ vrepaint(char *curs)
 		int oldhold = hold;
 		hold |= HOLDAT, vredraw(LASTLINE), hold = oldhold;
 		if (vcline >= vcnt) {
-			register int i = vcline - vcnt + 1;
+			int i = vcline - vcnt + 1;
 
 			dot -= i;
 			vcline -= i;
@@ -570,8 +570,8 @@ vrepaint(char *curs)
 void
 vredraw(int p)
 {
-	register int l;
-	register line *tp;
+	int l;
+	line *tp;
 	char temp[LBSIZE];
 	bool anydl = 0;
 	int oldhold = hold;
@@ -683,7 +683,7 @@ vredraw(int p)
 void
 vdellin(int p, int cnt, int l)
 {
-	register int i;
+	int i;
 
 	if (cnt == 0)
 		return;
@@ -726,7 +726,7 @@ void
 vadjDL(int p, int cnt)
 {
 	char *tlines[TUBELINES];
-	register int from, to;
+	int from, to;
 
 	/*
 	 * Would like to use structured assignment but early
@@ -771,9 +771,9 @@ vsync(int p)
 void
 vsync1(int p)
 {
-	register int l;
+	int l;
 	char temp[LBSIZE];
-	register struct vlinfo *vp = &vlinfo[0];
+	struct vlinfo *vp = &vlinfo[0];
 	int oldhold = hold;
 
 	if (holdupd) {
@@ -841,7 +841,7 @@ vsync1(int p)
 void
 vcloseup(int l, int cnt)
 {
-	register int i;
+	int i;
 
 	for (i = l + 1; i <= vcnt; i++)
 		LINE(i) -= cnt;
@@ -860,7 +860,7 @@ vcloseup(int l, int cnt)
 void
 vreplace(int l, int cnt, int newcnt)
 {
-	register int from, to, i;
+	int from, to, i;
 	bool savenote = 0;
 
 	if (l >= vcnt)
@@ -1010,7 +1010,7 @@ sethard()
 void
 vdirty(int base, int i)
 {
-	register int l;
+	int l;
 
 	for (l = base; l < vcnt; l++) {
 		if (--i < 0)

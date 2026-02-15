@@ -26,8 +26,8 @@
 void
 unix0(bool warn)
 {
-	register char *up, *fp;
-	register short c;
+	char *up, *fp;
+	short c;
 	char printub, puxb[UXBSIZE + sizeof (int)];
 
 	printub = 0;
@@ -229,8 +229,8 @@ void
 filter(int mode)
 {
 	static int pvec[2];
-	ttymode f;	/* mjm: was register */
-	register int nlines = lineDOL();
+	ttymode f;	/* mjm: was */
+	int nlines = lineDOL();
 
 	mode++;
 	if (mode & 2) {

@@ -57,9 +57,9 @@ void vok(char *atube);
 void
 oop()
 {
-	register char *ic;
+	char *ic;
 	char atube[TUBESIZE + LBSIZE];
-	ttymode f;	/* mjm: was register */
+	ttymode f;	/* mjm: was */
 
 	ovbeg();
 	if (peekchar() == '/') {
@@ -155,9 +155,9 @@ ovend(ttymode f)
 void
 vop()
 {
-	register int c;
+	int c;
 	char atube[TUBESIZE + LBSIZE];
-	ttymode f;	/* mjm: was register */
+	ttymode f;	/* mjm: was */
 	extern char termtype[];
 
 	if (!cursor_address && !cursor_up) {
@@ -217,7 +217,7 @@ fixzero()
 {
 
 	if (dol == zero) {
-		register bool ochng = chng;
+		bool ochng = chng;
 
 		vdoappend("");
 		if (!ochng)
@@ -320,7 +320,7 @@ setwind()
 void
 vok(char *atube)
 {
-	register int i;
+	int i;
 
 	if (WCOLS == 1000)
 		serror("Don't know enough about your terminal to use %s", Command);
@@ -371,7 +371,7 @@ vintr(int sig)
 void
 vsetsiz(int size)
 {
-	register int b;
+	int b;
 
 	if (bastate != VISUAL)
 		return;

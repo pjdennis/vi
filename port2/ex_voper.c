@@ -27,12 +27,12 @@ char	vscandir[2] =	{ '/', 0 };
 void
 operate(int c, int cnt)
 {
-	register int i;
+	int i;
 	void (*moveop)(int), (*deleteop)(int);
 	void (*opf)(int);
 	bool subop = 0;
 	char *oglobp, *ocurs;
-	register line *addr;
+	line *addr;
 	line *odot;
 	static char lastFKND, lastFCHR;
 	short d;
@@ -717,9 +717,9 @@ find(char c)
 int
 word(void (*wordfn)(int), int cnt)
 {
-	register int which;
-	register char *iwc;
-	register line *iwdot = wdot;
+	int which;
+	char *iwc;
+	line *iwdot = wdot;
 
 	if (dir == 1) {
 		iwc = wcursor;
@@ -767,7 +767,7 @@ word(void (*wordfn)(int), int cnt)
 void
 eend(void (*eop)(int))
 {
-	register int which;
+	int which;
 
 	if (!lnext())
 		return;
@@ -807,7 +807,7 @@ wordof(char which, char *wc)
 int
 wordch(char *wc)
 {
-	register int c;
+	int c;
 
 	c = wc[0];
 	return (isalpha(c) || isdigit(c) || c == '_');
