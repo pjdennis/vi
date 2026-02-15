@@ -4,7 +4,6 @@
 #include "ex_vis.h"
 
 #define	blank()		isspace(wcursor[0])
-#define	forbid(a)	if (a) goto errlab;
 
 int find(char c);
 int edge(void);
@@ -91,7 +90,7 @@ operate(int c, int cnt)
 	 * =		Reformat operator (for LISP).
 	 */
 	case '=':
-		forbid(!value(LISP));
+		if (!value(LISP)) goto errlab;
 		/* FALLTHROUGH */
 
 	/*
@@ -124,7 +123,7 @@ operate(int c, int cnt)
 	if (isdigit(peekkey()) && peekkey() != '0') {
 		cnt *= vgetcnt();
 		Xcnt = cnt;
-		forbid (cnt <= 0);
+		if (cnt <= 0) goto errlab;
 	}
 
 	/*
@@ -156,7 +155,7 @@ nocount:
 	case 'W':
 	case 'w':
 		wdkind = c & ' ';
-		forbid(lfind(2, cnt, opf, 0) < 0);
+		if (lfind(2, cnt, opf, 0) < 0) goto errlab;
 		vmoving = 0;
 		break;
 
@@ -173,7 +172,7 @@ nocount:
 	case 'e':
 		wdkind = 1;
 ein:
-		forbid(lfind(3, cnt - 1, opf, 0) < 0);
+		if (lfind(3, cnt - 1, opf, 0) < 0) goto errlab;
 		vmoving = 0;
 		break;
 
@@ -188,7 +187,7 @@ ein:
 	 * )		Forward an s-expression.
 	 */
 	case ')':
-		forbid(lfind(0, cnt, opf, NOLINE) < 0);
+		if (lfind(0, cnt, opf, NOLINE) < 0) goto errlab;
 		markDOT();
 		break;
 
@@ -207,7 +206,7 @@ ein:
 	 *		set of {}'s.
 	 */
 	case '}':
-		forbid(lfind(1, cnt, opf, NOLINE) < 0);
+		if (lfind(1, cnt, opf, NOLINE) < 0) goto errlab;
 		markDOT();
 		break;
 
@@ -219,7 +218,7 @@ ein:
 		vsave();
 		i = lmatchp(NOLINE);
 		getDOT();
-		forbid(!i);
+		if (!i) goto errlab;
 		if (opf != vmove)
 			if (dir > 0)
 				wcursor++;
@@ -247,12 +246,12 @@ ein:
 	 */
 	case ']':
 		if (!vglobp)
-			forbid(getkey() != c);
-		forbid (Xhadcnt);
+			if (getkey() != c) goto errlab;
+		if (Xhadcnt) goto errlab;
 		vsave();
 		i = lbrack(c, opf);
 		getDOT();
-		forbid(!i);
+		if (!i) goto errlab;
 		markDOT();
 		break;
 
@@ -261,7 +260,7 @@ ein:
 	 *		of ;.
 	 */
 	case ',':
-		forbid (lastFKND == 0);
+		if (lastFKND == 0) goto errlab;
 		c = isupper(lastFKND) ? tolower(lastFKND) : toupper(lastFKND);
 		i = lastFCHR;
 		if (vglobp == 0)
@@ -281,7 +280,7 @@ ein:
 	 * ;		Repeat last find with f F t or T.
 	 */
 	case ';':
-		forbid (lastFKND == 0);
+		if (lastFKND == 0) goto errlab;
 		c = lastFKND;
 		i = lastFCHR;
 		subop = 1;
@@ -311,7 +310,7 @@ ein:
 		if (vglobp == 0)
 			lastFKND = c, lastFCHR = i;
 		for (; cnt > 0; cnt--)
-			forbid (find(i) == 0);
+			if (find(i) == 0) goto errlab;
 		vmoving = 0;
 		switch (c) {
 
@@ -389,7 +388,7 @@ fixup:
 	 */
 	case 'l':
 	case ' ':
-		forbid (margin() || (opf == vmove && edge()));
+		if (margin() || (opf == vmove && edge())) goto errlab;
 		while (cnt > 0 && !margin())
 			wcursor += dir, cnt--;
 		if ((margin() && opf == vmove) || wcursor < linebuf)
@@ -559,10 +558,10 @@ errlab:
 		if (c == 0)
 			return;
 		c = markreg(c);
-		forbid (c == 0);
+		if (c == 0) goto errlab;
 		wdot = getmark(c);
-		forbid (wdot == NOLINE);
-		forbid (Xhadcnt);
+		if (wdot == NOLINE) goto errlab;
+		if (Xhadcnt) goto errlab;
 		vmoving = 0;
 		wcursor = d == '`' ? ncols[c - 'a'] : 0;
 		if (opf == vmove && (wdot != dot || (d == '`' && wcursor != cursor)))
@@ -584,7 +583,7 @@ errlab:
 		if (!Xhadcnt)
 			cnt = lineDOL();
 		wdot = zero + cnt;
-		forbid (wdot < one || wdot > dol);
+		if (wdot < one || wdot > dol) goto errlab;
 		if (opf == vmove)
 			markit(wdot);
 		vmoving = 0;
@@ -597,7 +596,7 @@ errlab:
 	 */
 	case '/':
 	case '?':
-		forbid (Xhadcnt);
+		if (Xhadcnt) goto errlab;
 		vsave();
 		ocurs = cursor;
 		odot = dot;

@@ -173,14 +173,14 @@ extern	void	oncore(int);	/* Core dump signal handler */
 /*
  * Macros
  */
-#define	CP(a, b)	(ignore(strcpy(a, b)))
+#define	CP(a, b)	strcpy(a, b)
 			/*
 			 * FIXUNDO: do we want to mung undo vars?
 			 * Usually yes unless in a macro or global.
 			 */
 #define FIXUNDO		(inopen >= 0 && (inopen || !inglobal))
 #define ckaw()		{if (chng && value(AUTOWRITE) && !value(READONLY)) wop(0);}
-#define	copy(a,b,c)	Copy((char *) (a), (char *) (b), (c))
+#define	copy(a,b,c)	memcpy((a), (b), (c))
 #define	eq(a, b)	((a) && (b) && strcmp(a, b) == 0)
 #define	getexit(a)	copy(a, resetlab, sizeof (sigjmp_buf))
 #define	lastchar()	lastc
@@ -425,7 +425,6 @@ int	backtab(int i);
 void	change(void);
 int	column(char *cp);
 void	comment(void);
-void	Copy(char *to, char *from, int size);
 void	copyw(line *to, line *from, int size);
 void	copywR(line *to, line *from, int size);
 int	ctlof(int c);

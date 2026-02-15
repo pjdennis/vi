@@ -21,8 +21,8 @@ Status legend: [ ] pending, [x] done
 
 ## Lower Priority — Deeper old-style patterns
 
-- [ ] 12. Replace `Copy()` function and `copy()` macro with memcpy
-- [ ] 13. Clean up `forbid()` macro hacks with embedded goto
-- [ ] 14. Replace `CP()` macro with direct strcpy (or safer alternative)
+- [x] 12. Replace `Copy()` function and `copy()` macro with memcpy
+- [x] 13. Clean up `forbid()` macro hacks with embedded goto
+- [x] 14. Simplify `CP()` macro to direct strcpy
 - [ ] 15. Convert `#define` constant groups to `enum` (ex_vars.h, ex_vis.h, ex_re.h)
 - [ ] 16. Remove stale platform comments (USG, VMUNIX, 4.2BSD references)

@@ -14,7 +14,6 @@ void grabtag(void);
  * in the routine operate in ex_voperate.c.
  */
 
-#define	forbid(a)	{ if (a) goto fonfon; }
 
 void
 vmain()
@@ -101,7 +100,7 @@ looptop:
 			if (isdigit(peekkey()) && peekkey() != '0') {
 				hadcnt = 1;
 				cnt = vgetcnt();
-				forbid (cnt <= 0);
+				if (cnt <= 0) goto fonfon;
 			}
 			if (peekkey() != '"')
 				break;
@@ -112,7 +111,7 @@ looptop:
 			 * an 'empty' named buffer spec in the routine
 			 * kshift (see ex_temp.c).
 			 */
-			forbid (c == '0' || (!isalpha(c) && !isdigit(c)));
+			if (c == '0' || (!isalpha(c) && !isdigit(c))) goto fonfon;
 			vreg = c;
 		}
 reread:
@@ -228,7 +227,7 @@ reread:
 				c = lastmac;
 			if (isupper(c))
 				c = tolower(c);
-			forbid(!islower(c));
+			if (!islower(c)) goto fonfon;
 			lastmac = c;
 			vsave();
 			CATCH
@@ -260,7 +259,7 @@ reread:
 			 * to successively look for stuff in the kill chain
 			 * much as one does in EMACS with C-Y and M-Y.
 			 */
-			forbid (lastcmd[0] == 0);
+			if (lastcmd[0] == 0) goto fonfon;
 			if (hadcnt)
 				lastcnt = cnt;
 			if (vreg)
@@ -324,7 +323,7 @@ reread:
 			if (!hadcnt)
 				cnt = 1;
 			/* Bottom line of file already on screen */
-			forbid(lineDOL()-lineDOT() <= vcnt-1-vcline);
+			if (lineDOL()-lineDOT() <= vcnt-1-vcline) goto fonfon;
 			ind = vcnt - vcline - 1 + cnt;
 			vdown(ind, ind, 1);
 			vnline(cursor);
@@ -338,7 +337,7 @@ reread:
 				continue;
 			if (!hadcnt)
 				cnt = 1;
-			forbid(lineDOT()-1<=vcline); /* line 1 already there */
+			if (lineDOT()-1<=vcline) goto fonfon; /* line 1 already there */
 			ind = vcline + cnt;
 			vup(ind, ind, 1);
 			vnline(cursor);
@@ -371,7 +370,7 @@ reread:
 			 * context mark.
 			 */
 			c = markreg(c);
-			forbid (c == 0);
+			if (c == 0) goto fonfon;
 			vsave();
 			names[c - 'a'] = (*dot &~ 01);
 			ncols[c - 'a'] = cursor;
@@ -386,7 +385,7 @@ reread:
 			vsave();
 			if (vcnt > 2) {
 				addr = dot + (vcnt - vcline) - 2 + (cnt-1)*basWLINES;
-				forbid(addr > dol);
+				if (addr > dol) goto fonfon;
 				dot = addr;
 				vcnt = vcline = 0;
 			}
@@ -401,7 +400,7 @@ reread:
 			vsave();
 			if (one + vcline != dot && vcnt > 2) {
 				addr = dot - vcline - 2 - (cnt-1)*basWLINES;
-				forbid (addr <= zero);
+				if (addr <= zero) goto fonfon;
 				dot = addr;
 				vcnt = vcline = 0;
 			}
@@ -449,7 +448,7 @@ reread:
 		 *		of lines to join (no join operator sorry.)
 		 */
 		case 'J':
-			forbid (dot == dol);
+			if (dot == dol) goto fonfon;
 			if (cnt == 1)
 				cnt = 2;
 			if (cnt > (i = dol - dot + 1))
@@ -651,7 +650,7 @@ insrt:
 		 * ZZ		Like :x
 		 */
 		 case 'Z':
-			forbid(getkey() != 'Z');
+			if (getkey() != 'Z') goto fonfon;
 			oglobp = globp;
 			globp = "x";
 			vclrech(0);
@@ -677,7 +676,7 @@ insrt:
 			 * use insert mode on intelligent terminals.
 			 */
 			if (!vreg && DEL[0]) {
-				forbid ((DEL[0] & (QUOTE|TRIM)) == OVERBUF);
+				if ((DEL[0] & (QUOTE|TRIM)) == OVERBUF) goto fonfon;
 				vglobp = DEL;
 				ungetkey(c == 'p' ? 'a' : 'i');
 				goto reread;
@@ -687,12 +686,12 @@ insrt:
 			 * If a wasn't specified, then make
 			 * sure there is something to put back.
 			 */
-			forbid (!vreg && unddol == dol);
+			if (!vreg && unddol == dol) goto fonfon;
 			/*
 			 * If we just did a macro the whole buffer is in
 			 * the undo save area.  We don't want to put THAT.
 			 */
-			forbid (vundkind == VMANY && undkind==UNDALL);
+			if (vundkind == VMANY && undkind==UNDALL) goto fonfon;
 			vsave();
 			vmacchng(1);
 			setLAST();
@@ -783,7 +782,7 @@ pfixup:
 		 *		"No Write" diagnostic.
 		 */
 		case CTRL('^'):
-			forbid (hadcnt);
+			if (hadcnt) goto fonfon;
 			vsave();
 			ckaw();
 			oglobp = globp;
@@ -831,9 +830,9 @@ gogo:
 		 *	control in kernel.
 		 */
 		case CTRL('z'):
-			forbid(dosusp == 0);
+			if (dosusp == 0) goto fonfon;
 # ifdef NTTYDISC
-			forbid(ldisc != NTTYDISC);
+			if (ldisc != NTTYDISC) goto fonfon;
 # endif
 			vsave();
 			oglobp = globp;
@@ -845,7 +844,7 @@ gogo:
 		 *		execute it in command mode.
 		 */
 		case ':':
-			forbid (hadcnt);
+			if (hadcnt) goto fonfon;
 			vsave();
 			i = tchng;
 			addr = dot;
@@ -1150,8 +1149,6 @@ vsave()
 	putmark(dot);
 }
 
-#undef	forbid
-#define	forbid(a)	if (a) { beep(); return; }
 
 /*
  * Do a z operation.
@@ -1202,7 +1199,7 @@ vzop(bool vzop_hadcnt, int cnt, int c)
 
 		case '^':
 			addr = dot - vcline - 1;
-			forbid (addr < one);
+			if (addr < one) { beep(); return; }
 			c = '-';
 			break;
 
@@ -1217,11 +1214,11 @@ vzop(bool vzop_hadcnt, int cnt, int c)
 		break;
 
 	case '^':
-		forbid (addr <= one);
+		if (addr <= one) { beep(); return; }
 		break;
 
 	case '+':
-		forbid (addr >= dol);
+		if (addr >= dol) { beep(); return; }
 		/* FALLTHROUGH */
 
 	case CR:

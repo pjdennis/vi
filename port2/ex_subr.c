@@ -85,16 +85,6 @@ comment()
 }
 
 void
-Copy(char *to, char *from, int size)
-{
-
-	if (size > 0)
-		do
-			*to++ = *from++;
-		while (--size > 0);
-}
-
-void
 copyw(line *to, line *from, int size)
 {
 
